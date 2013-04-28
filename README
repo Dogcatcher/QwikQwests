@@ -1,0 +1,28 @@
+Qwik Qwests
+
+"Let's have a 48 hour coding competition Dad!" and so it began....
+
+After a challenge from my son who is becoming more proficient in Java by the day, I decided to try to learn Python. Pygame looked ideal for basic 2D games so I grabbed that too. After having the idea for QQ ages ago when trying to come up with ideas for an Android game for my Nexus7, this weekend it finally started to take shape.
+
+So I'm not an experienced Python programmer, and the code is very rough in places.
+
+The initial prototype was completed late on the 28th April 2013 but there is still much to do. We've got a level and a character to move around but so far that's about all.
+
+To Do list
+
+Render shadows as per the PlanetCute graphics set instructions.
+Hack up a level editor to save/load from files.
+Add all blocks/objects to the code.
+Start to work on game mechanisms.
+	Baddies
+		refine code so that rules to move player can also be used for mobs (mobile non player characters)
+	Items
+		pick up/drop/use
+	Qwests
+	Experience bar
+	Character Level
+	Score
+	Character choice
+
+Version History
+v0.000001 - prototype 28th April 2013
