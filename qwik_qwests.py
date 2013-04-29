@@ -191,12 +191,15 @@ def draw_screen():
                 if block > 0:
                     image=blockType[block]
                     SCREEN.blit(image, ((y*blockWidth),(x*blockHeight+(offset))))
-                    # check for shadow and over blit
-                    # South East
 
                 if (l == player_z) and (y == player_x) and (x == player_y):
+                    # visual adjustment for when player is on a ramp
+                    ramp = 0
+                    below=testLevel[l-1][x][y]
+                    if (below == 6) or (below == 7) or (below == 8) or (below == 9):
+                        ramp = 20
                     player=objectType[playerObj]
-                    SCREEN.blit(player, ((y*blockWidth),x*blockHeight+(offset)))
+                    SCREEN.blit(player, ((y*blockWidth),x*blockHeight+(offset)+ramp))
 
     #screen_x=player_x*blockWidth
     #screen_y=(player_y*blockHeight)+(screenOffset)-(player_z*blockOffset)
