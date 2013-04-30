@@ -16,7 +16,7 @@ pygame.display.set_caption('Qwik Qwests')
 
 # load sprites
 
-blockType=[None]*14
+blockType=[None]*16
 
 EMPTY=0
 
@@ -32,6 +32,8 @@ PLAINBLOCK=8
 DIRTBLOCK=9
 WALLBLOCK=10
 DOORTALLC=11
+BROWNBLOCK=12
+WOODBLOCK=13
 
 # ramps
 blockType[RAMP_N]=pygame.image.load('PlanetCute PNG\Ramp North.png') #6
@@ -46,11 +48,13 @@ blockType[WATERBLOCK]=pygame.image.load('PlanetCute PNG\Water Block.png')
 blockType[PLAINBLOCK]=pygame.image.load('PlanetCute PNG\Plain Block.png')
 blockType[DIRTBLOCK]=pygame.image.load('PlanetCute PNG\Dirt Block.png')
 blockType[WALLBLOCK]=pygame.image.load('PlanetCute PNG\Wall Block.png')
+blockType[BROWNBLOCK]=pygame.image.load('PlanetCute PNG\Brown Block.png')
+blockType[WOODBLOCK]=pygame.image.load('PlanetCute PNG\Wood Block.png')
 
 blockType[DOORTALLC]=pygame.image.load('PlanetCute PNG\Door Tall Closed.png')
 
-ROCK=12
-TREESHORT=13
+ROCK=14
+TREESHORT=15
 
 # objects
 blockType[ROCK]=pygame.image.load('PlanetCute PNG\Rock.png')
@@ -115,26 +119,26 @@ testLevel[0]=[
 
 testLevel[1]=[
             [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,DIRTBLOCK],
-            [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY],
-            [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,STONEBLOCK,EMPTY],
+            [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,BROWNBLOCK],
+            [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,STONEBLOCK,STONEBLOCK,EMPTY],
             [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,STONEBLOCK,STONEBLOCK,STONEBLOCK],
             [GRASSBLOCK,GRASSBLOCK,GRASSBLOCK,GRASSBLOCK,GRASSBLOCK,STONEBLOCK,STONEBLOCK,STONEBLOCK]
             ]
 
 testLevel[2]=[
-            [STONEBLOCK,STONEBLOCK,WATERBLOCK,WATERBLOCK,STONEBLOCK,STONEBLOCK,STONEBLOCK,EMPTY],
-            [STONEBLOCK,EMPTY,EMPTY,EMPTY,EMPTY,STONEBLOCK,STONEBLOCK,RAMP_N],
             [STONEBLOCK,STONEBLOCK,WATERBLOCK,WATERBLOCK,STONEBLOCK,STONEBLOCK,STONEBLOCK,STONEBLOCK],
+            [STONEBLOCK,EMPTY,EMPTY,EMPTY,EMPTY,STONEBLOCK,STONEBLOCK,BROWNBLOCK],
+            [STONEBLOCK,STONEBLOCK,WATERBLOCK,WATERBLOCK,STONEBLOCK,EMPTY,EMPTY,EMPTY],
             [GRASSBLOCK,GRASSBLOCK,WATERBLOCK,WATERBLOCK,GRASSBLOCK,EMPTY,EMPTY,EMPTY],
-            [GRASSBLOCK,GRASSBLOCK,WATERBLOCK,WATERBLOCK,GRASSBLOCK,EMPTY,STONEBLOCK,EMPTY]
+            [GRASSBLOCK,GRASSBLOCK,WATERBLOCK,WATERBLOCK,GRASSBLOCK,STONEBLOCK,EMPTY,EMPTY]
             ]
 
 testLevel[3]=[
-            [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,WALLBLOCK,PLAINBLOCK,EMPTY],
-            [EMPTY,RAMP_W,STONEBLOCK,STONEBLOCK,RAMP_E,EMPTY,EMPTY,EMPTY,EMPTY],
+            [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,WALLBLOCK,EMPTY,EMPTY],
+            [EMPTY,RAMP_W,STONEBLOCK,STONEBLOCK,RAMP_E,EMPTY,EMPTY,BROWNBLOCK],
             [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY],
             [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY],
-            [EMPTY,TREESHORT,EMPTY,EMPTY,ROCK,EMPTY,STONEBLOCK,EMPTY],
+            [EMPTY,TREESHORT,EMPTY,EMPTY,ROCK,EMPTY,EMPTY,EMPTY],
             ]
 
 testLevel[4]=[
@@ -142,7 +146,7 @@ testLevel[4]=[
             [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY],
             [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY],
             [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY],
-            [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,STONEBLOCK,EMPTY]
+            [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY]
             ]
 
 testLevel[5]=[
@@ -150,7 +154,7 @@ testLevel[5]=[
             [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY],
             [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY],
             [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY],
-            [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,STONEBLOCK,EMPTY]
+            [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY]
             ]
        
 #def render (s,l,x,y):
@@ -218,13 +222,15 @@ max_y=4
 max_z=5
 
 playerObj=0
+sdebug=0
 
-SCREEN.fill(BLACK)
 gradientRect=pygame.Rect(0,0,800,375)
+
 
 SCREEN.blit(QwikQwests, titleCenter)
 
 def draw_screen():
+    SCREEN.fill(WHITE)
     fill_gradient(SCREEN,LIGHTBLUE,WHITE,gradientRect,True,True)
     for z in range (0,(max_z+1)):
         offset=(z*-1*blockOffset)+screenOffset
@@ -239,50 +245,69 @@ def draw_screen():
                 # possile bug with high south shadow at back of tall blocks - well tall blocks in general
                 # suspect need shadow shift for all tall blocks - fix another day
                 
-                if block > 0:
-                    image=blockType[block]
-                    SCREEN.blit(image, ((x*blockWidth),(y*blockHeight+(offset))))
+                if (block > 0):
+
+                    
+                    paintBlock=0
+                    if (sdebug==1):
+                        paintBlock=PLAINBLOCK
+                    if (sdebug==2):
+                        paintBlock=block
+
+                    if (sdebug > 0):
+                        image=blockType[paintBlock]                   
+                        SCREEN.blit(image, ((x*blockWidth),(y*blockHeight+(offset))))
+
+                    showSE=False
+                    showS=False
+                    showSW=False
+                    showE=False
+                    showW=False
+                    showNE=False
+                    showN=False
+                    showNW=False
+                    showSIDEW=False
+                    showS2=True
+                    showS5=False
 
                     # shadow processing
-                    if (block > RAMP_W) and (block < ROCK):
+                    if (z < max_z) and (testLevel[z+1][y][x] == 0) and (RAMP_W < block < ROCK):
                         # South East
-                        if (z < max_z) and (y < max_y) and (x < max_x) and (RAMP_W < testLevel[z+1][y+1][x+1] < ROCK) and (testLevel[z+1][y][x+1] == EMPTY):
+                        if (showSE == True) and (z < max_z) and (y < max_y) and (x < max_x) and (RAMP_W < testLevel[z+1][y+1][x+1] < ROCK) and (testLevel[z+1][y][x+1] == EMPTY) and (testLevel[z+1][y+1][x] == EMPTY):
                            SCREEN.blit(shadowType[SHADOW_SE], ((x*blockWidth),(y*blockHeight+(offset))))
+                           print("Placing SE shadow at {0},{1},{2}".format(x,y,z))
                         # South
-                        if (z < max_z) and (y < max_y) and (RAMP_W < testLevel[z+1][y+1][x] < ROCK):
+                        if (showS == True) and (z < max_z) and (y < max_y) and (RAMP_W < testLevel[z+1][y+1][x] < ROCK):
                            SCREEN.blit(shadowType[SHADOW_S], ((x*blockWidth),(y*blockHeight+(offset))))
                         # South West
-                        if (z < max_z) and (y < max_y) and (x > min_x) and (RAMP_W < testLevel[z+1][y+1][x-1] < ROCK)and (testLevel[z+1][y][x-1] == EMPTY):
+                        if (showSW == True) and (z < max_z) and (y < max_y) and (x > min_x) and (RAMP_W < testLevel[z+1][y+1][x-1] < ROCK) and (testLevel[z+1][y][x-1] == EMPTY) and (testLevel[z+1][y+1][x] == EMPTY):
                            SCREEN.blit(shadowType[SHADOW_SW], ((x*blockWidth),(y*blockHeight+(offset))))
                         # East
-                        if (z < max_z) and (x < max_x) and (RAMP_W < testLevel[z+1][y][x+1] < ROCK):
+                        if (showE == True)  and (z < max_z) and (x < max_x) and (RAMP_W < testLevel[z+1][y][x+1] < ROCK):
                            SCREEN.blit(shadowType[SHADOW_E], ((x*blockWidth),(y*blockHeight+(offset))))
                         # West
-                        if (z < max_z) and (x > min_x) and (RAMP_W < testLevel[z+1][y][x-1] < ROCK):
+                        if (showW == True)  and (z < max_z) and (x > min_x) and (RAMP_W < testLevel[z+1][y][x-1] < ROCK):
                            SCREEN.blit(shadowType[SHADOW_W], ((x*blockWidth),(y*blockHeight+(offset))))
                         # North East
-                        if (z < max_z) and (y > min_y) and (x < max_x) and (RAMP_W < testLevel[z+1][y-1][x+1] < ROCK) and (testLevel[z+1][y][x+1] == EMPTY) and (testLevel[z+1][y-1][x] == EMPTY):
+                        if (showNE == True)  and (z < max_z) and (y > min_y) and (x < max_x) and (RAMP_W < testLevel[z+1][y-1][x+1] < ROCK) and (testLevel[z+1][y][x+1] == EMPTY) and (testLevel[z+1][y-1][x] == EMPTY):
                            SCREEN.blit(shadowType[SHADOW_NE], ((x*blockWidth),(y*blockHeight+(offset))))
                         # North
-                        if (z < max_z) and (y > min_y) and (RAMP_W < testLevel[z+1][y-1][x] < ROCK):
+                        if (showN == True)  and (z < max_z) and (y > min_y) and (RAMP_W < testLevel[z+1][y-1][x] < ROCK):
                            SCREEN.blit(shadowType[SHADOW_N], ((x*blockWidth),(y*blockHeight+(offset))))
                         # North West
-                        if (z < max_z) and (y > min_y) and (x > min_x) and (RAMP_W < testLevel[z+1][y-1][x-1] < ROCK) and (testLevel[z+1][y][x-1] == EMPTY) and (testLevel[z+1][y-1][x] == EMPTY):
+                        if (showNW == True)  and (z < max_z) and (y > min_y) and (x > min_x) and (RAMP_W < testLevel[z+1][y-1][x-1] < ROCK) and (testLevel[z+1][y][x-1] == EMPTY) and (testLevel[z+1][y-1][x] == EMPTY):
                            SCREEN.blit(shadowType[SHADOW_NW], ((x*blockWidth),(y*blockHeight+(offset))))
                         # Side West
-                        if (x > min_x) and (y < max_y) and (RAMP_W < testLevel[z][y+1][x-1] < ROCK):
+                        if (showSIDEW == True) and (z < max_z) and (x > min_x) and (y < max_y) and (RAMP_W < testLevel[z][y+1][x-1] < ROCK) and (testLevel[z][y+1][x] == EMPTY) and (testLevel[z+1][y+1][x] == EMPTY):
                            SCREEN.blit(shadowType[SHADOW_SIDEW], ((x*blockWidth),(y*blockHeight+(offset))))
+
+                        # **BUG** - not totally happy with this processing - particularly on ramps/static objects
+                        # need to detect empty space behind it and not render
                         # South (top)
-                        if (z < max_z) and (y > min_y) and (testLevel[z+1][y][x] == EMPTY) and (testLevel[z][y-1][x] == EMPTY):
-                           SCREEN.blit(shadowType[SHADOW_S], ((x*blockWidth),(y*blockHeight+(offset)-blockOffset-tallBlockOffset)))
-                        # South (top back row)
-                        if (z < max_z) and (y == 0) and (testLevel[z+1][y][x] == EMPTY):
-                           SCREEN.blit(shadowType[SHADOW_S], ((x*blockWidth),(y*blockHeight+(offset)-blockOffset-tallBlockOffset)))
-                        # South (top back row ceiling)
-                        if (z == max_z) and (y == 0):
+                        if (showS2 == True)  and (z < max_z) and (y > min_y) and (testLevel[z+1][y][x] == EMPTY) and (testLevel[z][y-1][x] == EMPTY) and (testLevel[z+1][y-1][x] == EMPTY):
                            SCREEN.blit(shadowType[SHADOW_S], ((x*blockWidth),(y*blockHeight+(offset)-blockOffset-tallBlockOffset)))
                         # South (top ceiling)
-                        if (z == max_z) and (y > min_y) and (testLevel[z][y-1][x] == EMPTY):
+                        if (showS5 == True)  and (z == max_z) and (y > min_y) and (testLevel[z][y-1][x] == EMPTY):
                            SCREEN.blit(shadowType[SHADOW_S], ((x*blockWidth),(y*blockHeight+(offset)-blockOffset-tallBlockOffset)))                   
                 # Player 
                 if (z == player_z) and (x == player_x) and (y == player_y):
@@ -396,14 +421,14 @@ def canMoveDown(px,py,pz):
 #obj = 0
 
 #render_object(SCREEN,obj,player_x,player_y,player_z)
-                
+
+draw_screen()                
 while True:
 
     
     #SCREEN.blit(objectType[obj], (player_x, player_y+screenOffset))
     #render_object(SCREEN,obj,player_x,player_y,player_z)
-    draw_screen()
-        
+      
     for event in pygame.event.get():
         if event.type==QUIT:
             pygame.quit()
@@ -428,7 +453,7 @@ while True:
                     player_z-=1
                 player_y+=1
                 print("moved to x:{0}, y:{1}, z:{2}".format(player_x,player_y,player_z))
-
+                
             if (event.key == K_LEFT) and (canMoveLeft(player_x,player_y,player_z) == True):
                 # Going up an East Ramp
                 if (testLevel[player_z][player_y][player_x-1] == RAMP_E):
@@ -449,6 +474,11 @@ while True:
                 player_x+=1
                 print("moved to x:{0}, y:{1}, z:{2}".format(player_x,player_y,player_z))
 
+            if (event.key == K_d):
+                sdebug+=1
+                if (sdebug==3):
+                    sdebug=0
+
             #if (event.key == K_PAGEUP) and (player_z < max_z) and (canMove(0,0,1,player_x,player_y,player_z) == True):
             #    print("x:{0}, y:{1}, z:{2}".format(player_x,player_y,player_z))
             #    player_z=player_z + 1
@@ -456,5 +486,7 @@ while True:
             #if (event.key == K_PAGEDOWN) and (player_z > min_z) and (canMove(0,0,-1,player_x,player_y,player_z) == True):
             #    print("x:{0}, y:{1}, z:{2}".format(player_x,player_y,player_z))
             #    player_z=player_z - 1
-
+            draw_screen()
+    fpsClock.tick(FPS)
+    pygame.display.set_caption("FPS {0}".format(fpsClock.get_fps()))
     pygame.display.update()
