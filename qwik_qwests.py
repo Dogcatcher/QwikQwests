@@ -18,31 +18,73 @@ pygame.display.set_caption('Qwik Qwests')
 
 blockType=[None]*14
 
-GRASSBLOCK=1
-STONEBLOCK=2
-WATERBLOCK=3
-PLAINBLOCK=4
+EMPTY=0
 
-blockType[1]=pygame.image.load('PlanetCute PNG\Grass Block.png')
-blockType[2]=pygame.image.load('PlanetCute PNG\Stone Block.png')
-blockType[3]=pygame.image.load('PlanetCute PNG\Water Block.png')
-blockType[4]=pygame.image.load('PlanetCute PNG\Plain Block.png')
-blockType[5]=pygame.image.load('PlanetCute PNG\Dirt Block.png')
-blockType[6]=pygame.image.load('PlanetCute PNG\Ramp North.png')
-blockType[7]=pygame.image.load('PlanetCute PNG\Ramp South.png')
-blockType[8]=pygame.image.load('PlanetCute PNG\Ramp East.png')
-blockType[9]=pygame.image.load('PlanetCute PNG\Ramp West.png')
-blockType[10]=pygame.image.load('PlanetCute PNG\Wall Block.png')
-blockType[11]=pygame.image.load('PlanetCute PNG\Door Tall Closed.png')
-blockType[12]=pygame.image.load('PlanetCute PNG\Rock.png')
-blockType[13]=pygame.image.load('PlanetCute PNG\Tree Short.png')
+RAMP_N=1
+RAMP_S=2
+RAMP_E=3
+RAMP_W=4
 
+GRASSBLOCK=5
+STONEBLOCK=6
+WATERBLOCK=7
+PLAINBLOCK=8
+DIRTBLOCK=9
+WALLBLOCK=10
+DOORTALLC=11
+
+# ramps
+blockType[RAMP_N]=pygame.image.load('PlanetCute PNG\Ramp North.png') #6
+blockType[RAMP_S]=pygame.image.load('PlanetCute PNG\Ramp South.png') #7
+blockType[RAMP_E]=pygame.image.load('PlanetCute PNG\Ramp East.png') #8
+blockType[RAMP_W]=pygame.image.load('PlanetCute PNG\Ramp West.png') #9
+
+# blocks
+blockType[GRASSBLOCK]=pygame.image.load('PlanetCute PNG\Grass Block.png')
+blockType[STONEBLOCK]=pygame.image.load('PlanetCute PNG\Stone Block.png')
+blockType[WATERBLOCK]=pygame.image.load('PlanetCute PNG\Water Block.png')
+blockType[PLAINBLOCK]=pygame.image.load('PlanetCute PNG\Plain Block.png')
+blockType[DIRTBLOCK]=pygame.image.load('PlanetCute PNG\Dirt Block.png')
+blockType[WALLBLOCK]=pygame.image.load('PlanetCute PNG\Wall Block.png')
+
+blockType[DOORTALLC]=pygame.image.load('PlanetCute PNG\Door Tall Closed.png')
+
+ROCK=12
+TREESHORT=13
+
+# objects
+blockType[ROCK]=pygame.image.load('PlanetCute PNG\Rock.png')
+blockType[TREESHORT]=pygame.image.load('PlanetCute PNG\Tree Short.png')
+
+shadowType=[None]*9
+
+SHADOW_SE=0
+SHADOW_S=1
+SHADOW_SW=2
+SHADOW_E=3
+SHADOW_W=4
+SHADOW_NE=5
+SHADOW_N=6
+SHADOW_NW=7
+SHADOW_SIDEW=8
+
+shadowType[SHADOW_SE]=pygame.image.load('PlanetCute PNG\Shadow South East.png')
+shadowType[SHADOW_S]=pygame.image.load('PlanetCute PNG\Shadow South.png')
+shadowType[SHADOW_SW]=pygame.image.load('PlanetCute PNG\Shadow South West.png')
+shadowType[SHADOW_E]=pygame.image.load('PlanetCute PNG\Shadow East.png')
+shadowType[SHADOW_W]=pygame.image.load('PlanetCute PNG\Shadow West.png')
+shadowType[SHADOW_NE]=pygame.image.load('PlanetCute PNG\Shadow North East.png')
+shadowType[SHADOW_N]=pygame.image.load('PlanetCute PNG\Shadow North.png')
+shadowType[SHADOW_NW]=pygame.image.load('PlanetCute PNG\Shadow North West.png')
+shadowType[SHADOW_SIDEW]=pygame.image.load('PlanetCute PNG\Shadow Side West.png')
 
 objectType=[None]*3
 
-
-
 objectType[0]=pygame.image.load('PlanetCute PNG\Character Boy.png')
+#objectType[0]=pygame.image.load('PlanetCute PNG\Character Cat Girl.png')
+#objectType[0]=pygame.image.load('PlanetCute PNG\Character Horn Girl.png')
+#objectType[0]=pygame.image.load('PlanetCute PNG\Character Pink Girl.png')
+#objectType[0]=pygame.image.load('PlanetCute PNG\Character Princess Girl.png')
 objectType[1]=pygame.image.load('PlanetCute PNG\Key.png')
 objectType[2]=pygame.image.load('PlanetCute PNG\Enemy Bug.png')
 
@@ -64,51 +106,51 @@ titleCenter.center=(400,50)
 testLevel=[None]*6
 
 testLevel[0]=[
-            [0,0,0,0,0,0,0,0],
-            [0,0,0,0,0,0,0,0],
-            [0,0,0,0,0,0,0,0],
-            [0,0,0,0,0,0,0,0],
-            [5,5,5,5,5,5,5,5]
+            [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY],
+            [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY],
+            [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY],
+            [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY],
+            [DIRTBLOCK,DIRTBLOCK,DIRTBLOCK,DIRTBLOCK,DIRTBLOCK,DIRTBLOCK,DIRTBLOCK,DIRTBLOCK]
             ]
 
 testLevel[1]=[
-            [0,0,0,0,0,0,0,5],
-            [0,0,0,0,0,0,0,0],
-            [0,0,0,0,0,0,0,0],
-            [0,0,0,0,0,2,5,5],
-            [0,1,1,1,1,2,5,5]
+            [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,DIRTBLOCK],
+            [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY],
+            [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,STONEBLOCK,EMPTY],
+            [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,STONEBLOCK,STONEBLOCK,STONEBLOCK],
+            [GRASSBLOCK,GRASSBLOCK,GRASSBLOCK,GRASSBLOCK,GRASSBLOCK,STONEBLOCK,STONEBLOCK,STONEBLOCK]
             ]
 
 testLevel[2]=[
-            [2,2,3,3,2,2,2,0],
-            [2,0,0,0,0,2,2,6],
-            [2,2,3,3,2,2,2,2],
-            [1,1,3,3,1,0,0,7],
-            [1,1,3,3,1,0,0,0]
+            [STONEBLOCK,STONEBLOCK,WATERBLOCK,WATERBLOCK,STONEBLOCK,STONEBLOCK,STONEBLOCK,EMPTY],
+            [STONEBLOCK,EMPTY,EMPTY,EMPTY,EMPTY,STONEBLOCK,STONEBLOCK,RAMP_N],
+            [STONEBLOCK,STONEBLOCK,WATERBLOCK,WATERBLOCK,STONEBLOCK,STONEBLOCK,STONEBLOCK,STONEBLOCK],
+            [GRASSBLOCK,GRASSBLOCK,WATERBLOCK,WATERBLOCK,GRASSBLOCK,EMPTY,EMPTY,EMPTY],
+            [GRASSBLOCK,GRASSBLOCK,WATERBLOCK,WATERBLOCK,GRASSBLOCK,EMPTY,STONEBLOCK,EMPTY]
             ]
 
 testLevel[3]=[
-            [0,0,0,0,0,10,11,0],
-            [0,9,2,2,8,0,0,0,0],
-            [0,0,0,0,0,0,0,0],
-            [0,0,0,0,0,0,0,0],
-            [0,13,0,0,12,0,0,0],
+            [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,WALLBLOCK,PLAINBLOCK,EMPTY],
+            [EMPTY,RAMP_W,STONEBLOCK,STONEBLOCK,RAMP_E,EMPTY,EMPTY,EMPTY,EMPTY],
+            [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY],
+            [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY],
+            [EMPTY,TREESHORT,EMPTY,EMPTY,ROCK,EMPTY,STONEBLOCK,EMPTY],
             ]
 
 testLevel[4]=[
-            [0,0,0,0,0,10,0,0],
-            [0,0,0,0,0,0,0,0],
-            [0,0,0,0,0,0,0,0],
-            [0,0,0,0,0,0,0,0],
-            [0,0,0,0,0,0,0,0]           
+            [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,WALLBLOCK,EMPTY,EMPTY], 
+            [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY],
+            [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY],
+            [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY],
+            [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,STONEBLOCK,EMPTY]
             ]
 
 testLevel[5]=[
-            [0,0,0,0,0,10,0,0],
-            [0,0,0,0,0,0,0,0],
-            [0,0,0,0,0,0,0,0],
-            [0,0,0,0,0,0,0,0],
-            [0,0,0,0,0,0,0,0]
+            [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,WALLBLOCK,EMPTY,EMPTY], 
+            [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY],
+            [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY],
+            [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY],
+            [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,STONEBLOCK,EMPTY]
             ]
        
 #def render (s,l,x,y):
@@ -170,36 +212,87 @@ player_z=3
 
 min_x=0
 min_y=0
-min_z=3
+min_z=0
 max_x=7
 max_y=4
 max_z=5
 
 playerObj=0
 
-def draw_screen():
-    SCREEN.fill(BLACK)
-    gradientRect=pygame.Rect(0,0,800,375)
-    fill_gradient(SCREEN,LIGHTBLUE,WHITE,gradientRect,True,True)
-    SCREEN.blit(QwikQwests, titleCenter)
+SCREEN.fill(BLACK)
+gradientRect=pygame.Rect(0,0,800,375)
 
-    for l in range (0,6):
-        offset=(l*-1*blockOffset)+screenOffset
-        for x in range (0,5):
-            for y in range (0,8):
-                block=testLevel[l][x][y]
+SCREEN.blit(QwikQwests, titleCenter)
+
+def draw_screen():
+    fill_gradient(SCREEN,LIGHTBLUE,WHITE,gradientRect,True,True)
+    for z in range (0,(max_z+1)):
+        offset=(z*-1*blockOffset)+screenOffset
+        for y in range (0,(max_y+1)):
+            for x in range (0,(max_x+1)):
+                block=testLevel[z][y][x]
+                
+                tallBlockOffset=0
+                if (block == DOORTALLC):
+                    tallBlockoffset=2*blockOffset
+
+                # possile bug with high south shadow at back of tall blocks - well tall blocks in general
+                # suspect need shadow shift for all tall blocks - fix another day
+                
                 if block > 0:
                     image=blockType[block]
-                    SCREEN.blit(image, ((y*blockWidth),(x*blockHeight+(offset))))
+                    SCREEN.blit(image, ((x*blockWidth),(y*blockHeight+(offset))))
 
-                if (l == player_z) and (y == player_x) and (x == player_y):
+                    # shadow processing
+                    if (block > RAMP_W) and (block < ROCK):
+                        # South East
+                        if (z < max_z) and (y < max_y) and (x < max_x) and (RAMP_W < testLevel[z+1][y+1][x+1] < ROCK) and (testLevel[z+1][y][x+1] == EMPTY):
+                           SCREEN.blit(shadowType[SHADOW_SE], ((x*blockWidth),(y*blockHeight+(offset))))
+                        # South
+                        if (z < max_z) and (y < max_y) and (RAMP_W < testLevel[z+1][y+1][x] < ROCK):
+                           SCREEN.blit(shadowType[SHADOW_S], ((x*blockWidth),(y*blockHeight+(offset))))
+                        # South West
+                        if (z < max_z) and (y < max_y) and (x > min_x) and (RAMP_W < testLevel[z+1][y+1][x-1] < ROCK)and (testLevel[z+1][y][x-1] == EMPTY):
+                           SCREEN.blit(shadowType[SHADOW_SW], ((x*blockWidth),(y*blockHeight+(offset))))
+                        # East
+                        if (z < max_z) and (x < max_x) and (RAMP_W < testLevel[z+1][y][x+1] < ROCK):
+                           SCREEN.blit(shadowType[SHADOW_E], ((x*blockWidth),(y*blockHeight+(offset))))
+                        # West
+                        if (z < max_z) and (x > min_x) and (RAMP_W < testLevel[z+1][y][x-1] < ROCK):
+                           SCREEN.blit(shadowType[SHADOW_W], ((x*blockWidth),(y*blockHeight+(offset))))
+                        # North East
+                        if (z < max_z) and (y > min_y) and (x < max_x) and (RAMP_W < testLevel[z+1][y-1][x+1] < ROCK) and (testLevel[z+1][y][x+1] == EMPTY) and (testLevel[z+1][y-1][x] == EMPTY):
+                           SCREEN.blit(shadowType[SHADOW_NE], ((x*blockWidth),(y*blockHeight+(offset))))
+                        # North
+                        if (z < max_z) and (y > min_y) and (RAMP_W < testLevel[z+1][y-1][x] < ROCK):
+                           SCREEN.blit(shadowType[SHADOW_N], ((x*blockWidth),(y*blockHeight+(offset))))
+                        # North West
+                        if (z < max_z) and (y > min_y) and (x > min_x) and (RAMP_W < testLevel[z+1][y-1][x-1] < ROCK) and (testLevel[z+1][y][x-1] == EMPTY) and (testLevel[z+1][y-1][x] == EMPTY):
+                           SCREEN.blit(shadowType[SHADOW_NW], ((x*blockWidth),(y*blockHeight+(offset))))
+                        # Side West
+                        if (x > min_x) and (y < max_y) and (RAMP_W < testLevel[z][y+1][x-1] < ROCK):
+                           SCREEN.blit(shadowType[SHADOW_SIDEW], ((x*blockWidth),(y*blockHeight+(offset))))
+                        # South (top)
+                        if (z < max_z) and (y > min_y) and (testLevel[z+1][y][x] == EMPTY) and (testLevel[z][y-1][x] == EMPTY):
+                           SCREEN.blit(shadowType[SHADOW_S], ((x*blockWidth),(y*blockHeight+(offset)-blockOffset-tallBlockOffset)))
+                        # South (top back row)
+                        if (z < max_z) and (y == 0) and (testLevel[z+1][y][x] == EMPTY):
+                           SCREEN.blit(shadowType[SHADOW_S], ((x*blockWidth),(y*blockHeight+(offset)-blockOffset-tallBlockOffset)))
+                        # South (top back row ceiling)
+                        if (z == max_z) and (y == 0):
+                           SCREEN.blit(shadowType[SHADOW_S], ((x*blockWidth),(y*blockHeight+(offset)-blockOffset-tallBlockOffset)))
+                        # South (top ceiling)
+                        if (z == max_z) and (y > min_y) and (testLevel[z][y-1][x] == EMPTY):
+                           SCREEN.blit(shadowType[SHADOW_S], ((x*blockWidth),(y*blockHeight+(offset)-blockOffset-tallBlockOffset)))                   
+                # Player 
+                if (z == player_z) and (x == player_x) and (y == player_y):
                     # visual adjustment for when player is on a ramp
                     ramp = 0
-                    below=testLevel[l-1][x][y]
-                    if (below == 6) or (below == 7) or (below == 8) or (below == 9):
+                    below=testLevel[z-1][y][x]
+                    if (below == RAMP_N) or (below == RAMP_S) or (below == RAMP_E) or (below == RAMP_W):
                         ramp = 20
                     player=objectType[playerObj]
-                    SCREEN.blit(player, ((y*blockWidth),x*blockHeight+(offset)+ramp))
+                    SCREEN.blit(player, ((x*blockWidth),y*blockHeight+(offset)+ramp))
 
     #screen_x=player_x*blockWidth
     #screen_y=(player_y*blockHeight)+(screenOffset)-(player_z*blockOffset)
@@ -210,17 +303,17 @@ def canMoveRight(px,py,pz):
     #print("px:{0} py:{1} pz:{2} max_x:{3} block:{4}".format(px,py,pz,max_x,testLevel[pz][py][px+1]))
     if (px < max_x):
         print("Not at the far right edge")
-        if (testLevel[pz][py][px + 1] == 0) and (testLevel[pz-1][py][px+1] != 3):
+        if (testLevel[pz][py][px + 1] == EMPTY) and (testLevel[pz-1][py][px+1] != WATERBLOCK):
             print("Can move right")
-            if (testLevel[pz-1][py][px+1] == 0):
+            if (testLevel[pz-1][py][px+1] == EMPTY):
                 print("But there's a drop")
                 print("We're on a {0}".format(testLevel[pz-1][py][px]))
-                if (testLevel[pz-1][py][px] == 8):  
+                if (testLevel[pz-1][py][px] == RAMP_E):  
                     print("so that's ok because we're on an East ramp")
                     return True
                 return False
             return True
-        if (testLevel[pz][py][px+1] == 9):
+        if (testLevel[pz][py][px+1] == RAMP_W):
             print("Up onto the West ramp")
             return True
         print("Something in the way")
@@ -232,17 +325,17 @@ def canMoveLeft(px,py,pz):
     #print("px:{0} py:{1} pz:{2} min_x:{3} block:{4}".format(px,py,pz,min_x,testLevel[pz][py][px-1]))
     if (px > min_x):
         print("Not at the far left edge")
-        if (testLevel[pz][py][px-1] == 0) and (testLevel[pz-1][py][px-1] != 3):
+        if (testLevel[pz][py][px-1] == EMPTY) and (testLevel[pz-1][py][px-1] != WATERBLOCK):
             print("Can move left")
-            if (testLevel[pz-1][py][px-1] == 0):
+            if (testLevel[pz-1][py][px-1] == EMPTY):
                 print("But there's a drop")
                 print("We're on a {0}".format(testLevel[pz-1][py][px]))
-                if (testLevel[pz-1][py][px] == 9):  
+                if (testLevel[pz-1][py][px] == RAMP_W):  
                     print("so that's ok because we're on an West ramp")
                     return True
                 return False
             return True
-        if (testLevel[pz][py][px-1] == 8):
+        if (testLevel[pz][py][px-1] == RAMP_E):
             print("Up onto the East ramp")
             return True
         print("Something in the way")
@@ -254,17 +347,17 @@ def canMoveUp(px,py,pz):
     #print("px:{0} py:{1} pz:{2} max_y:{3} block:{4}".format(px,py,pz,max_y,testLevel[pz][py-1][px]))
     if (py > min_y):
         print("Not at the far top edge")
-        if (testLevel[pz][py-1][px] == 0) and (testLevel[pz-1][py-1][px] != 3):
+        if (testLevel[pz][py-1][px] == EMPTY) and (testLevel[pz-1][py-1][px] != WATERBLOCK):
             print("Can move up")
-            if (testLevel[pz-1][py-1][px] == 0):
+            if (testLevel[pz-1][py-1][px] == EMPTY):
                 print("But there's a drop")
                 print("We're on a {0}".format(testLevel[pz-1][py][px]))
-                if (testLevel[pz-1][py][px] == 6):  
+                if (testLevel[pz-1][py][px] == RAMP_N):  
                     print("so that's ok because we're on a North ramp")
                     return True
                 return False
             return True
-        if (testLevel[pz][py-1][px] == 7):
+        if (testLevel[pz][py-1][px] == RAMP_S):
             print("Up onto the South ramp")
             return True
         print("Something in the way")
@@ -276,17 +369,17 @@ def canMoveDown(px,py,pz):
     #print("px:{0} py:{1} pz:{2} max_y:{3} block:{4}".format(px,py,pz,max_y,testLevel[pz][py+1][px]))
     if (py < max_y):
         print("Not at the far bottom edge")
-        if (testLevel[pz][py+1][px] == 0) and (testLevel[pz-1][py+1][px] != 3):
+        if (testLevel[pz][py+1][px] == EMPTY) and (testLevel[pz-1][py+1][px] != WATERBLOCK):
             print("Can move down")
-            if (testLevel[pz-1][py+1][px] == 0):
+            if (testLevel[pz-1][py+1][px] == EMPTY):
                 print("But there's a drop")
                 print("We're on a {0}".format(testLevel[pz-1][py][px]))
-                if (testLevel[pz-1][py][px] == 7):  
+                if (testLevel[pz-1][py][px] == RAMP_S):  
                     print("so that's ok because we're on a South ramp")
                     return True
                 return False
             return True
-        if (testLevel[pz][py+1][px] == 6):
+        if (testLevel[pz][py+1][px] == RAMP_N):
             print("Up onto the North ramp")
             return True
         print("Something in the way")
@@ -318,40 +411,40 @@ while True:
         if (event.type == KEYDOWN):
             if (event.key == K_UP) and (canMoveUp(player_x,player_y,player_z) == True):
                 # Going down a North Ramp
-                if (testLevel[player_z-1][player_y][player_x] == 6):
+                if (testLevel[player_z-1][player_y][player_x] == RAMP_N):
                     player_z-=1
                 # Going up a South Ramp
-                if (testLevel[player_z][player_y-1][player_x] == 7):
+                if (testLevel[player_z][player_y-1][player_x] == RAMP_S):
                     player_z+=1
                 player_y-=1
                 print("moved to x:{0}, y:{1}, z:{2}".format(player_x,player_y,player_z))
                 
             if (event.key == K_DOWN) and (canMoveDown(player_x,player_y,player_z) == True):
                 # Going up a North Ramp
-                if (testLevel[player_z][player_y+1][player_x] == 6):
+                if (testLevel[player_z][player_y+1][player_x] == RAMP_N):
                     player_z+=1
                 # Going down a South Ramp
-                if (testLevel[player_z-1][player_y][player_x] == 7):
+                if (testLevel[player_z-1][player_y][player_x] == RAMP_S):
                     player_z-=1
                 player_y+=1
                 print("moved to x:{0}, y:{1}, z:{2}".format(player_x,player_y,player_z))
 
             if (event.key == K_LEFT) and (canMoveLeft(player_x,player_y,player_z) == True):
                 # Going up an East Ramp
-                if (testLevel[player_z][player_y][player_x-1] == 8):
+                if (testLevel[player_z][player_y][player_x-1] == RAMP_E):
                     player_z+=1
                 # Going down a West Ramp
-                if (testLevel[player_z-1][player_y][player_x] == 9):
+                if (testLevel[player_z-1][player_y][player_x] == RAMP_W):
                     player_z-=1
                 player_x-=1
                 print("moved to x:{0}, y:{1}, z:{2}".format(player_x,player_y,player_z))
                 
             if (event.key == K_RIGHT) and (canMoveRight(player_x,player_y,player_z) == True):
                 # Going down an East Ramp
-                if (testLevel[player_z-1][player_y][player_x] == 8):
+                if (testLevel[player_z-1][player_y][player_x] == RAMP_E):
                     player_z-=1
                 # Going up a West Ramp
-                if (testLevel[player_z][player_y][player_x+1] == 9):
+                if (testLevel[player_z][player_y][player_x+1] == RAMP_W):
                     player_z+=1
                 player_x+=1
                 print("moved to x:{0}, y:{1}, z:{2}".format(player_x,player_y,player_z))
