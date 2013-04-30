@@ -120,7 +120,7 @@ testLevel[0]=[
 testLevel[1]=[
             [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,DIRTBLOCK],
             [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,BROWNBLOCK],
-            [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,STONEBLOCK,STONEBLOCK,EMPTY],
+            [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,STONEBLOCK,STONEBLOCK,STONEBLOCK],
             [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,STONEBLOCK,STONEBLOCK,STONEBLOCK],
             [GRASSBLOCK,GRASSBLOCK,GRASSBLOCK,GRASSBLOCK,GRASSBLOCK,STONEBLOCK,STONEBLOCK,STONEBLOCK]
             ]
@@ -129,7 +129,7 @@ testLevel[2]=[
             [STONEBLOCK,STONEBLOCK,WATERBLOCK,WATERBLOCK,STONEBLOCK,STONEBLOCK,STONEBLOCK,STONEBLOCK],
             [STONEBLOCK,EMPTY,EMPTY,EMPTY,EMPTY,STONEBLOCK,STONEBLOCK,BROWNBLOCK],
             [STONEBLOCK,STONEBLOCK,WATERBLOCK,WATERBLOCK,STONEBLOCK,EMPTY,EMPTY,EMPTY],
-            [GRASSBLOCK,GRASSBLOCK,WATERBLOCK,WATERBLOCK,GRASSBLOCK,EMPTY,EMPTY,EMPTY],
+            [GRASSBLOCK,GRASSBLOCK,WATERBLOCK,WATERBLOCK,GRASSBLOCK,EMPTY,WOODBLOCK,EMPTY],
             [GRASSBLOCK,GRASSBLOCK,WATERBLOCK,WATERBLOCK,GRASSBLOCK,STONEBLOCK,EMPTY,EMPTY]
             ]
 
@@ -137,15 +137,15 @@ testLevel[3]=[
             [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,WALLBLOCK,EMPTY,EMPTY],
             [EMPTY,RAMP_W,STONEBLOCK,STONEBLOCK,RAMP_E,EMPTY,EMPTY,BROWNBLOCK],
             [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY],
-            [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY],
+            [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,WOODBLOCK,EMPTY],
             [EMPTY,TREESHORT,EMPTY,EMPTY,ROCK,EMPTY,EMPTY,EMPTY],
             ]
 
 testLevel[4]=[
             [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,WALLBLOCK,EMPTY,EMPTY], 
+            [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,BROWNBLOCK],
             [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY],
-            [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY],
-            [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY],
+            [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,WOODBLOCK,EMPTY],
             [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY]
             ]
 
@@ -153,7 +153,7 @@ testLevel[5]=[
             [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,WALLBLOCK,EMPTY,EMPTY], 
             [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY],
             [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY],
-            [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY],
+            [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,WATERBLOCK,EMPTY],
             [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY]
             ]
        
@@ -222,7 +222,7 @@ max_y=4
 max_z=5
 
 playerObj=0
-sdebug=0
+sdebug=2
 
 gradientRect=pygame.Rect(0,0,800,375)
 
@@ -258,17 +258,17 @@ def draw_screen():
                         image=blockType[paintBlock]                   
                         SCREEN.blit(image, ((x*blockWidth),(y*blockHeight+(offset))))
 
-                    showSE=False
-                    showS=False
-                    showSW=False
-                    showE=False
-                    showW=False
-                    showNE=False
-                    showN=False
-                    showNW=False
-                    showSIDEW=False
+                    showSE=True
+                    showS=True
+                    showSW=True
+                    showE=True
+                    showW=True
+                    showNE=True
+                    showN=True
+                    showNW=True
+                    showSIDEW=True
                     showS2=True
-                    showS5=False
+                    showS5=True
 
                     # shadow processing
                     if (z < max_z) and (testLevel[z+1][y][x] == 0) and (RAMP_W < block < ROCK):
@@ -276,7 +276,7 @@ def draw_screen():
                         if (showSE == True) and (z < max_z) and (y < max_y) and (x < max_x) and (RAMP_W < testLevel[z+1][y+1][x+1] < ROCK) and (testLevel[z+1][y][x+1] == EMPTY) and (testLevel[z+1][y+1][x] == EMPTY):
                            SCREEN.blit(shadowType[SHADOW_SE], ((x*blockWidth),(y*blockHeight+(offset))))
                            print("Placing SE shadow at {0},{1},{2}".format(x,y,z))
-                        # South
+                        # South - needs check to see if we're the top block - purely a waste of cycles - nothing cosmetic AFAIK
                         if (showS == True) and (z < max_z) and (y < max_y) and (RAMP_W < testLevel[z+1][y+1][x] < ROCK):
                            SCREEN.blit(shadowType[SHADOW_S], ((x*blockWidth),(y*blockHeight+(offset))))
                         # South West
@@ -304,11 +304,13 @@ def draw_screen():
                         # **BUG** - not totally happy with this processing - particularly on ramps/static objects
                         # need to detect empty space behind it and not render
                         # South (top)
-                        if (showS2 == True)  and (z < max_z) and (y > min_y) and (testLevel[z+1][y][x] == EMPTY) and (testLevel[z][y-1][x] == EMPTY) and (testLevel[z+1][y-1][x] == EMPTY):
+                        if (showS2 == True)  and (z < y + 3 )and (z < max_z) and (y > min_y) and (testLevel[z+1][y][x] == EMPTY) and (testLevel[z][y-1][x] == EMPTY) and (testLevel[z+1][y-1][x] == EMPTY):
                            SCREEN.blit(shadowType[SHADOW_S], ((x*blockWidth),(y*blockHeight+(offset)-blockOffset-tallBlockOffset)))
-                        # South (top ceiling)
-                        if (showS5 == True)  and (z == max_z) and (y > min_y) and (testLevel[z][y-1][x] == EMPTY):
-                           SCREEN.blit(shadowType[SHADOW_S], ((x*blockWidth),(y*blockHeight+(offset)-blockOffset-tallBlockOffset)))                   
+                    # South (top ceiling)
+                    if (x == 6) and (y == 3) and (z == 5):
+                        print("DEBUG: block {0}".format(testLevel[z][y-1][x]))
+                    if (showS5 == True)  and (z < y + 3) and (z == max_z) and (y > min_y) and (testLevel[z][y-1][x] == EMPTY):
+                       SCREEN.blit(shadowType[SHADOW_S], ((x*blockWidth),(y*blockHeight+(offset)-blockOffset-tallBlockOffset)))                   
                 # Player 
                 if (z == player_z) and (x == player_x) and (y == player_y):
                     # visual adjustment for when player is on a ramp
