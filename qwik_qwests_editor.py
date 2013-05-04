@@ -523,13 +523,39 @@ while True:
                 saveFile.close()
                 print("level saved")
 
-            if (event.key == K_l):
+            if (event.key == K_w):
                 fileName=input('Load file name? ')
                 path='levels\\' + fileName
                 loadFile=open(path,'rb')
                 testLevel=pickle.load(loadFile)
                 loadFile.close()
-            
+
+            if (event.key == K_x):
+                print("clearing block")
+                testLevel[player_z][player_y][player_x] = 0
+
+            if (event.key == K_c):
+                print("clearing layer {0}".format(player_z))
+                testLevel[player_z]=[
+                    [0,0,0,0,0,0,0,0,0,0],
+                    [0,0,0,0,0,0,0,0,0,0],
+                    [0,0,0,0,0,0,0,0,0,0],                                
+                    [0,0,0,0,0,0,0,0,0,0],
+                    [0,0,0,0,0,0,0,0,0,0],
+                    [0,0,0,0,0,0,0,0,0,0]
+                ]
+
+
+            if (event.key == K_f):
+                print("filling layer {0} with block {1}".format(player_z,cursorBlock))
+                testLevel[player_z]=[
+                    [cursorBlock,cursorBlock,cursorBlock,cursorBlock,cursorBlock,cursorBlock,cursorBlock,cursorBlock,cursorBlock,cursorBlock],
+                    [cursorBlock,cursorBlock,cursorBlock,cursorBlock,cursorBlock,cursorBlock,cursorBlock,cursorBlock,cursorBlock,cursorBlock],
+                    [cursorBlock,cursorBlock,cursorBlock,cursorBlock,cursorBlock,cursorBlock,cursorBlock,cursorBlock,cursorBlock,cursorBlock],                                
+                    [cursorBlock,cursorBlock,cursorBlock,cursorBlock,cursorBlock,cursorBlock,cursorBlock,cursorBlock,cursorBlock,cursorBlock],
+                    [cursorBlock,cursorBlock,cursorBlock,cursorBlock,cursorBlock,cursorBlock,cursorBlock,cursorBlock,cursorBlock,cursorBlock],
+                    [cursorBlock,cursorBlock,cursorBlock,cursorBlock,cursorBlock,cursorBlock,cursorBlock,cursorBlock,cursorBlock,cursorBlock]
+                ]
             draw_screen()
     fpsClock.tick(FPS)
     pygame.display.set_caption("FPS {0} x:{1} y:{2} z:{3}".format(int(fpsClock.get_fps()),player_x,player_y,player_z))
