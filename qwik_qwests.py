@@ -175,16 +175,6 @@ testLevel[5]=[
             [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,STONEBLOCK,EMPTY]
             ]
        
-#def render (s,l,x,y):
-    # s=surface l=3d level array, x=x, y=y
-    # pass 3d array into function
-    
-
-    #s.blit
-
-def fill_gradient(surface, color, gradient, rect=None, vertical=True, forward=True):
-    return True
-
 blockOffset=40
 screenOffset=220
 blockWidth=100
@@ -221,13 +211,29 @@ max_z=5
 
 playerObj=1
 
-SCREEN.fill(WHITE)
-gradientRect=pygame.Rect(0,0,screenWidth,375)
 
-SCREEN.blit(QwikQwests, titleCenter)
 
 def draw_screen():
-    fill_gradient(SCREEN,LIGHTBLUE,WHITE,gradientRect,True,True)
+
+    start=0
+    height=375
+    end=start+height
+
+    (rStart,gStart,bStart)=LIGHTBLUE
+    (rEnd,gEnd,bEnd)=WHITE
+    (rDelta,gDelta,bDelta)=(float(rStart-rEnd)/height,float(gStart-gEnd)/height,float(bStart-bEnd)/height)
+
+    SCREEN.fill(WHITE)
+
+    
+    for n in range (start,end):
+        red=int(rStart-(rDelta*(n+1)))
+        green=int(gStart-(gDelta*(n+1)))
+        blue=int(bStart-(bDelta*(n+1)))  
+        pygame.draw.line(SCREEN,(red,green,blue), (0,n),(screenWidth,n))
+
+    SCREEN.blit(QwikQwests, titleCenter)
+    
     for z in range (0,(max_z+1)):
         offset=(z*-1*blockOffset)+screenOffset
         for y in range (0,(max_y+1)):
@@ -250,7 +256,7 @@ def draw_screen():
                     # South East
                     if (z < max_z) and (y < max_y) and (x < max_x) and (RAMP_W < testLevel[z+1][y+1][x+1] < ROCK) and (testLevel[z+1][y][x+1] == EMPTY) and (testLevel[z+1][y+1][x] == EMPTY):
                        SCREEN.blit(shadowType[SHADOW_SE], ((x*blockWidth),(y*blockHeight+(offset))))
-                       print("Placing SE shadow at {0},{1},{2}".format(x,y,z))
+                       #print("Placing SE shadow at {0},{1},{2}".format(x,y,z))
                     # South - needs check to see if we're the top block - purely a waste of cycles - nothing cosmetic AFAIK
                     if (z < max_z) and (y < max_y) and (RAMP_W < testLevel[z+1][y+1][x] < ROCK):
                        SCREEN.blit(shadowType[SHADOW_S], ((x*blockWidth),(y*blockHeight+(offset))))
@@ -283,7 +289,7 @@ def draw_screen():
                        SCREEN.blit(shadowType[SHADOW_S], ((x*blockWidth),(y*blockHeight+(offset)-blockOffset-tallBlockOffset)))
                 # South (top ceiling)
                 #if (x == 6) and (y == 3) and (z == 5):
-                #    print("DEBUG: block {0}".format(testLevel[z][y-1][x]))
+                #    #print("DEBUG: block {0}".format(testLevel[z][y-1][x]))
                 #if (z < y + 3) and (z == max_z) and (y > min_y) and (testLevel[z][y-1][x] == EMPTY):
                 #  SCREEN.blit(shadowType[SHADOW_S], ((x*blockWidth),(y*blockHeight+(offset)-blockOffset-tallBlockOffset)))                       
                 # Player 
@@ -302,91 +308,91 @@ def draw_screen():
 
 
 def canMoveRight(px,py,pz):
-    #print("px:{0} py:{1} pz:{2} max_x:{3} block:{4}".format(px,py,pz,max_x,testLevel[pz][py][px+1]))
+    ##print("px:{0} py:{1} pz:{2} max_x:{3} block:{4}".format(px,py,pz,max_x,testLevel[pz][py][px+1]))
     if (px < max_x):
-        print("Not at the far right edge")
+        #print("Not at the far right edge")
         if (testLevel[pz][py][px + 1] == EMPTY) and (testLevel[pz-1][py][px+1] < WATERBLOCK):
-            print("Can move right")
+            #print("Can move right")
             if (testLevel[pz-1][py][px+1] == EMPTY):
-                print("But there's a drop")
-                print("We're on a {0}".format(testLevel[pz-1][py][px]))
+                #print("But there's a drop")
+                #print("We're on a {0}".format(testLevel[pz-1][py][px]))
                 if (testLevel[pz-1][py][px] == RAMP_E):  
-                    print("so that's ok because we're on an East ramp")
+                    #print("so that's ok because we're on an East ramp")
                     return True
                 return False
             return True
         if (testLevel[pz][py][px+1] == RAMP_W):
-            print("Up onto the West ramp")
+            #print("Up onto the West ramp")
             return True
-        print("Something in the way")
+        #print("Something in the way")
         return False
-    print("At the far right edge")
+    #print("At the far right edge")
     return False
 
 def canMoveLeft(px,py,pz):
-    #print("px:{0} py:{1} pz:{2} min_x:{3} block:{4}".format(px,py,pz,min_x,testLevel[pz][py][px-1]))
+    ##print("px:{0} py:{1} pz:{2} min_x:{3} block:{4}".format(px,py,pz,min_x,testLevel[pz][py][px-1]))
     if (px > min_x):
-        print("Not at the far left edge")
+        #print("Not at the far left edge")
         if (testLevel[pz][py][px-1] == EMPTY) and (testLevel[pz-1][py][px-1] < WATERBLOCK):
-            print("Can move left")
+            #print("Can move left")
             if (testLevel[pz-1][py][px-1] == EMPTY):
-                print("But there's a drop")
-                print("We're on a {0}".format(testLevel[pz-1][py][px]))
+                #print("But there's a drop")
+                #print("We're on a {0}".format(testLevel[pz-1][py][px]))
                 if (testLevel[pz-1][py][px] == RAMP_W):  
-                    print("so that's ok because we're on an West ramp")
+                    #print("so that's ok because we're on an West ramp")
                     return True
                 return False
             return True
         if (testLevel[pz][py][px-1] == RAMP_E):
-            print("Up onto the East ramp")
+            #print("Up onto the East ramp")
             return True
-        print("Something in the way")
+        #print("Something in the way")
         return False
-    print("At the far left edge")
+    #print("At the far left edge")
     return False
 
 def canMoveUp(px,py,pz):
-    #print("px:{0} py:{1} pz:{2} max_y:{3} block:{4}".format(px,py,pz,max_y,testLevel[pz][py-1][px]))
+    ##print("px:{0} py:{1} pz:{2} max_y:{3} block:{4}".format(px,py,pz,max_y,testLevel[pz][py-1][px]))
     if (py > min_y):
-        print("Not at the far top edge")
+        #print("Not at the far top edge")
         if (testLevel[pz][py-1][px] == EMPTY) and (testLevel[pz-1][py-1][px] < WATERBLOCK):
-            print("Can move up")
+            #print("Can move up")
             if (testLevel[pz-1][py-1][px] == EMPTY):
-                print("But there's a drop")
-                print("We're on a {0}".format(testLevel[pz-1][py][px]))
+                #print("But there's a drop")
+                #print("We're on a {0}".format(testLevel[pz-1][py][px]))
                 if (testLevel[pz-1][py][px] == RAMP_N):  
-                    print("so that's ok because we're on a North ramp")
+                    #print("so that's ok because we're on a North ramp")
                     return True
                 return False
             return True
         if (testLevel[pz][py-1][px] == RAMP_S):
-            print("Up onto the South ramp")
+            #print("Up onto the South ramp")
             return True
-        print("Something in the way")
+        #print("Something in the way")
         return False
-    print("At the far top edge")
+    #print("At the far top edge")
     return False
 
 def canMoveDown(px,py,pz):
-    #print("px:{0} py:{1} pz:{2} max_y:{3} block:{4}".format(px,py,pz,max_y,testLevel[pz][py+1][px]))
+    ##print("px:{0} py:{1} pz:{2} max_y:{3} block:{4}".format(px,py,pz,max_y,testLevel[pz][py+1][px]))
     if (py < max_y):
-        print("Not at the far bottom edge")
+        #print("Not at the far bottom edge")
         if (testLevel[pz][py+1][px] == EMPTY) and (testLevel[pz-1][py+1][px] < WATERBLOCK):
-            print("Can move down")
+            #print("Can move down")
             if (testLevel[pz-1][py+1][px] == EMPTY):
-                print("But there's a drop")
-                print("We're on a {0}".format(testLevel[pz-1][py][px]))
+                #print("But there's a drop")
+                #print("We're on a {0}".format(testLevel[pz-1][py][px]))
                 if (testLevel[pz-1][py][px] == RAMP_S):  
-                    print("so that's ok because we're on a South ramp")
+                    #print("so that's ok because we're on a South ramp")
                     return True
                 return False
             return True
         if (testLevel[pz][py+1][px] == RAMP_N):
-            print("Up onto the North ramp")
+            #print("Up onto the North ramp")
             return True
-        print("Something in the way")
+        #print("Something in the way")
         return False
-    print("At the far bottom edge")
+    #print("At the far bottom edge")
     return False
 
 
@@ -398,13 +404,15 @@ def canMoveDown(px,py,pz):
 #obj = 0
 
 #render_object(SCREEN,obj,player_x,player_y,player_z)
+
+draw_screen()
                 
 while True:
 
     
     #SCREEN.blit(objectType[obj], (player_x, player_y+screenOffset))
     #render_object(SCREEN,obj,player_x,player_y,player_z)
-    draw_screen()
+    
         
     for event in pygame.event.get():
         if event.type==QUIT:
@@ -419,7 +427,7 @@ while True:
                 if (testLevel[player_z][player_y-1][player_x] == RAMP_S):
                     player_z+=1
                 player_y-=1
-                print("moved to x:{0}, y:{1}, z:{2}".format(player_x,player_y,player_z))
+                #print("moved to x:{0}, y:{1}, z:{2}".format(player_x,player_y,player_z))
                 
             if (event.key == K_DOWN) and (canMoveDown(player_x,player_y,player_z) == True):
                 # Going up a North Ramp
@@ -429,7 +437,7 @@ while True:
                 if (testLevel[player_z-1][player_y][player_x] == RAMP_S):
                     player_z-=1
                 player_y+=1
-                print("moved to x:{0}, y:{1}, z:{2}".format(player_x,player_y,player_z))
+                #print("moved to x:{0}, y:{1}, z:{2}".format(player_x,player_y,player_z))
 
             if (event.key == K_LEFT) and (canMoveLeft(player_x,player_y,player_z) == True):
                 # Going up an East Ramp
@@ -439,7 +447,7 @@ while True:
                 if (testLevel[player_z-1][player_y][player_x] == RAMP_W):
                     player_z-=1
                 player_x-=1
-                print("moved to x:{0}, y:{1}, z:{2}".format(player_x,player_y,player_z))
+                #print("moved to x:{0}, y:{1}, z:{2}".format(player_x,player_y,player_z))
                 
             if (event.key == K_RIGHT) and (canMoveRight(player_x,player_y,player_z) == True):
                 # Going down an East Ramp
@@ -449,14 +457,15 @@ while True:
                 if (testLevel[player_z][player_y][player_x+1] == RAMP_W):
                     player_z+=1
                 player_x+=1
-                print("moved to x:{0}, y:{1}, z:{2}".format(player_x,player_y,player_z))
+                #print("moved to x:{0}, y:{1}, z:{2}".format(player_x,player_y,player_z))
 
             #if (event.key == K_PAGEUP) and (player_z < max_z) and (canMove(0,0,1,player_x,player_y,player_z) == True):
-            #    print("x:{0}, y:{1}, z:{2}".format(player_x,player_y,player_z))
+            #    #print("x:{0}, y:{1}, z:{2}".format(player_x,player_y,player_z))
             #    player_z=player_z + 1
 
             #if (event.key == K_PAGEDOWN) and (player_z > min_z) and (canMove(0,0,-1,player_x,player_y,player_z) == True):
-            #    print("x:{0}, y:{1}, z:{2}".format(player_x,player_y,player_z))
+            #    #print("x:{0}, y:{1}, z:{2}".format(player_x,player_y,player_z))
             #    player_z=player_z - 1
+            draw_screen()
 
     pygame.display.update()
