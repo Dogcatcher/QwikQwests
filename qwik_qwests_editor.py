@@ -16,7 +16,9 @@ pygame.display.set_caption('Qwik Qwests')
 
 # load sprites
 
-blockType=[None]*16
+
+numBlocks=18
+blockType=[None]*numBlocks
 
 EMPTY=0
 
@@ -29,16 +31,18 @@ RAMP_W=4
 
 GRASSBLOCK=5
 STONEBLOCK=6
-WATERBLOCK=7
+WATERBLOCK=13
 PLAINBLOCK=8
 DIRTBLOCK=9
 WALLBLOCK=10
 DOORTALLC=11
 BROWNBLOCK=12
-WOODBLOCK=13
+WOODBLOCK=7
+
+iPath='PlanetCute PNG'
 
 # ramps
-blockType[RAMP_N]=pygame.image.load('PlanetCute PNG\Ramp North.png') #6
+blockType[RAMP_N]=pygame.image.load((iPath+'\Ramp North.png')) #6
 blockType[RAMP_S]=pygame.image.load('PlanetCute PNG\Ramp South.png') #7
 blockType[RAMP_E]=pygame.image.load('PlanetCute PNG\Ramp East.png') #8
 blockType[RAMP_W]=pygame.image.load('PlanetCute PNG\Ramp West.png') #9
@@ -57,10 +61,14 @@ blockType[DOORTALLC]=pygame.image.load('PlanetCute PNG\Door Tall Closed.png')
 
 ROCK=14
 TREESHORT=15
+TREETALL=16
+TREEUGLY=17
 
 # objects
 blockType[ROCK]=pygame.image.load('PlanetCute PNG\Rock.png')
 blockType[TREESHORT]=pygame.image.load('PlanetCute PNG\Tree Short.png')
+blockType[TREETALL]=pygame.image.load('PlanetCute PNG\Tree Tall.png')
+blockType[TREEUGLY]=pygame.image.load('PlanetCute PNG\Tree Ugly.png')
 
 shadowType=[None]*9
 
@@ -84,16 +92,29 @@ shadowType[SHADOW_N]=pygame.image.load('PlanetCute PNG\Shadow North.png')
 shadowType[SHADOW_NW]=pygame.image.load('PlanetCute PNG\Shadow North West.png')
 shadowType[SHADOW_SIDEW]=pygame.image.load('PlanetCute PNG\Shadow Side West.png')
 
-objectType=[None]*3
+numObjects=9
+objectType=[None]*numObjects
 
-#objectType[0]=pygame.image.load('PlanetCute PNG\Character Boy.png')
-objectType[0]=pygame.image.load('PlanetCute PNG\Selector.png')
-#objectType[0]=pygame.image.load('PlanetCute PNG\Character Cat Girl.png')
-#objectType[0]=pygame.image.load('PlanetCute PNG\Character Horn Girl.png')
-#objectType[0]=pygame.image.load('PlanetCute PNG\Character Pink Girl.png')
-#objectType[0]=pygame.image.load('PlanetCute PNG\Character Princess Girl.png')
-objectType[1]=pygame.image.load('PlanetCute PNG\Key.png')
-objectType[2]=pygame.image.load('PlanetCute PNG\Enemy Bug.png')
+
+SELECTOR=0
+BOY=1
+CATGIRL=2
+HORNGIRL=3
+PINKGIRL=4
+PRINCESS=5
+KEY=6
+ENEMYBUG=7
+STAR=8
+
+objectType[SELECTOR]=pygame.image.load('PlanetCute PNG\Selector.png')
+objectType[BOY]=pygame.image.load('PlanetCute PNG\Character Boy.png')
+objectType[CATGIRL]=pygame.image.load('PlanetCute PNG\Character Cat Girl.png')
+objectType[HORNGIRL]=pygame.image.load('PlanetCute PNG\Character Horn Girl.png')
+objectType[PINKGIRL]=pygame.image.load('PlanetCute PNG\Character Pink Girl.png')
+objectType[PRINCESS]=pygame.image.load('PlanetCute PNG\Character Princess Girl.png')
+objectType[KEY]=pygame.image.load('PlanetCute PNG\Key.png')
+objectType[ENEMYBUG]=pygame.image.load('PlanetCute PNG\Enemy Bug.png')
+objectType[STAR]=pygame.image.load('PlanetCute PNG\Star.png')
 
 
 QwikQwests=pygame.image.load('QwikQwests.png')
@@ -111,6 +132,17 @@ titleCenter.center=(400,50)
 #blockType[0]=Brown_Block
 
 testLevel=[None]*6
+
+
+
+emptyLayer=[
+            [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY], 
+            [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY],
+            [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY],
+            [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY],
+            [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY],
+            [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY]
+            ]
 
 testLevel[0]=[
             [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY],
@@ -174,54 +206,19 @@ testLevel[5]=[
     #s.blit
 
 def fill_gradient(surface, color, gradient, rect=None, vertical=True, forward=True):
-    """fill a surface with a gradient pattern
-    Parameters:
-    color -> starting color
-    gradient -> final color
-    rect -> area to fill; default is surface's rect
-    vertical -> True=vertical; False=horizontal
-    forward -> True=forward; False=reverse
-    
-    Pygame recipe: http://www.pygame.org/wiki/GradientCode
-    """
-    if rect is None: rect = surface.get_rect()
-    x1,x2 = rect.left, rect.right
-    y1,y2 = rect.top, rect.bottom
-    if vertical: h = y2-y1
-    else:        h = x2-x1
-    if forward: a, b = color, gradient
-    else:       b, a = color, gradient
-    rate = (
-        float(b[0]-a[0])/h,
-        float(b[1]-a[1])/h,
-        float(b[2]-a[2])/h
-    )
-    fn_line = pygame.draw.line
-    if vertical:
-        for line in range(y1,y2):
-            color = (
-                min(max(a[0]+(rate[0]*(line-y1)),0),255),
-                min(max(a[1]+(rate[1]*(line-y1)),0),255),
-                min(max(a[2]+(rate[2]*(line-y1)),0),255)
-            )
-            fn_line(surface, color, (x1,line), (x2,line))
-    else:
-        for col in range(x1,x2):
-            color = (
-                min(max(a[0]+(rate[0]*(col-x1)),0),255),
-                min(max(a[1]+(rate[1]*(col-x1)),0),255),
-                min(max(a[2]+(rate[2]*(col-x1)),0),255)
-            )
-            fn_line(surface, color, (col,y1), (col,y2))
+    return True
 
 blockOffset=40
 screenOffset=220
 blockWidth=100
 blockHeight=80
 
-player_x=0
-player_y=0
-player_z=3
+spawn=[0,0,3]
+objective=[9,5,5]
+
+player_x=spawn[0]
+player_y=spawn[1]
+player_z=spawn[2]
 
 min_x=0
 min_y=0
@@ -230,7 +227,6 @@ max_x=9
 max_y=5
 max_z=5
 
-playerObj=0
 sdebug=2
 
 gradientRect=pygame.Rect(0,0,screenWidth,375)
@@ -316,19 +312,26 @@ def draw_screen():
                         if (showS2 == True)  and (z < y + 3 )and (z < max_z) and (y > min_y) and (testLevel[z+1][y][x] == EMPTY) and (testLevel[z][y-1][x] == EMPTY) and (testLevel[z+1][y-1][x] == EMPTY):
                            SCREEN.blit(shadowType[SHADOW_S], ((x*blockWidth),(y*blockHeight+(offset)-blockOffset-tallBlockOffset)))
                     # South (top ceiling)
-                    if (x == 6) and (y == 3) and (z == 5):
-                        print("DEBUG: block {0}".format(testLevel[z][y-1][x]))
+                    #if (x == 6) and (y == 3) and (z == 5):
+                    #    print("DEBUG: block {0}".format(testLevel[z][y-1][x]))
                     if (showS5 == True)  and (z < y + 3) and (z == max_z) and (y > min_y) and (testLevel[z][y-1][x] == EMPTY):
                        SCREEN.blit(shadowType[SHADOW_S], ((x*blockWidth),(y*blockHeight+(offset)-blockOffset-tallBlockOffset)))                   
-                # Player 
+                # spawn point
+                if (z == spawn[2]) and (y == spawn[1]) and (x == spawn[0]):
+                    SCREEN.blit(objectType[BOY], ((x*blockWidth),y*blockHeight+offset))                    
+
+                # objective point
+                if (z == objective[2]) and (y == objective[1]) and (x == objective[0]):
+                    SCREEN.blit(objectType[STAR], ((x*blockWidth),y*blockHeight+offset))                    
+
+                # Cursor 
                 if (z == player_z) and (x == player_x) and (y == player_y):
                     #below=testLevel[z-1][y][x]
                     #if (below == RAMP_N) or (below == RAMP_S) or (below == RAMP_E) or (below == RAMP_W):
                     #    ramp = 20
-                    player=objectType[playerObj]
                     if (cursorBlock > 0):
                         SCREEN.blit(blockType[cursorBlock], ((x*blockWidth),y*blockHeight+offset))
-                    SCREEN.blit(player, ((x*blockWidth),y*blockHeight+offset-blockOffset))
+                    SCREEN.blit(objectType[SELECTOR], ((x*blockWidth),y*blockHeight+offset-blockOffset))
 
     #screen_x=player_x*blockWidth
     #screen_y=(player_y*blockHeight)+(screenOffset)-(player_z*blockOffset)
@@ -500,11 +503,11 @@ while True:
                 player_z=player_z - 1
 
             if (event.key == K_COMMA):
-                cursorBlock=(cursorBlock-1) % 15
+                cursorBlock=(cursorBlock-1) % numBlocks
                 print("cursorBlock {0}".format(cursorBlock))
 
             if (event.key == K_PERIOD):
-                cursorBlock=(cursorBlock+1) % 15
+                cursorBlock=(cursorBlock+1) % numBlocks
                 print("cursorBlock {0}".format(cursorBlock))
 
             if (event.key == K_SLASH):
@@ -520,6 +523,8 @@ while True:
                 path='levels\\' + fileName
                 saveFile=open(path,'wb')
                 pickle.dump(testLevel,saveFile)
+                pickle.dump(spawn,saveFile)
+                pickle.dump(objective,saveFile)
                 saveFile.close()
                 print("level saved")
 
@@ -528,6 +533,8 @@ while True:
                 path='levels\\' + fileName
                 loadFile=open(path,'rb')
                 testLevel=pickle.load(loadFile)
+                spawn=pickle.load(loadFile)
+                objective=pickle.load(loadFile)
                 loadFile.close()
 
             if (event.key == K_x):
@@ -536,15 +543,31 @@ while True:
 
             if (event.key == K_c):
                 print("clearing layer {0}".format(player_z))
-                testLevel[player_z]=[
-                    [0,0,0,0,0,0,0,0,0,0],
-                    [0,0,0,0,0,0,0,0,0,0],
-                    [0,0,0,0,0,0,0,0,0,0],                                
-                    [0,0,0,0,0,0,0,0,0,0],
-                    [0,0,0,0,0,0,0,0,0,0],
-                    [0,0,0,0,0,0,0,0,0,0]
-                ]
+                testLevel[player_z]=emptyLayer
 
+            if (event.key == K_q):
+                print("shifting everything up")
+                for n in range (5,0,-1):
+                    testLevel[n] = testLevel[n-1]
+                testLevel[0]=emptyLayer
+
+            if (event.key == K_a):
+                print("shifting everything down")
+                for n in range (0,5):
+                    testLevel[n] = testLevel[n+1]
+                testLevel[5]=emptyLayer
+
+            if (event.key == K_p):
+                print("setting player spawn point")
+                spawn[0] = player_x
+                spawn[1] = player_y
+                spawn[2] = player_z
+
+            if (event.key == K_o):
+                print("setting player objective point")
+                objective[0] = player_x
+                objective[1] = player_y
+                objective[2] = player_z
 
             if (event.key == K_f):
                 print("filling layer {0} with block {1}".format(player_z,cursorBlock))
