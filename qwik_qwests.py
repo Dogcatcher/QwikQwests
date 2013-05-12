@@ -117,6 +117,7 @@ BLACK = (0,0,0)
 WHITE = (255,255,255)
 LIGHTBLUE = (100,150,255)
 BROWN = (150,100,50)
+ORANGE = (255,140,0)
 
 titleCenter = QwikQwests.get_rect()
 titleCenter.center=(400,50)
@@ -185,15 +186,23 @@ objective=[9,5,5]
 
 # load level
 
-fileName='watchtower7'
+listFH=open('levellist.pkl','rb')
+levelList=pickle.load(listFH)
+listFH.close()
 
-path='levels\\' + fileName
-loadFile=open(path,'rb')
-testLevel=pickle.load(loadFile)
-spawn=pickle.load(loadFile)
-objective=pickle.load(loadFile)
-loadFile.close()
+level=0
 
+def load_level(p):
+    i='levels\\' + p
+    FH=open(i,'rb') # add error if doesn't exist
+    l=pickle.load(FH)
+    s=pickle.load(FH)
+    o=pickle.load(FH)
+    FH.close()
+    return(l,s,o)
+
+print("Loading level {0} - {1}".format(levelList[level][0],levelList[level][1]))
+(testLevel,spawn,objective)=load_level(levelList[level][2])
 
 player_x=spawn[0]
 player_y=spawn[1]
@@ -220,10 +229,10 @@ def draw_screen():
     end=start+height
 
     (rStart,gStart,bStart)=LIGHTBLUE
-    (rEnd,gEnd,bEnd)=WHITE
+    (rEnd,gEnd,bEnd)=ORANGE
     (rDelta,gDelta,bDelta)=(float(rStart-rEnd)/height,float(gStart-gEnd)/height,float(bStart-bEnd)/height)
 
-    SCREEN.fill(WHITE)
+    SCREEN.fill(ORANGE)
 
     
     for n in range (start,end):
@@ -396,7 +405,10 @@ def canMoveDown(px,py,pz):
     return False
 
 
-
+def changeLevel(direction):
+    if(direction == "next"):
+        return True
+        
 
 
 
@@ -458,7 +470,9 @@ while True:
                     player_z+=1
                 player_x+=1
                 #print("moved to x:{0}, y:{1}, z:{2}".format(player_x,player_y,player_z))
-
+            #if(event.key == K_RIGHTBRACKET):
+                #return True
+                #goToNextLevel()
             #if (event.key == K_PAGEUP) and (player_z < max_z) and (canMove(0,0,1,player_x,player_y,player_z) == True):
             #    #print("x:{0}, y:{1}, z:{2}".format(player_x,player_y,player_z))
             #    player_z=player_z + 1
@@ -466,6 +480,16 @@ while True:
             #if (event.key == K_PAGEDOWN) and (player_z > min_z) and (canMove(0,0,-1,player_x,player_y,player_z) == True):
             #    #print("x:{0}, y:{1}, z:{2}".format(player_x,player_y,player_z))
             #    player_z=player_z - 1
+
+            if (event.key == K_l):
+                level = (level + 1) % 2
+                print("Loading level {0} - {1}".format(levelList[level][0],levelList[level][1]))
+                (testLevel,spawn,objective)=load_level(levelList[level][2])
+                player_x=spawn[0]
+                player_y=spawn[1]
+                player_z=spawn[2]
+                
+            
             draw_screen()
 
     pygame.display.update()

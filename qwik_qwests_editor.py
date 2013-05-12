@@ -511,12 +511,26 @@ while True:
                 print("cursorBlock {0}".format(cursorBlock))
 
             if (event.key == K_SLASH):
+                print("setting x:{0} y:{1} z:{2} to block {3}".format(player_x,player_y,player_z,cursorBlock))
                 testLevel[player_z][player_y][player_x] = cursorBlock
             
             #if (event.key >= K_0) and (event.key <= K_9):
             #    keyChar = pygame.key.name(event.key)
             #    testLevel[player_z][player_y][player_x] = int(keyChar)
             #    print("setting x:{0} y:{1} z{2} to {3}".format(player_x,player_y,player_z,keyChar))
+
+            if (event.key == K_0):
+                print("test level layer {0} {1}".format(0,testLevel[0]))
+            if (event.key == K_1):
+                print("test level layer {0} {1}".format(1,testLevel[1]))
+            if (event.key == K_2):
+                print("test level layer {0} {1}".format(2,testLevel[2]))
+            if (event.key == K_3):
+                print("test level layer {0} {1}".format(3,testLevel[3]))
+            if (event.key == K_4):
+                print("test level layer {0} {1}".format(4,testLevel[4]))
+            if (event.key == K_5):
+                print("test level layer {0} {1}".format(5,testLevel[5]))
 
             if (event.key == K_s):
                 fileName=input('Save file name? ')
@@ -541,9 +555,9 @@ while True:
                 print("clearing block")
                 testLevel[player_z][player_y][player_x] = 0
 
-            if (event.key == K_c):
-                print("clearing layer {0}".format(player_z))
-                testLevel[player_z]=emptyLayer
+            #if (event.key == K_c):
+            #    print("clearing layer {0}".format(player_z))
+            #    testLevel[player_z]=emptyLayer
 
             if (event.key == K_q):
                 print("shifting everything up")
@@ -579,6 +593,7 @@ while True:
                     [cursorBlock,cursorBlock,cursorBlock,cursorBlock,cursorBlock,cursorBlock,cursorBlock,cursorBlock,cursorBlock,cursorBlock],
                     [cursorBlock,cursorBlock,cursorBlock,cursorBlock,cursorBlock,cursorBlock,cursorBlock,cursorBlock,cursorBlock,cursorBlock]
                 ]
+                
             draw_screen()
     fpsClock.tick(FPS)
     pygame.display.set_caption("FPS {0} x:{1} y:{2} z:{3}".format(int(fpsClock.get_fps()),player_x,player_y,player_z))
