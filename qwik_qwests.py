@@ -16,7 +16,7 @@ pygame.display.set_caption('Qwik Qwests')
 
 # load sprites
 
-numBlocks=18
+numBlocks=27
 blockType=[None]*numBlocks
 
 EMPTY=0
@@ -37,23 +37,25 @@ BROWNBLOCK=12
 
 WATERBLOCK=13
 
+iPath='PlanetCute PNG\\'
+
 # ramps
-blockType[RAMP_N]=pygame.image.load('PlanetCute PNG\Ramp North.png') #6
-blockType[RAMP_S]=pygame.image.load('PlanetCute PNG\Ramp South.png') #7
-blockType[RAMP_E]=pygame.image.load('PlanetCute PNG\Ramp East.png') #8
-blockType[RAMP_W]=pygame.image.load('PlanetCute PNG\Ramp West.png') #9
+blockType[RAMP_N]=pygame.image.load(iPath+'Ramp North.png') #6
+blockType[RAMP_S]=pygame.image.load(iPath+'Ramp South.png') #7
+blockType[RAMP_E]=pygame.image.load(iPath+'Ramp East.png') #8
+blockType[RAMP_W]=pygame.image.load(iPath+'Ramp West.png') #9
 
 # blocks
-blockType[GRASSBLOCK]=pygame.image.load('PlanetCute PNG\Grass Block.png')
-blockType[STONEBLOCK]=pygame.image.load('PlanetCute PNG\Stone Block.png')
-blockType[PLAINBLOCK]=pygame.image.load('PlanetCute PNG\Plain Block.png')
-blockType[DIRTBLOCK]=pygame.image.load('PlanetCute PNG\Dirt Block.png')
-blockType[WALLBLOCK]=pygame.image.load('PlanetCute PNG\Wall Block.png')
-blockType[BROWNBLOCK]=pygame.image.load('PlanetCute PNG\Brown Block.png')
-blockType[WOODBLOCK]=pygame.image.load('PlanetCute PNG\Wood Block.png')
+blockType[GRASSBLOCK]=pygame.image.load(iPath+'Grass Block.png')
+blockType[STONEBLOCK]=pygame.image.load(iPath+'Stone Block.png')
+blockType[PLAINBLOCK]=pygame.image.load(iPath+'Plain Block.png')
+blockType[DIRTBLOCK]=pygame.image.load(iPath+'Dirt Block.png')
+blockType[WALLBLOCK]=pygame.image.load(iPath+'Wall Block.png')
+blockType[BROWNBLOCK]=pygame.image.load(iPath+'Brown Block.png')
+blockType[WOODBLOCK]=pygame.image.load(iPath+'Wood Block.png')
 
-blockType[WATERBLOCK]=pygame.image.load('PlanetCute PNG\Water Block.png')
-blockType[DOORTALLC]=pygame.image.load('PlanetCute PNG\Door Tall Closed.png')
+blockType[WATERBLOCK]=pygame.image.load(iPath+'Water Block.png')
+blockType[DOORTALLC]=pygame.image.load(iPath+'Door Tall Closed.png')
 
 ROCK=14
 TREESHORT=15
@@ -61,10 +63,32 @@ TREETALL=16
 TREEUGLY=17
 
 # objects
-blockType[ROCK]=pygame.image.load('PlanetCute PNG\Rock.png')
-blockType[TREESHORT]=pygame.image.load('PlanetCute PNG\Tree Short.png')
-blockType[TREETALL]=pygame.image.load('PlanetCute PNG\Tree Tall.png')
-blockType[TREEUGLY]=pygame.image.load('PlanetCute PNG\Tree Ugly.png')
+blockType[ROCK]=pygame.image.load(iPath+'Rock.png')
+blockType[TREESHORT]=pygame.image.load(iPath+'Tree Short.png')
+blockType[TREETALL]=pygame.image.load(iPath+'Tree Tall.png')
+blockType[TREEUGLY]=pygame.image.load(iPath+'Tree Ugly.png')
+
+BUG=18
+GEMBLUE=19
+GEMGREEN=20
+GEMORANGE=21
+KEY=22
+HEART=23
+CHESTC=24
+CHESTL=25
+CHESTO=26
+
+
+#item
+blockType[BUG]=pygame.image.load((iPath+'Enemy Bug.png'))
+blockType[GEMBLUE]=pygame.image.load((iPath+'Gem Blue.png'))
+blockType[GEMGREEN]=pygame.image.load((iPath+'Gem Green.png'))
+blockType[GEMORANGE]=pygame.image.load((iPath+'Gem Orange.png'))
+blockType[KEY]=pygame.image.load((iPath+'Key.png'))
+blockType[HEART]=pygame.image.load((iPath+'Heart.png'))
+blockType[CHESTC]=pygame.image.load((iPath+'Chest Closed.png'))
+blockType[CHESTL]=pygame.image.load((iPath+'Chest Lid.png'))
+blockType[CHESTO]=pygame.image.load((iPath+'Chest Open.png'))
 
 shadowType=[None]*9
 
@@ -78,15 +102,15 @@ SHADOW_N=6
 SHADOW_NW=7
 SHADOW_SIDEW=8
 
-shadowType[SHADOW_SE]=pygame.image.load('PlanetCute PNG\Shadow South East.png')
-shadowType[SHADOW_S]=pygame.image.load('PlanetCute PNG\Shadow South.png')
-shadowType[SHADOW_SW]=pygame.image.load('PlanetCute PNG\Shadow South West.png')
-shadowType[SHADOW_E]=pygame.image.load('PlanetCute PNG\Shadow East.png')
-shadowType[SHADOW_W]=pygame.image.load('PlanetCute PNG\Shadow West.png')
-shadowType[SHADOW_NE]=pygame.image.load('PlanetCute PNG\Shadow North East.png')
-shadowType[SHADOW_N]=pygame.image.load('PlanetCute PNG\Shadow North.png')
-shadowType[SHADOW_NW]=pygame.image.load('PlanetCute PNG\Shadow North West.png')
-shadowType[SHADOW_SIDEW]=pygame.image.load('PlanetCute PNG\Shadow Side West.png')
+shadowType[SHADOW_SE]=pygame.image.load(iPath+'Shadow South East.png')
+shadowType[SHADOW_S]=pygame.image.load(iPath+'Shadow South.png')
+shadowType[SHADOW_SW]=pygame.image.load(iPath+'Shadow South West.png')
+shadowType[SHADOW_E]=pygame.image.load(iPath+'Shadow East.png')
+shadowType[SHADOW_W]=pygame.image.load(iPath+'Shadow West.png')
+shadowType[SHADOW_NE]=pygame.image.load(iPath+'Shadow North East.png')
+shadowType[SHADOW_N]=pygame.image.load(iPath+'Shadow North.png')
+shadowType[SHADOW_NW]=pygame.image.load(iPath+'Shadow North West.png')
+shadowType[SHADOW_SIDEW]=pygame.image.load(iPath+'Shadow Side West.png')
 
 numObjects=9
 objectType=[None]*numObjects
@@ -101,14 +125,14 @@ KEY=6
 ENEMYBUG=7
 STAR=8
 
-objectType[BOY]=pygame.image.load('PlanetCute PNG\Character Boy.png')
-objectType[CATGIRL]=pygame.image.load('PlanetCute PNG\Character Cat Girl.png')
-objectType[HORNGIRL]=pygame.image.load('PlanetCute PNG\Character Horn Girl.png')
-objectType[PINKGIRL]=pygame.image.load('PlanetCute PNG\Character Pink Girl.png')
-objectType[PRINCESS]=pygame.image.load('PlanetCute PNG\Character Princess Girl.png')
-objectType[KEY]=pygame.image.load('PlanetCute PNG\Key.png')
-objectType[ENEMYBUG]=pygame.image.load('PlanetCute PNG\Enemy Bug.png')
-objectType[STAR]=pygame.image.load('PlanetCute PNG\Star.png')
+objectType[BOY]=pygame.image.load(iPath+'Character Boy.png')
+objectType[CATGIRL]=pygame.image.load(iPath+'Character Cat Girl.png')
+objectType[HORNGIRL]=pygame.image.load(iPath+'Character Horn Girl.png')
+objectType[PINKGIRL]=pygame.image.load(iPath+'Character Pink Girl.png')
+objectType[PRINCESS]=pygame.image.load(iPath+'Character Princess Girl.png')
+objectType[KEY]=pygame.image.load(iPath+'Key.png')
+objectType[ENEMYBUG]=pygame.image.load(iPath+'Enemy Bug.png')
+objectType[STAR]=pygame.image.load(iPath+'Star.png')
 
 
 QwikQwests=pygame.image.load('QwikQwests.png')
@@ -120,7 +144,7 @@ BROWN = (150,100,50)
 ORANGE = (255,140,0)
 
 titleCenter = QwikQwests.get_rect()
-titleCenter.center=(400,50)
+titleCenter.center=((screenWidth/2),50)
 
 #numpy.zeros((8,8,8))
 
@@ -128,53 +152,6 @@ titleCenter.center=(400,50)
 
 testLevel=[None]*6
 
-testLevel[0]=[
-            [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY],
-            [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY],
-            [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY],
-            [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY],
-            [DIRTBLOCK,DIRTBLOCK,DIRTBLOCK,DIRTBLOCK,DIRTBLOCK,DIRTBLOCK,DIRTBLOCK,DIRTBLOCK]
-            ]
-
-testLevel[1]=[
-            [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,DIRTBLOCK],
-            [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY],
-            [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,STONEBLOCK,EMPTY],
-            [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,STONEBLOCK,STONEBLOCK,STONEBLOCK],
-            [GRASSBLOCK,GRASSBLOCK,GRASSBLOCK,GRASSBLOCK,GRASSBLOCK,STONEBLOCK,STONEBLOCK,STONEBLOCK]
-            ]
-
-testLevel[2]=[
-            [STONEBLOCK,STONEBLOCK,WATERBLOCK,WATERBLOCK,STONEBLOCK,STONEBLOCK,STONEBLOCK,EMPTY],
-            [STONEBLOCK,EMPTY,EMPTY,EMPTY,EMPTY,STONEBLOCK,STONEBLOCK,RAMP_N],
-            [STONEBLOCK,STONEBLOCK,WATERBLOCK,WATERBLOCK,STONEBLOCK,STONEBLOCK,STONEBLOCK,STONEBLOCK],
-            [GRASSBLOCK,GRASSBLOCK,WATERBLOCK,WATERBLOCK,GRASSBLOCK,EMPTY,EMPTY,EMPTY],
-            [GRASSBLOCK,GRASSBLOCK,WATERBLOCK,WATERBLOCK,GRASSBLOCK,EMPTY,STONEBLOCK,EMPTY]
-            ]
-
-testLevel[3]=[
-            [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,WALLBLOCK,PLAINBLOCK,EMPTY],
-            [EMPTY,RAMP_W,STONEBLOCK,STONEBLOCK,RAMP_E,EMPTY,EMPTY,EMPTY,EMPTY],
-            [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY],
-            [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY],
-            [EMPTY,TREESHORT,EMPTY,EMPTY,ROCK,EMPTY,STONEBLOCK,EMPTY],
-            ]
-
-testLevel[4]=[
-            [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,WALLBLOCK,EMPTY,EMPTY], 
-            [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY],
-            [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY],
-            [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY],
-            [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,STONEBLOCK,EMPTY]
-            ]
-
-testLevel[5]=[
-            [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,WALLBLOCK,EMPTY,EMPTY], 
-            [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY],
-            [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY],
-            [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY],
-            [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,STONEBLOCK,EMPTY]
-            ]
        
 blockOffset=40
 screenOffset=220
@@ -220,7 +197,14 @@ max_z=5
 
 playerObj=1
 
+playerInventory=[None]*10
 
+def draw_inventory():
+    print("Drawing inventory")
+    for i in range (1,11):
+        print("Slot {0} = {1}".format(i,playerInventory[i-1])) 
+
+draw_inventory()
 
 def draw_screen():
 

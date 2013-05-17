@@ -17,7 +17,7 @@ pygame.display.set_caption('Qwik Qwests')
 # load sprites
 
 
-numBlocks=18
+numBlocks=27
 blockType=[None]*numBlocks
 
 EMPTY=0
@@ -69,6 +69,31 @@ blockType[ROCK]=pygame.image.load('PlanetCute PNG\Rock.png')
 blockType[TREESHORT]=pygame.image.load('PlanetCute PNG\Tree Short.png')
 blockType[TREETALL]=pygame.image.load('PlanetCute PNG\Tree Tall.png')
 blockType[TREEUGLY]=pygame.image.load('PlanetCute PNG\Tree Ugly.png')
+
+itemType=[None]*6
+
+BUG=18
+GEMBLUE=19
+GEMGREEN=20
+GEMORANGE=21
+KEY=22
+HEART=23
+CHESTC=24
+CHESTL=25
+CHESTO=26
+
+
+#item
+blockType[BUG]=pygame.image.load((iPath+'\Enemy Bug.png'))
+blockType[GEMBLUE]=pygame.image.load((iPath+'\Gem Blue.png'))
+blockType[GEMGREEN]=pygame.image.load((iPath+'\Gem Green.png'))
+blockType[GEMORANGE]=pygame.image.load((iPath+'\Gem Orange.png'))
+blockType[KEY]=pygame.image.load((iPath+'\Key.png'))
+blockType[HEART]=pygame.image.load((iPath+'\Heart.png'))
+blockType[CHESTC]=pygame.image.load((iPath+'\Chest Closed.png'))
+blockType[CHESTL]=pygame.image.load((iPath+'\Chest Lid.png'))
+blockType[CHESTO]=pygame.image.load((iPath+'\Chest Open.png'))
+
 
 shadowType=[None]*9
 
