@@ -37,7 +37,7 @@ BROWNBLOCK=12
 
 WATERBLOCK=13
 
-iPath='PlanetCute PNG\\'
+iPath='PlanetCuteSmall\\'
 
 # ramps
 blockType[RAMP_N]=pygame.image.load(iPath+'Ramp North.png') #6
@@ -102,14 +102,14 @@ SHADOW_N=6
 SHADOW_NW=7
 SHADOW_SIDEW=8
 
-shadowType[SHADOW_SE]=pygame.image.load(iPath+'Shadow South East.png')
-shadowType[SHADOW_S]=pygame.image.load(iPath+'Shadow South.png')
-shadowType[SHADOW_SW]=pygame.image.load(iPath+'Shadow South West.png')
-shadowType[SHADOW_E]=pygame.image.load(iPath+'Shadow East.png')
-shadowType[SHADOW_W]=pygame.image.load(iPath+'Shadow West.png')
-shadowType[SHADOW_NE]=pygame.image.load(iPath+'Shadow North East.png')
-shadowType[SHADOW_N]=pygame.image.load(iPath+'Shadow North.png')
-shadowType[SHADOW_NW]=pygame.image.load(iPath+'Shadow North West.png')
+shadowType[SHADOW_SE]=pygame.image.load(iPath+'Shadow Top South East.png')
+shadowType[SHADOW_S]=pygame.image.load(iPath+'Shadow Top South.png')
+shadowType[SHADOW_SW]=pygame.image.load(iPath+'Shadow Top South West.png')
+shadowType[SHADOW_E]=pygame.image.load(iPath+'Shadow Top East.png')
+shadowType[SHADOW_W]=pygame.image.load(iPath+'Shadow Top West.png')
+shadowType[SHADOW_NE]=pygame.image.load(iPath+'Shadow Top North East.png')
+shadowType[SHADOW_N]=pygame.image.load(iPath+'Shadow Top North.png')
+shadowType[SHADOW_NW]=pygame.image.load(iPath+'Shadow Top North West.png')
 shadowType[SHADOW_SIDEW]=pygame.image.load(iPath+'Shadow Side West.png')
 
 numObjects=9
@@ -153,10 +153,10 @@ titleCenter.center=((screenWidth/2),50)
 testLevel=[None]*6
 
        
-blockOffset=40
-screenOffset=220
-blockWidth=100
-blockHeight=80
+blockOffset=20
+screenOffset=150
+blockWidth=50
+blockHeight=40
 
 spawn=[0,0,0]
 objective=[9,5,5]
@@ -190,20 +190,43 @@ min_y=0
 min_z=0
 
 # work this out based on size of level read in
-max_x=9
-max_y=5
-max_z=5
+#max_x=9
+#max_y=5
+#max_z=5
+max_x=len(testLevel[0][0])
+max_y=len(testLevel[0])
+max_z=len(testLevel)
+print("level is size x:{0} y:{1} z:{2}".format(max_x,max_y,max_z))
+max_x -= 1
+max_y -= 1
+max_z -= 1
 # work this out based on size of level read in
 
 playerObj=1
-
-playerInventory=[None]*10
+playerInv=[None]*10
+indexInv=0
 
 def draw_inventory():
     print("Drawing inventory")
     for i in range (1,11):
-        print("Slot {0} = {1}".format(i,playerInventory[i-1])) 
+        print("Slot {0} = {1}".format(i,playerInv[i-1]))
 
+def object_right(x,y,z):
+    if ((x < max_x) and (HEART >= testLevel[z][y][x+1] >= GEMBLUE)):
+        return True
+    
+def object_left(x,y,z):
+    if ((x > min_x) and (HEART >= testLevel[z][y][x-1] >= GEMBLUE)):
+        return True
+
+def object_down(x,y,z):
+    if ((y < max_y) and (HEART >= testLevel[z][y+1][x] >= GEMBLUE)):
+        return True
+    
+def object_up(x,y,z):
+    if ((y > min_y) and (HEART >= testLevel[z][y-1][x] >= GEMBLUE)):
+        return True
+    
 draw_inventory()
 
 def draw_screen():
@@ -245,7 +268,7 @@ def draw_screen():
                     SCREEN.blit(image, ((x*blockWidth),(y*blockHeight+(offset))))
                 
                 # shadow processing
-                if (z < max_z) and (testLevel[z+1][y][x] == 0) and (RAMP_W < block < ROCK):
+                if (z < max_z) and (testLevel[z+1][y][x] == EMPTY or (TREEUGLY < testLevel[z+1][y][x] < CHESTC)) and (RAMP_W < block < ROCK):
                     # South East
                     if (z < max_z) and (y < max_y) and (x < max_x) and (RAMP_W < testLevel[z+1][y+1][x+1] < ROCK) and (testLevel[z+1][y][x+1] == EMPTY) and (testLevel[z+1][y+1][x] == EMPTY):
                        SCREEN.blit(shadowType[SHADOW_SE], ((x*blockWidth),(y*blockHeight+(offset))))
@@ -405,7 +428,7 @@ draw_screen()
                 
 while True:
 
-    
+    fpsClock.tick(FPS)
     #SCREEN.blit(objectType[obj], (player_x, player_y+screenOffset))
     #render_object(SCREEN,obj,player_x,player_y,player_z)
     
@@ -465,6 +488,36 @@ while True:
             #    #print("x:{0}, y:{1}, z:{2}".format(player_x,player_y,player_z))
             #    player_z=player_z - 1
 
+            if (event.key == K_i and object_down(player_x,player_y,player_z)):
+                playerInv[indexInv] = testLevel[player_z][player_y+1][player_x]
+                testLevel[player_z][player_y+1][player_x] = EMPTY
+                indexInv += 1
+                draw_inventory()
+
+            if (event.key == K_i and object_up(player_x,player_y,player_z)):
+                playerInv[indexInv] = testLevel[player_z][player_y-1][player_x]
+                testLevel[player_z][player_y-1][player_x] = EMPTY
+                indexInv += 1
+                draw_inventory()    
+
+            if (event.key == K_i and object_left(player_x,player_y,player_z)):
+                playerInv[indexInv] = testLevel[player_z][player_y][player_x-1]
+                testLevel[player_z][player_y][player_x-1] = EMPTY
+                indexInv += 1
+                draw_inventory()
+
+            if (event.key == K_i and object_down(player_x,player_y,player_z)):
+                playerInv[indexInv] = testLevel[player_z][player_y][player_x+1]
+                testLevel[player_z][player_y][player_x+1] = EMPTY
+                indexInv += 1
+                draw_inventory()
+                
+            if (event.key == K_o and indexInv > 0):
+                indexInv -= 1
+                testLevel[player_z][player_y+1][player_x] = playerInv[indexInv]
+                playerInv[indexInv] = EMPTY
+                draw_inventory()
+                
             if (event.key == K_l):
                 level = (level + 1) % 2
                 print("Loading level {0} - {1}".format(levelList[level][0],levelList[level][1]))
@@ -476,4 +529,4 @@ while True:
             
             draw_screen()
 
-    pygame.display.update()
+    pygame.display.flip()
