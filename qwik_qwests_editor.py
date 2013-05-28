@@ -1,15 +1,18 @@
 # Weekend Game - Qwik Qwests
 
-import pygame, sys, pickle
+import pygame, sys, pickle, tkinter, numpy as np
 from pygame.locals import *
+from tkinter.filedialog import askopenfilename, asksaveasfilename
+
+
 
 pygame.init()
 
 FPS=30
 fpsClock = pygame.time.Clock()
 
-screenHeight=800
 screenWidth=1200
+screenHeight=800
 
 SCREEN=pygame.display.set_mode((screenWidth,screenHeight),0,32)
 pygame.display.set_caption('Qwik Qwests')
@@ -159,15 +162,22 @@ titleCenter.center=(400,50)
 min_x=0
 min_y=0
 min_z=0
-max_x=19
-max_y=11
-max_z=11
+max_x=9
+max_y=5
+max_z=5
+limit_x=19
+limit_y=11
+limit_z=11
 
-r_x=max_x+1
-r_y=max_y+1
-r_z=max_z+1
+#r_x=max_x+1
+#r_y=max_y+1
+#r_z=max_z+1
+##
+##testLevel=[[[EMPTY for x in range(r_x)]for y in range(r_y)]for z in range(r_z)]
 
-testLevel=[[[EMPTY for x in range(r_x)]for y in range(r_y)]for z in range(r_z)]
+# testLevel=[None]*6;
+
+testLevel=np.zeros(((max_z+1),(max_y+1),(max_x+1)),dtype=np.int)
 
 emptyLayer=[
             [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY], 
@@ -177,7 +187,7 @@ emptyLayer=[
             [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY],
             [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY]
             ]
-##
+
 ##testLevel[0]=[
 ##            [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY],
 ##            [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY],
@@ -476,7 +486,11 @@ while True:
         if event.type==QUIT:
             pygame.quit()
             sys.exit()
+            
         if (event.type == KEYDOWN):
+            if (event.key == K_ESCAPE):
+                pygame.quit()
+                sys.exit()
             if (event.key == K_UP) and (player_y > min_y):
                 # Going down a North Ramp
                 #if (testLevel[player_z-1][player_y][player_x] == RAMP_N):
@@ -547,23 +561,41 @@ while True:
             #    testLevel[player_z][player_y][player_x] = int(keyChar)
             #    print("setting x:{0} y:{1} z{2} to {3}".format(player_x,player_y,player_z,keyChar))
 
-            if (event.key == K_0):
-                print("test level layer {0} {1}".format(0,testLevel[0]))
-            if (event.key == K_1):
-                print("test level layer {0} {1}".format(1,testLevel[1]))
-            if (event.key == K_2):
-                print("test level layer {0} {1}".format(2,testLevel[2]))
-            if (event.key == K_3):
-                print("test level layer {0} {1}".format(3,testLevel[3]))
-            if (event.key == K_4):
-                print("test level layer {0} {1}".format(4,testLevel[4]))
-            if (event.key == K_5):
-                print("test level layer {0} {1}".format(5,testLevel[5]))
 
+            if (event.key == K_1) and (max_x > 0):
+                newLevel=np.delete(testLevel,max_x,axis=2)
+                testLevel=newLevel
+                max_x-=1
+            if (event.key == K_2) and (max_x < limit_x):
+                newLevel=np.append(testLevel,np.zeros(((max_z+1),(max_y+1),1),dtype=np.int),axis=2)
+                testLevel=newLevel
+                max_x+=1
+            if (event.key == K_3) and (max_y > 0):
+                newLevel=np.delete(testLevel,max_y,axis=1)
+                testLevel=newLevel
+                max_y-=1
+            if (event.key == K_4) and (max_y < limit_y):
+                newLevel=np.append(testLevel,np.zeros(((max_z+1),1,(max_x+1)),dtype=np.int),axis=1)
+                testLevel=newLevel
+                max_y+=1
+            if (event.key == K_5) and (max_z > 0):
+                newLevel=np.delete(testLevel,max_z,axis=0)
+                testLevel=newLevel
+                max_z-=1
+            if (event.key == K_6) and (max_z < limit_z):
+                newLevel=np.append(testLevel,np.zeros((1,(max_y+1),(max_x+1)),dtype=np.int),axis=0)
+                testLevel=newLevel
+                max_z+=1
+                
             if (event.key == K_s):
-                fileName=input('Save file name? ')
-                path='levels\\' + fileName
-                saveFile=open(path,'wb')
+                #fileName=input('Save file name? ')
+                root=tkinter.Tk()
+                root.withdraw()
+                fileName = asksaveasfilename(parent=root)
+                root.destroy()
+                #path='levels\\' + fileName
+                #saveFile=open(path,'wb')
+                saveFile=open(fileName,'wb')
                 pickle.dump(testLevel,saveFile)
                 pickle.dump(spawn,saveFile)
                 pickle.dump(objective,saveFile)
@@ -571,9 +603,14 @@ while True:
                 print("level saved")
 
             if (event.key == K_w):
-                fileName=input('Load file name? ')
-                path='levels\\' + fileName
-                loadFile=open(path,'rb')
+                #fileName=input('Load file name? ')
+                root=tkinter.Tk()
+                root.withdraw()
+                fileName = askopenfilename(parent=root)
+                root.destroy()
+                #path='levels\\' + fileName
+                #loadFile=open(path,'rb')
+                loadFile=open(fileName,'rb')
                 testLevel=pickle.load(loadFile)
                 spawn=pickle.load(loadFile)
                 objective=pickle.load(loadFile)
@@ -613,9 +650,9 @@ while True:
 
             if (event.key == K_f):
                 print("filling layer {0} with block {1}".format(player_z,cursorBlock))
-                testLevel[player_z]=[[cursorBlock for x in range(r_x)]for y in range(r_y)]
+                testLevel[player_z]=[[cursorBlock for x in range(max_x+1)]for y in range(max_y+1)]
                 
             draw_screen()
     fpsClock.tick(FPS)
-    #pygame.display.set_caption("FPS {0} x:{1} y:{2} z:{3}".format(int(fpsClock.get_fps()),player_x,player_y,player_z))
+    pygame.display.set_caption("FPS {0} x:{1} y:{2} z:{3}".format(int(fpsClock.get_fps()),player_x,player_y,player_z))
     pygame.display.flip()

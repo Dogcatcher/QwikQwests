@@ -11,7 +11,7 @@ fpsClock = pygame.time.Clock()
 screenHeight=800
 screenWidth=1200
 
-SCREEN=pygame.display.set_mode((screenWidth,screenHeight),0,32)
+SCREEN=pygame.display.set_mode((screenWidth,screenHeight),FULLSCREEN,32)
 pygame.display.set_caption('Qwik Qwests')
 
 # load sprites
@@ -438,6 +438,9 @@ while True:
             pygame.quit()
             sys.exit()
         if (event.type == KEYDOWN):
+            if (event.key == K_ESCAPE):
+                pygame.quit()
+                sys.exit()
             if (event.key == K_UP) and (canMoveUp(player_x,player_y,player_z) == True):
                 # Going down a North Ramp
                 if (testLevel[player_z-1][player_y][player_x] == RAMP_N):
