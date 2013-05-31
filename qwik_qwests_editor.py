@@ -610,15 +610,17 @@ while True:
                 root=tkinter.Tk()
                 root.withdraw()
                 fileName = asksaveasfilename(parent=root)
+                # bug verify input - cancel causes crash                   
                 root.destroy()
-                #path='levels\\' + fileName
-                #saveFile=open(path,'wb')
-                saveFile=open(fileName,'wb')
-                pickle.dump(testLevel,saveFile)
-                pickle.dump(spawn,saveFile)
-                pickle.dump(objective,saveFile)
-                saveFile.close()
-                print("level saved")
+                if (fileName):
+                    #path='levels\\' + fileName
+                    #saveFile=open(path,'wb')
+                    saveFile=open(fileName,'wb')
+                    pickle.dump(testLevel,saveFile)
+                    pickle.dump(spawn,saveFile)
+                    pickle.dump(objective,saveFile)
+                    saveFile.close()
+                    print("level saved")
 
             if (event.key == K_w):
                 #fileName=input('Load file name? ')
@@ -626,14 +628,40 @@ while True:
                 root.withdraw()
                 fileName = askopenfilename(parent=root)
                 root.destroy()
-                #path='levels\\' + fileName
-                #loadFile=open(path,'rb')
-                loadFile=open(fileName,'rb')
-                testLevel=pickle.load(loadFile)
-                spawn=pickle.load(loadFile)
-                objective=pickle.load(loadFile)
-                loadFile.close()
-
+                if (fileName):
+                    #path='levels\\' + fileName
+                    #loadFile=open(path,'rb')
+                    loadFile=open(fileName,'rb')
+                    testLevel=pickle.load(loadFile)
+                    spawn=pickle.load(loadFile)
+                    objective=pickle.load(loadFile)
+                    loadFile.close()
+                    # BUG after load resize array max_* variables or reset cursor to 0,0,0
+                    max_x=len(testLevel[0][0])
+                    max_y=len(testLevel[0])
+                    max_z=len(testLevel)
+                    print("level is size x:{0} y:{1} z:{2}".format(max_x,max_y,max_z))
+                    max_x -= 1
+                    max_y -= 1
+                    max_z -= 1
+                    if (player_x > max_x):
+                        player_x = max_x
+                    if (spawn[0] > max_x):
+                        spawn[0] = max_x
+                    if (objective[0] > max_x):
+                        objective[0] = max_x
+                    if (player_y > max_y):
+                        player_y = max_y
+                    if (spawn[1] > max_y):
+                        spawn[1] = max_y
+                    if (objective[1] > max_y):
+                        objective[1] = max_y
+                    if (player_z > max_z):
+                        player_z = max_z
+                    if (spawn[2] > max_z):
+                        spawn[2] = max_z
+                    if (objective[2] > max_z):
+                        objective[2] = max_z                    
             if (event.key == K_x):
                 print("clearing block")
                 testLevel[player_z][player_y][player_x] = 0
