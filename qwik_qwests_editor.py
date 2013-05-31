@@ -566,6 +566,12 @@ while True:
                 newLevel=np.delete(testLevel,max_x,axis=2)
                 testLevel=newLevel
                 max_x-=1
+                if (player_x > max_x):
+                    player_x = max_x
+                if (spawn[0] > max_x):
+                    spawn[0] = max_x
+                if (objective[0] > max_x):
+                    objective[0] = max_x
             if (event.key == K_2) and (max_x < limit_x):
                 newLevel=np.append(testLevel,np.zeros(((max_z+1),(max_y+1),1),dtype=np.int),axis=2)
                 testLevel=newLevel
@@ -574,6 +580,12 @@ while True:
                 newLevel=np.delete(testLevel,max_y,axis=1)
                 testLevel=newLevel
                 max_y-=1
+                if (player_y > max_y):
+                    player_y = max_y
+                if (spawn[1] > max_y):
+                    spawn[1] = max_y
+                if (objective[1] > max_y):
+                    objective[1] = max_y            
             if (event.key == K_4) and (max_y < limit_y):
                 newLevel=np.append(testLevel,np.zeros(((max_z+1),1,(max_x+1)),dtype=np.int),axis=1)
                 testLevel=newLevel
@@ -582,6 +594,12 @@ while True:
                 newLevel=np.delete(testLevel,max_z,axis=0)
                 testLevel=newLevel
                 max_z-=1
+                if (player_z > max_z):
+                    player_z = max_z
+                if (spawn[2] > max_z):
+                    spawn[2] = max_z
+                if (objective[2] > max_z):
+                    objective[2] = max_z            
             if (event.key == K_6) and (max_z < limit_z):
                 newLevel=np.append(testLevel,np.zeros((1,(max_y+1),(max_x+1)),dtype=np.int),axis=0)
                 testLevel=newLevel
