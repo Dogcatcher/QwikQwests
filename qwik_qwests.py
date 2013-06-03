@@ -20,12 +20,19 @@ numBlocks=27
 blockType=[None]*numBlocks
 
 EMPTY=0
+iPath='PlanetCuteSmall\\'
 
+# ramps
 RAMP_N=1
 RAMP_S=2
 RAMP_E=3
 RAMP_W=4
+blockType[RAMP_N]=pygame.image.load(iPath+'Ramp North.png') #6
+blockType[RAMP_S]=pygame.image.load(iPath+'Ramp South.png') #7
+blockType[RAMP_E]=pygame.image.load(iPath+'Ramp East.png') #8
+blockType[RAMP_W]=pygame.image.load(iPath+'Ramp West.png') #9
 
+# scenery blocks
 GRASSBLOCK=5
 STONEBLOCK=6
 WOODBLOCK=7
@@ -34,18 +41,7 @@ DIRTBLOCK=9
 WALLBLOCK=10
 DOORTALLC=11
 BROWNBLOCK=12
-
 WATERBLOCK=13
-
-iPath='PlanetCuteSmall\\'
-
-# ramps
-blockType[RAMP_N]=pygame.image.load(iPath+'Ramp North.png') #6
-blockType[RAMP_S]=pygame.image.load(iPath+'Ramp South.png') #7
-blockType[RAMP_E]=pygame.image.load(iPath+'Ramp East.png') #8
-blockType[RAMP_W]=pygame.image.load(iPath+'Ramp West.png') #9
-
-# blocks
 blockType[GRASSBLOCK]=pygame.image.load(iPath+'Grass Block.png')
 blockType[STONEBLOCK]=pygame.image.load(iPath+'Stone Block.png')
 blockType[PLAINBLOCK]=pygame.image.load(iPath+'Plain Block.png')
@@ -53,21 +49,20 @@ blockType[DIRTBLOCK]=pygame.image.load(iPath+'Dirt Block.png')
 blockType[WALLBLOCK]=pygame.image.load(iPath+'Wall Block.png')
 blockType[BROWNBLOCK]=pygame.image.load(iPath+'Brown Block.png')
 blockType[WOODBLOCK]=pygame.image.load(iPath+'Wood Block.png')
-
 blockType[WATERBLOCK]=pygame.image.load(iPath+'Water Block.png')
 blockType[DOORTALLC]=pygame.image.load(iPath+'Door Tall Closed.png')
 
+# static scenery objects
 ROCK=14
 TREESHORT=15
 TREETALL=16
 TREEUGLY=17
-
-# objects
 blockType[ROCK]=pygame.image.load(iPath+'Rock.png')
 blockType[TREESHORT]=pygame.image.load(iPath+'Tree Short.png')
 blockType[TREETALL]=pygame.image.load(iPath+'Tree Tall.png')
 blockType[TREEUGLY]=pygame.image.load(iPath+'Tree Ugly.png')
 
+# items
 BUG=18
 GEMBLUE=19
 GEMGREEN=20
@@ -77,9 +72,6 @@ HEART=23
 CHESTC=24
 CHESTL=25
 CHESTO=26
-
-
-#item
 blockType[BUG]=pygame.image.load((iPath+'Enemy Bug.png'))
 blockType[GEMBLUE]=pygame.image.load((iPath+'Gem Blue.png'))
 blockType[GEMGREEN]=pygame.image.load((iPath+'Gem Green.png'))
@@ -91,7 +83,6 @@ blockType[CHESTL]=pygame.image.load((iPath+'Chest Lid.png'))
 blockType[CHESTO]=pygame.image.load((iPath+'Chest Open.png'))
 
 shadowType=[None]*9
-
 SHADOW_SE=0
 SHADOW_S=1
 SHADOW_SW=2
@@ -114,8 +105,6 @@ shadowType[SHADOW_SIDEW]=pygame.image.load(iPath+'Shadow Side West.png')
 
 numObjects=9
 objectType=[None]*numObjects
-
-
 BOY=1
 CATGIRL=2
 HORNGIRL=3
