@@ -152,11 +152,15 @@ titleCenter.center=((screenWidth/2),50)
 
 testLevel=[None]*6
 
-       
-blockOffset=20
-screenOffset=150
 blockWidth=50
-blockHeight=40
+blockHeight=40      
+
+limit_y=11
+limit_x=19
+
+blockOffset=20
+# enhancement - work out way to central screen
+
 
 spawn=[0,0,0]
 objective=[9,5,5]
@@ -168,6 +172,7 @@ levelList=pickle.load(listFH)
 listFH.close()
 
 level=0
+
 
 def load_level(p):
     i='levels\\' + p
@@ -201,6 +206,9 @@ max_x -= 1
 max_y -= 1
 max_z -= 1
 # work this out based on size of level read in
+
+screenOffsetX=0 + ((limit_x - max_x) / 2 * blockWidth)
+screenOffsetY=220 + ((limit_y - max_y) / 2 * blockHeight)
 
 playerObj=1
 playerInv=[None]*10
@@ -251,7 +259,7 @@ def draw_screen():
     SCREEN.blit(QwikQwests, titleCenter)
     
     for z in range (0,(max_z+1)):
-        offset=(z*-1*blockOffset)+screenOffset
+        offset=(z*-1*blockOffset)+screenOffsetY
         for y in range (0,(max_y+1)):
             for x in range (0,(max_x+1)):
                 block=testLevel[z][y][x]
@@ -265,44 +273,44 @@ def draw_screen():
 
                 if block > 0:
                     image=blockType[block]
-                    SCREEN.blit(image, ((x*blockWidth),(y*blockHeight+(offset))))
+                    SCREEN.blit(image, ((x*blockWidth+screenOffsetX),(y*blockHeight+(offset))))
                 
                 # shadow processing
                 if (z < max_z) and (testLevel[z+1][y][x] == EMPTY or (TREEUGLY < testLevel[z+1][y][x] < CHESTC)) and (RAMP_W < block < ROCK):
                     # South East
                     if (z < max_z) and (y < max_y) and (x < max_x) and (RAMP_W < testLevel[z+1][y+1][x+1] < ROCK) and (testLevel[z+1][y][x+1] == EMPTY) and (testLevel[z+1][y+1][x] == EMPTY):
-                       SCREEN.blit(shadowType[SHADOW_SE], ((x*blockWidth),(y*blockHeight+(offset))))
+                       SCREEN.blit(shadowType[SHADOW_SE], ((x*blockWidth+screenOffsetX),(y*blockHeight+(offset))))
                        #print("Placing SE shadow at {0},{1},{2}".format(x,y,z))
                     # South - needs check to see if we're the top block - purely a waste of cycles - nothing cosmetic AFAIK
                     if (z < max_z) and (y < max_y) and (RAMP_W < testLevel[z+1][y+1][x] < ROCK):
-                       SCREEN.blit(shadowType[SHADOW_S], ((x*blockWidth),(y*blockHeight+(offset))))
+                       SCREEN.blit(shadowType[SHADOW_S], ((x*blockWidth+screenOffsetX),(y*blockHeight+(offset))))
                     # South West
                     if (z < max_z) and (y < max_y) and (x > min_x) and (RAMP_W < testLevel[z+1][y+1][x-1] < ROCK) and (testLevel[z+1][y][x-1] == EMPTY) and (testLevel[z+1][y+1][x] == EMPTY):
-                       SCREEN.blit(shadowType[SHADOW_SW], ((x*blockWidth),(y*blockHeight+(offset))))
+                       SCREEN.blit(shadowType[SHADOW_SW], ((x*blockWidth+screenOffsetX),(y*blockHeight+(offset))))
                     # East
                     if (z < max_z) and (x < max_x) and (RAMP_W < testLevel[z+1][y][x+1] < ROCK):
-                       SCREEN.blit(shadowType[SHADOW_E], ((x*blockWidth),(y*blockHeight+(offset))))
+                       SCREEN.blit(shadowType[SHADOW_E], ((x*blockWidth+screenOffsetX),(y*blockHeight+(offset))))
                     # West
                     if (z < max_z) and (x > min_x) and (RAMP_W < testLevel[z+1][y][x-1] < ROCK):
-                       SCREEN.blit(shadowType[SHADOW_W], ((x*blockWidth),(y*blockHeight+(offset))))
+                       SCREEN.blit(shadowType[SHADOW_W], ((x*blockWidth+screenOffsetX),(y*blockHeight+(offset))))
                     # North East
                     if (z < max_z) and (y > min_y) and (x < max_x) and (RAMP_W < testLevel[z+1][y-1][x+1] < ROCK) and (testLevel[z+1][y][x+1] == EMPTY) and (testLevel[z+1][y-1][x] == EMPTY):
-                       SCREEN.blit(shadowType[SHADOW_NE], ((x*blockWidth),(y*blockHeight+(offset))))
+                       SCREEN.blit(shadowType[SHADOW_NE], ((x*blockWidth+screenOffsetX),(y*blockHeight+(offset))))
                     # North
                     if (z < max_z) and (y > min_y) and (RAMP_W < testLevel[z+1][y-1][x] < ROCK):
-                       SCREEN.blit(shadowType[SHADOW_N], ((x*blockWidth),(y*blockHeight+(offset))))
+                       SCREEN.blit(shadowType[SHADOW_N], ((x*blockWidth+screenOffsetX),(y*blockHeight+(offset))))
                     # North West
                     if (z < max_z) and (y > min_y) and (x > min_x) and (RAMP_W < testLevel[z+1][y-1][x-1] < ROCK) and (testLevel[z+1][y][x-1] == EMPTY) and (testLevel[z+1][y-1][x] == EMPTY):
-                       SCREEN.blit(shadowType[SHADOW_NW], ((x*blockWidth),(y*blockHeight+(offset))))
+                       SCREEN.blit(shadowType[SHADOW_NW], ((x*blockWidth+screenOffsetX),(y*blockHeight+(offset))))
                     # Side West
                     if (z < max_z) and (x > min_x) and (y < max_y) and (RAMP_W < testLevel[z][y+1][x-1] < ROCK) and (testLevel[z][y+1][x] == EMPTY) and (testLevel[z+1][y+1][x] == EMPTY):
-                       SCREEN.blit(shadowType[SHADOW_SIDEW], ((x*blockWidth),(y*blockHeight+(offset))))
+                       SCREEN.blit(shadowType[SHADOW_SIDEW], ((x*blockWidth+screenOffsetX),(y*blockHeight+(offset))))
 
                     # **BUG** - not totally happy with this processing - particularly on ramps/static objects
                     # need to detect empty space behind it and not render
                     # South (top)
                     if (z < y + 3 )and (z < max_z) and (y > min_y) and (testLevel[z+1][y][x] == EMPTY) and (testLevel[z][y-1][x] == EMPTY) and (testLevel[z+1][y-1][x] == EMPTY):
-                       SCREEN.blit(shadowType[SHADOW_S], ((x*blockWidth),(y*blockHeight+(offset)-blockOffset-tallBlockOffset)))
+                       SCREEN.blit(shadowType[SHADOW_S], ((x*blockWidth+screenOffsetX),(y*blockHeight+(offset)-blockOffset-tallBlockOffset)))
                 # South (top ceiling)
                 #if (x == 6) and (y == 3) and (z == 5):
                 #    #print("DEBUG: block {0}".format(testLevel[z][y-1][x]))
@@ -316,10 +324,10 @@ def draw_screen():
                     if (below == RAMP_N) or (below == RAMP_S) or (below == RAMP_E) or (below == RAMP_W):
                         ramp = 20
                     player=objectType[playerObj]
-                    SCREEN.blit(player, ((x*blockWidth),y*blockHeight+(offset)+ramp))
+                    SCREEN.blit(player, ((x*blockWidth+screenOffsetX),y*blockHeight+offset+ramp))
 
     #screen_x=player_x*blockWidth
-    #screen_y=(player_y*blockHeight)+(screenOffset)-(player_z*blockOffset)
+    #screen_y=(player_y*blockHeight)+(screenOffsetY)-(player_z*blockOffset)
     #s.blit(objectType[playerObj], (screen_x, screen_y))
 
 
@@ -429,7 +437,7 @@ draw_screen()
 while True:
 
     fpsClock.tick(FPS)
-    #SCREEN.blit(objectType[obj], (player_x, player_y+screenOffset))
+    #SCREEN.blit(objectType[obj], (player_x, player_y+screenOffsetY))
     #render_object(SCREEN,obj,player_x,player_y,player_z)
     
         
@@ -522,12 +530,21 @@ while True:
                 draw_inventory()
                 
             if (event.key == K_l):
-                level = (level + 1) % 2
+                level = (level + 1) % len(levelList)
                 print("Loading level {0} - {1}".format(levelList[level][0],levelList[level][1]))
                 (testLevel,spawn,objective)=load_level(levelList[level][2])
                 player_x=spawn[0]
                 player_y=spawn[1]
                 player_z=spawn[2]
+                max_x=len(testLevel[0][0])
+                max_y=len(testLevel[0])
+                max_z=len(testLevel)
+                print("level is size x:{0} y:{1} z:{2}".format(max_x,max_y,max_z))
+                max_x -= 1
+                max_y -= 1
+                max_z -= 1
+                screenOffsetX=0 + ((limit_x - max_x) / 2 * blockWidth)
+                screenOffsetY=220 + ((limit_y - max_y) / 2 * blockHeight)
                 
             
             draw_screen()
