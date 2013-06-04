@@ -124,7 +124,20 @@ objectType[ENEMYBUG]=pygame.image.load(iPath+'Enemy Bug.png')
 objectType[STAR]=pygame.image.load(iPath+'Star.png')
 
 
-QwikQwests=pygame.image.load('QwikQwests.png')
+QwikQwests=pygame.image.load('images/QwikQwests.png')
+
+number=[None]*4
+
+number[0]=pygame.image.load('images/zero.png')
+number[1]=pygame.image.load('images/one.png')
+number[2]=pygame.image.load('images/two.png')
+number[3]=pygame.image.load('images/three.png')
+levelText=pygame.image.load('images/level.png')
+
+def renderPanel():
+    SCREEN.blit(levelText,(1050,100))
+    SCREEN.blit(number[level+1],(1100,150))
+
 
 BLACK = (0,0,0)
 WHITE = (255,255,255)
@@ -197,7 +210,7 @@ max_z -= 1
 # work this out based on size of level read in
 
 screenOffsetX=0 + ((limit_x - max_x) / 2 * blockWidth)
-screenOffsetY=220 + ((limit_y - max_y) / 2 * blockHeight)
+screenOffsetY=274 + ((limit_y - max_y) / 2 * blockHeight)
 
 playerObj=1
 playerInv=[None]*10
@@ -246,6 +259,7 @@ def draw_screen():
         pygame.draw.line(SCREEN,(red,green,blue), (0,n),(screenWidth,n))
 
     SCREEN.blit(QwikQwests, titleCenter)
+    renderPanel()
     
     for z in range (0,(max_z+1)):
         offset=(z*-1*blockOffset)+screenOffsetY
@@ -533,7 +547,7 @@ while True:
                 max_y -= 1
                 max_z -= 1
                 screenOffsetX=0 + ((limit_x - max_x) / 2 * blockWidth)
-                screenOffsetY=220 + ((limit_y - max_y) / 2 * blockHeight)
+                screenOffsetY=274 + ((limit_y - max_y) / 2 * blockHeight)
                 
             
             draw_screen()
