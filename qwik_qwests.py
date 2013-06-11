@@ -11,7 +11,7 @@ fpsClock = pygame.time.Clock()
 screenHeight=800
 screenWidth=1200
 
-SCREEN=pygame.display.set_mode((screenWidth,screenHeight),FULLSCREEN,32)
+SCREEN=pygame.display.set_mode((screenWidth,screenHeight),0,32)
 pygame.display.set_caption('Qwik Qwests')
 
 # load sprites
@@ -328,6 +328,8 @@ def draw_screen():
                         ramp = 20
                     player=objectType[playerObj]
                     SCREEN.blit(player, ((x*blockWidth+screenOffsetX),y*blockHeight+offset+ramp))
+                if (z == objective[2] ) and (y == objective[1]) and (x == objective[0]):
+                    SCREEN.blit(objectType[STAR], ((x*blockWidth+screenOffsetX),y*blockHeight+offset))
 
     #screen_x=player_x*blockWidth
     #screen_y=(player_y*blockHeight)+(screenOffsetY)-(player_z*blockOffset)
@@ -532,7 +534,23 @@ while True:
                 playerInv[indexInv] = EMPTY
                 draw_inventory()
                 
-            if (event.key == K_l):
+##            if (event.key == K_l):
+##                level = (level + 1) % len(levelList)
+##                print("Loading level {0} - {1}".format(levelList[level][0],levelList[level][1]))
+##                (testLevel,spawn,objective)=load_level(levelList[level][2])
+##                player_x=spawn[0]
+##                player_y=spawn[1]
+##                player_z=spawn[2]
+##                max_x=len(testLevel[0][0])
+##                max_y=len(testLevel[0])
+##                max_z=len(testLevel)
+##                print("level is size x:{0} y:{1} z:{2}".format(max_x,max_y,max_z))
+##                max_x -= 1
+##                max_y -= 1
+##                max_z -= 1
+##                screenOffsetX=0 + ((limit_x - max_x) / 2 * blockWidth)
+##                screenOffsetY=274 + ((limit_y - max_y) / 2 * blockHeight)
+            if (player_x == objective[0]) and (player_y == objective[1]) and (player_z == objective[2]):
                 level = (level + 1) % len(levelList)
                 print("Loading level {0} - {1}".format(levelList[level][0],levelList[level][1]))
                 (testLevel,spawn,objective)=load_level(levelList[level][2])
@@ -547,7 +565,7 @@ while True:
                 max_y -= 1
                 max_z -= 1
                 screenOffsetX=0 + ((limit_x - max_x) / 2 * blockWidth)
-                screenOffsetY=274 + ((limit_y - max_y) / 2 * blockHeight)
+                screenOffsetY=274 + ((limit_y - max_y) / 2 * blockHeight)                
                 
             
             draw_screen()

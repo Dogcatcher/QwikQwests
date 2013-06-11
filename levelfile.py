@@ -10,7 +10,7 @@ filename='levellist.pkl'
 
 levels[0]=[1,"All Along the WatchTower",'watchtower7','open the chest']
 levels[1]=[2,"There Must be Some Kinda Way Outta Here",'maze','just escape as quickly as possible']
-levels[2]=[3,"When the Levy Breaks",'cavern3','find the gem']
+levels[2]=[3,"When the Levy Breaks",'cavern4','find the gems']
 
 
 FH=open(filename,'wb')
