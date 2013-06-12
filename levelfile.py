@@ -1,16 +1,17 @@
 
 import pickle
 
-numLevels=3
+numLevels=4
 levels=[None]*numLevels
 
 filename='levellist.pkl'
 
 # level number, title, filename, description
 
-levels[0]=[1,"All Along the WatchTower",'watchtower7','open the chest']
-levels[1]=[2,"There Must be Some Kinda Way Outta Here",'maze','just escape as quickly as possible']
-levels[2]=[3,"When the Levy Breaks",'cavern4','find the gems']
+levels[0]=[1,"Slope Test",'slopetest','up and down']
+levels[1]=[2,"All Along the WatchTower",'watchtower7','open the chest']
+levels[2]=[3,"There Must be Some Kinda Way Outta Here",'maze','just escape as quickly as possible']
+levels[3]=[4,"When the Levy Breaks",'cavern4','find the gems']
 
 
 FH=open(filename,'wb')
