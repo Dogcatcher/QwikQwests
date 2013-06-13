@@ -111,10 +111,11 @@ objectType[STAR]=pygame.image.load(iPath+'Star.png')
 
 QwikQwests=pygame.image.load('images/QwikQwests.png')
 
-number=[None]*4
+number=[None]*5
 
 number[0]=pygame.image.load('images/zero.png')
 number[1]=pygame.image.load('images/one.png')
 number[2]=pygame.image.load('images/two.png')
 number[3]=pygame.image.load('images/three.png')
+number[4]=pygame.image.load('images/four.png')
 levelText=pygame.image.load('images/level.png')
