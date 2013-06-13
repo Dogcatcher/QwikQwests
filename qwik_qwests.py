@@ -96,6 +96,11 @@ print("level is size x:{0} y:{1} z:{2}".format(max_x,max_y,max_z))
 max_x -= 1
 max_y -= 1
 max_z -= 1
+
+xSliceFrom=0
+xSliceTo=max_x+1
+ySliceFrom=0
+ySliceTo=max_y+1
 # work this out based on size of level read in
 
 screenOffsetX=0 + ((limit_x - max_x) / 2 * blockWidth)
@@ -128,32 +133,33 @@ def object_up(x,y,z):
     
 draw_inventory()
 
+start=0
+height=375
+end=start+height
+
+(rStart,gStart,bStart)=LIGHTBLUE
+(rEnd,gEnd,bEnd)=ORANGE
+(rDelta,gDelta,bDelta)=(float(rStart-rEnd)/height,float(gStart-gEnd)/height,float(bStart-bEnd)/height)
+
+SCREEN.fill(ORANGE)
+
+
+for n in range (start,end):
+    red=int(rStart-(rDelta*(n+1)))
+    green=int(gStart-(gDelta*(n+1)))
+    blue=int(bStart-(bDelta*(n+1)))  
+    pygame.draw.line(SCREEN,(red,green,blue), (0,n),(screenWidth,n))
+
+SCREEN.blit(QwikQwests, titleCenter)
+
 def draw_screen():
-
-    start=0
-    height=375
-    end=start+height
-
-    (rStart,gStart,bStart)=LIGHTBLUE
-    (rEnd,gEnd,bEnd)=ORANGE
-    (rDelta,gDelta,bDelta)=(float(rStart-rEnd)/height,float(gStart-gEnd)/height,float(bStart-bEnd)/height)
-
-    SCREEN.fill(ORANGE)
-
-    
-    for n in range (start,end):
-        red=int(rStart-(rDelta*(n+1)))
-        green=int(gStart-(gDelta*(n+1)))
-        blue=int(bStart-(bDelta*(n+1)))  
-        pygame.draw.line(SCREEN,(red,green,blue), (0,n),(screenWidth,n))
-
-    SCREEN.blit(QwikQwests, titleCenter)
+    print("DEBUG drawing screen")
     renderPanel()
     
     for z in range (0,(max_z+1)):
         offset=(z*-1*blockOffset)+screenOffsetY
-        for y in range (0,(max_y+1)):
-            for x in range (0,(max_x+1)):
+        for y in range (ySliceFrom,ySliceTo):
+            for x in range (xSliceFrom,xSliceTo):
                 block=testLevel[z][y][x]
                 
                 tallBlockOffset=0
@@ -327,6 +333,8 @@ def changeLevel(direction):
 
 #render_object(SCREEN,obj,player_x,player_y,player_z)
 
+xSliceFrom=0
+xSliceTo=max_x+1
 draw_screen()
                 
 while True:
@@ -432,19 +440,83 @@ while True:
                 max_z -= 1
                 screenOffsetX=0 + ((limit_x - max_x) / 2 * blockWidth)
                 screenOffsetY=274 + ((limit_y - max_y) / 2 * blockHeight)                
+
+
+
             if ((new_x,new_y,new_z) != (player_x,player_y,player_z)):
                 if (player_x < new_x):
                     # moving right
-                    for delta_x in range (1, (blockWidth - 1),2):
+                    xSliceFrom=player_x
+                    xSliceTo=player_x + 2
+                    ySliceFrom=player_y-1
+                    if (ySliceFrom < 0):
+                        ySliceFrom=0
+                    ySliceTo=player_y + 2
+                    if (ySliceTo > max_y):
+                        ySliceTo = max_y
+                    for delta_x in range (1, (blockWidth - 1),4):
                         if (player_z < new_z):
                             delta_z = int(delta_x * blockOffset / blockWidth) * -1
                         draw_screen()
                         pygame.display.flip()
+
+                if (player_x > new_x):
+                    # moving left
+                    xSliceFrom=player_x-1
+                    xSliceTo=player_x + 1
+                    ySliceFrom=player_y-1
+                    if (ySliceFrom < 0):
+                        ySliceFrom=0                
+                    ySliceTo=player_y + 2
+                    if (ySliceTo > max_y):
+                        ySliceTo = max_y                
+                    for delta_x in range (1,(blockWidth - 1),4):
+                        delta_x *= -1
+                        if (player_z < new_z):
+                            delta_z = int(delta_x * blockOffset / blockWidth) * -1
+                        draw_screen()
+                        pygame.display.flip()
+                        
+                if (player_y < new_y):
+                    # moving down
+                    xSliceFrom=player_x
+                    xSliceTo=player_x+1
+                    ySliceFrom=player_y-1
+                    if (ySliceFrom < 0):
+                        ySliceFrom=0                
+                    ySliceTo=player_y + 1
+                    if (ySliceTo > max_y):
+                        ySliceTo = max_y
+                    ySliceTo += 1
+                    for delta_y in range (1,((blockHeight - blockOffset) - 1),4):
+                        print("DEBUG delta_y {0}".format(delta_y))
+                        if (player_z < new_z):
+                            delta_z = int(delta_y * blockOffset / blockWidth) * -1
+                        draw_screen()
+                        pygame.display.flip()                        
+
+                if (player_y > new_y):
+                    # moving up
+                    xSliceFrom=player_x
+                    xSliceTo=player_x+1
+                    ySliceFrom=player_y-1
+                    if (ySliceFrom < 0):
+                        ySliceFrom=0                
+                    ySliceTo=player_y + 2
+                    if (ySliceTo > max_y):
+                        ySliceTo = max_y                
+                    for delta_y in range (1,((blockHeight - blockOffset) - 1),4):
+                        delta_y *= -1
+                        print("DEBUG delta_y {0}".format(delta_y))
+                        if (player_z < new_z):
+                            delta_z = int(delta_y * blockOffset / blockWidth) * -1
+                        draw_screen()
+                        pygame.display.flip()  
+
             delta_x = 0
             delta_y = 0
             delta_z = 0
             (player_x,player_y,player_z) = (new_x,new_y,new_z)
-            
             draw_screen()
 
     pygame.display.flip()
