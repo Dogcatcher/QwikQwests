@@ -3,8 +3,12 @@ import pygame
 numBlocks=27
 blockType=[None]*numBlocks
 
-EMPTY=0
 iPath='PlanetCuteSmall\\'
+EMPTY=0
+blockType[EMPTY]=pygame.Surface((50,40))
+blockType[EMPTY].fill((0,0,0))
+blockType[EMPTY].set_alpha(0)
+
 
 # ramps
 RAMP_N=1
