@@ -1,6 +1,6 @@
 # Weekend Game - Qwik Qwests
 
-import pygame, sys, pickle
+import pygame, sys, pickle, numpy as np
 from blocks import *
 from pygame.locals import *
 
@@ -99,13 +99,18 @@ screenOffsetX=0 + ((limit_x - max_x) / 2 * blockWidth)
 screenOffsetY=274 + ((limit_y - max_y) / 2 * blockHeight)
 
 playerObj=1
-playerInv=[None]*10
+#playerInv=[None]*10
+playerInv=np.zeros(10,dtype=np.int)
+
 indexInv=0
 
 def draw_inventory():
     print("Drawing inventory")
+    invOffset=200
     for i in range (1,11):
-        print("Slot {0} = {1}".format(i,playerInv[i-1]))
+        blockId=playerInv[i-1]
+        SCREEN.blit(blockType[blockId], (1000,(i*blockHeight+invOffset)))
+        print("Slot {0} = {1}".format(i,blockId))
 
 def object_right(x,y,z):
     if ((x < max_x) and (HEART >= testLevel[z][y][x+1] >= GEMBLUE)):
@@ -122,8 +127,6 @@ def object_down(x,y,z):
 def object_up(x,y,z):
     if ((y > min_y) and (HEART >= testLevel[z][y-1][x] >= GEMBLUE)):
         return True
-    
-draw_inventory()
 
 def draw_screen():
 
@@ -220,6 +223,7 @@ def draw_screen():
     #screen_x=player_x*blockWidth
     #screen_y=(player_y*blockHeight)+(screenOffsetY)-(player_z*blockOffset)
     #s.blit(objectType[playerObj], (screen_x, screen_y))
+    draw_inventory()
 
 
 def canMoveRight(px,py,pz):
@@ -394,48 +398,48 @@ while True:
                 playerInv[indexInv] = testLevel[player_z][player_y+1][player_x]
                 testLevel[player_z][player_y+1][player_x] = EMPTY
                 indexInv += 1
-                draw_inventory()
+                
 
             if (event.key == K_i and object_up(player_x,player_y,player_z)):
                 playerInv[indexInv] = testLevel[player_z][player_y-1][player_x]
                 testLevel[player_z][player_y-1][player_x] = EMPTY
                 indexInv += 1
-                draw_inventory()    
+                    
 
             if (event.key == K_i and object_left(player_x,player_y,player_z)):
                 playerInv[indexInv] = testLevel[player_z][player_y][player_x-1]
                 testLevel[player_z][player_y][player_x-1] = EMPTY
                 indexInv += 1
-                draw_inventory()
+                
 
-            if (event.key == K_i and object_down(player_x,player_y,player_z)):
+            if (event.key == K_i and object_right(player_x,player_y,player_z)):
                 playerInv[indexInv] = testLevel[player_z][player_y][player_x+1]
                 testLevel[player_z][player_y][player_x+1] = EMPTY
                 indexInv += 1
-                draw_inventory()
                 
-            if (event.key == K_o and indexInv > 0):
-                indexInv -= 1
-                testLevel[player_z][player_y+1][player_x] = playerInv[indexInv]
-                playerInv[indexInv] = EMPTY
-                draw_inventory()
                 
-##            if (event.key == K_l):
-##                level = (level + 1) % len(levelList)
-##                print("Loading level {0} - {1}".format(levelList[level][0],levelList[level][1]))
-##                (testLevel,spawn,objective)=load_level(levelList[level][2])
-##                player_x=spawn[0]
-##                player_y=spawn[1]
-##                player_z=spawn[2]
-##                max_x=len(testLevel[0][0])
-##                max_y=len(testLevel[0])
-##                max_z=len(testLevel)
-##                print("level is size x:{0} y:{1} z:{2}".format(max_x,max_y,max_z))
-##                max_x -= 1
-##                max_y -= 1
-##                max_z -= 1
-##                screenOffsetX=0 + ((limit_x - max_x) / 2 * blockWidth)
-##                screenOffsetY=274 + ((limit_y - max_y) / 2 * blockHeight)
+##            if (event.key == K_o and indexInv > 0):
+##                indexInv -= 1
+##                testLevel[player_z][player_y+1][player_x] = playerInv[indexInv]
+##                playerInv[indexInv] = EMPTY
+##                draw_inventory()
+                
+            if (event.key == K_l):
+                level = (level + 1) % len(levelList)
+                print("Loading level {0} - {1}".format(levelList[level][0],levelList[level][1]))
+                (testLevel,spawn,objective)=load_level(levelList[level][2])
+                player_x=spawn[0]
+                player_y=spawn[1]
+                player_z=spawn[2]
+                max_x=len(testLevel[0][0])
+                max_y=len(testLevel[0])
+                max_z=len(testLevel)
+                print("level is size x:{0} y:{1} z:{2}".format(max_x,max_y,max_z))
+                max_x -= 1
+                max_y -= 1
+                max_z -= 1
+                screenOffsetX=0 + ((limit_x - max_x) / 2 * blockWidth)
+                screenOffsetY=274 + ((limit_y - max_y) / 2 * blockHeight)
             if (player_x == objective[0]) and (player_y == objective[1]) and (player_z == objective[2]):
                 level = (level + 1) % len(levelList)
                 print("Loading level {0} - {1}".format(levelList[level][0],levelList[level][1]))
