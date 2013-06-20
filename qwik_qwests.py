@@ -60,7 +60,7 @@ levelList=pickle.load(listFH)
 listFH.close()
 
 level=0
-
+playerInv=np.zeros(10,dtype=np.int)
 
 def load_level(p):
     i='levels\\' + p
@@ -69,8 +69,9 @@ def load_level(p):
     s=pickle.load(FH)
     o=pickle.load(FH)
     FH.close()
+    playerInv=np.zeros(10,dtype=np.int)
     return(l,s,o)
-
+    
 print("Loading level {0} - {1}".format(levelList[level][0],levelList[level][1]))
 (testLevel,spawn,objective)=load_level(levelList[level][2])
 
@@ -100,16 +101,16 @@ screenOffsetY=274 + ((limit_y - max_y) / 2 * blockHeight)
 
 playerObj=1
 #playerInv=[None]*10
-playerInv=np.zeros(10,dtype=np.int)
+
 
 indexInv=0
 
 def draw_inventory():
     print("Drawing inventory")
-    invOffset=200
+    invOffset=120
     for i in range (1,11):
         blockId=playerInv[i-1]
-        SCREEN.blit(blockType[blockId], (1000,(i*blockHeight+invOffset)))
+        SCREEN.blit(blockType[blockId], (1050,((i*(20+blockHeight))+invOffset)))
         print("Slot {0} = {1}".format(i,blockId))
 
 def object_right(x,y,z):
@@ -440,6 +441,7 @@ while True:
                 max_z -= 1
                 screenOffsetX=0 + ((limit_x - max_x) / 2 * blockWidth)
                 screenOffsetY=274 + ((limit_y - max_y) / 2 * blockHeight)
+                playerInv=np.zeros(10,dtype=np.int)
             if (player_x == objective[0]) and (player_y == objective[1]) and (player_z == objective[2]):
                 level = (level + 1) % len(levelList)
                 print("Loading level {0} - {1}".format(levelList[level][0],levelList[level][1]))
