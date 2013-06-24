@@ -17,9 +17,48 @@ pygame.display.set_caption('Qwik Qwests')
 
 # load sprites
 
+class Character:
+    def setname(self, name):
+        self.name = name
+    def setimage(self, image):
+        self.image = objectType[image]
+    def setpos(self,x,y,z):
+        self.x = x
+        self.y = y
+        self.z = z
+    def setkeys(self,up,down,left,right,action):
+        self.upkey = up
+        self.downkey = down
+        self.leftkey = left
+        self.rightkey = right
+        self.actionkey = action
 
 
+P1=Character()
+P1.setname('Player 1')
+P1.setimage(BOY)
+P1.setpos(0,0,1)
+P1.setkeys(K_UP,K_DOWN,K_LEFT,K_RIGHT,K_RCTRL)
 
+
+P2=Character()
+P2.setname('Player 2')
+P2.setimage(CATGIRL)
+P2.setpos(10,10,1)
+P2.setkeys(K_w,K_s,K_a,K_d,K_LCTRL)
+
+P3=Character()
+P3.setname('Player 3')
+P3.setimage(HORNGIRL)
+P3.setpos(10,0,1)
+P3.setkeys(K_i,K_k,K_j,K_l,K_SPACE)
+
+P4=Character()
+P4.setname('Player 4')
+P4.setimage(PINKGIRL)
+P4.setpos(0,10,1)
+P4.setkeys(K_KP8,K_KP2,K_KP4,K_KP6,K_KP_ENTER)
+   
 def renderPanel():
     SCREEN.blit(levelText,(1050,100))
     SCREEN.blit(number[level+1],(1100,150))
@@ -209,15 +248,27 @@ def draw_screen():
                 #    #print("DEBUG: block {0}".format(testLevel[z][y-1][x]))
                 #if (z < y + 3) and (z == max_z) and (y > min_y) and (testLevel[z][y-1][x] == EMPTY):
                 #  SCREEN.blit(shadowType[SHADOW_S], ((x*blockWidth),(y*blockHeight+(offset)-blockOffset-tallBlockOffset)))                       
-                # Player 
-                if (z == player_z) and (x == player_x) and (y == player_y):
-                    # visual adjustment for when player is on a ramp
-                    ramp = 0
-                    below=testLevel[z-1][y][x]
-                    if (below == RAMP_N) or (below == RAMP_S) or (below == RAMP_E) or (below == RAMP_W):
-                        ramp = 10
-                    player=objectType[playerObj]
-                    SCREEN.blit(player, ((x*blockWidth+screenOffsetX),y*blockHeight+offset+ramp))
+                # Player
+
+
+                for player in (P1,P2,P3,P4):
+                    if (player.x,player.y,player.z) == (x,y,z):
+                        ramp = 0
+                        below=testLevel[z-1][y][x]
+                        if (below == RAMP_N) or (below == RAMP_S) or (below == RAMP_E) or (below == RAMP_W):
+                            ramp = 10
+                        SCREEN.blit(player.image,((x*blockWidth+screenOffsetX),y*blockHeight+offset+ramp))                        
+
+              
+##                if (z == player_z) and (x == player_x) and (y == player_y):
+##                    # visual adjustment for when player is on a ramp
+##                    ramp = 0
+##                    below=testLevel[z-1][y][x]
+##                    if (below == RAMP_N) or (below == RAMP_S) or (below == RAMP_E) or (below == RAMP_W):
+##                        ramp = 10
+##                    player=objectType[playerObj]
+##                    SCREEN.blit(player, ((x*blockWidth+screenOffsetX),y*blockHeight+offset+ramp))
+                    
                 if (z == objective[2] ) and (y == objective[1]) and (x == objective[0]):
                     SCREEN.blit(objectType[STAR], ((x*blockWidth+screenOffsetX),y*blockHeight+offset))
 
@@ -345,45 +396,36 @@ while True:
             if (event.key == K_ESCAPE):
                 pygame.quit()
                 sys.exit()
-            if (event.key == K_UP) and (canMoveUp(player_x,player_y,player_z) == True):
-                # Going down a North Ramp
-                if (testLevel[player_z-1][player_y][player_x] == RAMP_N):
-                    player_z-=1
-                # Going up a South Ramp
-                if (testLevel[player_z][player_y-1][player_x] == RAMP_S):
-                    player_z+=1
-                player_y-=1
-                #print("moved to x:{0}, y:{1}, z:{2}".format(player_x,player_y,player_z))
-                
-            if (event.key == K_DOWN) and (canMoveDown(player_x,player_y,player_z) == True):
-                # Going up a North Ramp
-                if (testLevel[player_z][player_y+1][player_x] == RAMP_N):
-                    player_z+=1
-                # Going down a South Ramp
-                if (testLevel[player_z-1][player_y][player_x] == RAMP_S):
-                    player_z-=1
-                player_y+=1
-                #print("moved to x:{0}, y:{1}, z:{2}".format(player_x,player_y,player_z))
 
-            if (event.key == K_LEFT) and (canMoveLeft(player_x,player_y,player_z) == True):
-                # Going up an East Ramp
-                if (testLevel[player_z][player_y][player_x-1] == RAMP_E):
-                    player_z+=1
-                # Going down a West Ramp
-                if (testLevel[player_z-1][player_y][player_x] == RAMP_W):
-                    player_z-=1
-                player_x-=1
-                #print("moved to x:{0}, y:{1}, z:{2}".format(player_x,player_y,player_z))
-                
-            if (event.key == K_RIGHT) and (canMoveRight(player_x,player_y,player_z) == True):
-                # Going down an East Ramp
-                if (testLevel[player_z-1][player_y][player_x] == RAMP_E):
-                    player_z-=1
-                # Going up a West Ramp
-                if (testLevel[player_z][player_y][player_x+1] == RAMP_W):
-                    player_z+=1
-                player_x+=1
-                #print("moved to x:{0}, y:{1}, z:{2}".format(player_x,player_y,player_z))
+            for player in (P1,P2,P3,P4):
+                if (event.key == player.upkey) and (canMoveUp(player.x,player.y,player.z) == True):
+                    if (testLevel[player.z-1][player.y][player.x] == RAMP_N): # Going down a North Ramp
+                        player.z-=1
+                    if (testLevel[player.z][player.y-1][player.x] == RAMP_S): # Going up a South Ramp
+                        player.z+=1
+                    player.y-=1
+                    
+                if (event.key == player.downkey) and (canMoveDown(player.x,player.y,player.z) == True):
+                    if (testLevel[player.z][player.y+1][player.x] == RAMP_N): # Going up a North Ramp
+                        player.z+=1
+                    if (testLevel[player.z-1][player.y][player.x] == RAMP_S): # Going down a South Ramp
+                        player.z-=1
+                    player.y+=1
+
+                if (event.key == player.leftkey) and (canMoveLeft(player.x,player.y,player.z) == True):
+                    if (testLevel[player.z][player.y][player.x-1] == RAMP_E): # Going up an East Ramp
+                        player.z+=1
+                    if (testLevel[player.z-1][player.y][player.x] == RAMP_W): # Going down a West Ramp
+                        player.z-=1
+                    player.x-=1
+                    
+                if (event.key == player.rightkey) and (canMoveRight(player.x,player.y,player.z) == True):
+                    if (testLevel[player.z-1][player.y][player.x] == RAMP_E): # Going down an East Ramp
+                        player.z-=1
+                    if (testLevel[player.z][player.y][player.x+1] == RAMP_W): # Going up a West Ramp
+                        player.z+=1
+                    player.x+=1
+
             #if(event.key == K_RIGHTBRACKET):
                 #return True
                 #goToNextLevel()
@@ -425,7 +467,7 @@ while True:
 ##                playerInv[indexInv] = EMPTY
 ##                draw_inventory()
                 
-            if (event.key == K_l):
+            if (event.key == K_EQUALS):
                 level = (level + 1) % len(levelList)
                 print("Loading level {0} - {1}".format(levelList[level][0],levelList[level][1]))
                 (testLevel,spawn,objective)=load_level(levelList[level][2])
