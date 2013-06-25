@@ -20,6 +20,8 @@ pygame.display.set_caption('Qwik Qwests')
 class Character:
     def setname(self, name):
         self.name = name
+    def setidx(self,idx):
+        self.idx = idx
     def setimage(self, image):
         self.image = objectType[image]
     def setpos(self,x,y,z):
@@ -35,26 +37,30 @@ class Character:
 
 
 P1=Character()
-P1.setname('Player 1')
+P1.setidx(1)
+P1.setname('Inky')
 P1.setimage(BOY)
 P1.setpos(0,0,1)
 P1.setkeys(K_UP,K_DOWN,K_LEFT,K_RIGHT,K_RCTRL)
 
 
 P2=Character()
-P2.setname('Player 2')
+P2.setidx(2)
+P2.setname('Stinky')
 P2.setimage(CATGIRL)
 P2.setpos(10,10,1)
 P2.setkeys(K_w,K_s,K_a,K_d,K_LCTRL)
 
 P3=Character()
-P3.setname('Player 3')
+P3.setidx(3)
+P3.setname('Winky')
 P3.setimage(HORNGIRL)
 P3.setpos(10,0,1)
 P3.setkeys(K_i,K_k,K_j,K_l,K_SPACE)
 
 P4=Character()
-P4.setname('Player 4')
+P4.setidx(4)
+P4.setname('Pinky')
 P4.setimage(PINKGIRL)
 P4.setpos(0,10,1)
 P4.setkeys(K_KP8,K_KP2,K_KP4,K_KP6,K_KP_ENTER)
@@ -114,9 +120,11 @@ def load_level(p):
 print("Loading level {0} - {1}".format(levelList[level][0],levelList[level][1]))
 (testLevel,spawn,objective)=load_level(levelList[level][2])
 
-player_x=spawn[0]
-player_y=spawn[1]
-player_z=spawn[2]
+for player in (P1,P2,P3,P4):
+    (player.x,player.y,player.z) = (spawn[player.idx-1][0],spawn[player.idx-1][1],spawn[player.idx-1][2])
+##player_x=spawn[0]
+##player_y=spawn[1]
+##player_z=spawn[2]
 
 min_x=0
 min_y=0
@@ -471,9 +479,11 @@ while True:
                 level = (level + 1) % len(levelList)
                 print("Loading level {0} - {1}".format(levelList[level][0],levelList[level][1]))
                 (testLevel,spawn,objective)=load_level(levelList[level][2])
-                player_x=spawn[0]
-                player_y=spawn[1]
-                player_z=spawn[2]
+##                player_x=spawn[0]
+##                player_y=spawn[1]
+##                player_z=spawn[2]
+                for player in (P1,P2,P3,P4):
+                    (player.x,player.y,player.z) = (spawn[player.idx-1][0],spawn[player.idx-1][1],spawn[player.idx-1][2])                
                 max_x=len(testLevel[0][0])
                 max_y=len(testLevel[0])
                 max_z=len(testLevel)
@@ -484,22 +494,22 @@ while True:
                 screenOffsetX=0 + ((limit_x - max_x) / 2 * blockWidth)
                 screenOffsetY=274 + ((limit_y - max_y) / 2 * blockHeight)
                 playerInv=np.zeros(10,dtype=np.int)
-            if (player_x == objective[0]) and (player_y == objective[1]) and (player_z == objective[2]):
-                level = (level + 1) % len(levelList)
-                print("Loading level {0} - {1}".format(levelList[level][0],levelList[level][1]))
-                (testLevel,spawn,objective)=load_level(levelList[level][2])
-                player_x=spawn[0]
-                player_y=spawn[1]
-                player_z=spawn[2]
-                max_x=len(testLevel[0][0])
-                max_y=len(testLevel[0])
-                max_z=len(testLevel)
-                print("level is size x:{0} y:{1} z:{2}".format(max_x,max_y,max_z))
-                max_x -= 1
-                max_y -= 1
-                max_z -= 1
-                screenOffsetX=0 + ((limit_x - max_x) / 2 * blockWidth)
-                screenOffsetY=274 + ((limit_y - max_y) / 2 * blockHeight)                
+##            if (player_x == objective[0]) and (player_y == objective[1]) and (player_z == objective[2]):
+##                level = (level + 1) % len(levelList)
+##                print("Loading level {0} - {1}".format(levelList[level][0],levelList[level][1]))
+##                (testLevel,spawn,objective)=load_level(levelList[level][2])
+##                player_x=spawn[0]
+##                player_y=spawn[1]
+##                player_z=spawn[2]
+##                max_x=len(testLevel[0][0])
+##                max_y=len(testLevel[0])
+##                max_z=len(testLevel)
+##                print("level is size x:{0} y:{1} z:{2}".format(max_x,max_y,max_z))
+##                max_x -= 1
+##                max_y -= 1
+##                max_z -= 1
+##                screenOffsetX=0 + ((limit_x - max_x) / 2 * blockWidth)
+##                screenOffsetY=274 + ((limit_y - max_y) / 2 * blockHeight)                
                 
             
             draw_screen()
