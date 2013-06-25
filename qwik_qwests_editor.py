@@ -131,12 +131,13 @@ screenOffset=220
 blockWidth=50
 blockHeight=40
 
-spawn=[0,0,3]
+spawn=[[0,0,3],[10,10,3],[0,10,3],[10,0,3]]
 objective=[9,5,5]
 
-player_x=spawn[0]
-player_y=spawn[1]
-player_z=spawn[2]
+spawnPoint=0
+player_x=spawn[1][0]
+player_y=spawn[1][1]
+player_z=spawn[1][2]
 
 
 sdebug=2
@@ -229,8 +230,9 @@ def draw_screen():
                     if (showS5 == True)  and (z < y + 3) and (z == max_z) and (y > min_y) and (testLevel[z][y-1][x] == EMPTY):
                        SCREEN.blit(shadowType[SHADOW_S], ((x*blockWidth),(y*blockHeight+(offset)-blockOffset-tallBlockOffset)))                   
                 # spawn point
-                if (z == spawn[2]) and (y == spawn[1]) and (x == spawn[0]):
-                    SCREEN.blit(objectType[BOY], ((x*blockWidth),y*blockHeight+offset))                    
+                for a in range (0,4):
+                    if (z == spawn[a][2]) and (y == spawn[a][1]) and (x == spawn[a][0]):
+                        SCREEN.blit(objectType[BOY+a], ((x*blockWidth),y*blockHeight+offset))                    
 
                 # objective point
                 if (z == objective[2]) and (y == objective[1]) and (x == objective[0]):
@@ -442,8 +444,9 @@ while True:
                 max_x-=1
                 if (player_x > max_x):
                     player_x = max_x
-                if (spawn[0] > max_x):
-                    spawn[0] = max_x
+                for a in range (0,4):
+                    if (spawn[a][0] > max_x):
+                        spawn[a][0] = max_x
                 if (objective[0] > max_x):
                     objective[0] = max_x
             if (event.key == K_2) and (max_x < limit_x):
@@ -456,8 +459,9 @@ while True:
                 max_y-=1
                 if (player_y > max_y):
                     player_y = max_y
-                if (spawn[1] > max_y):
-                    spawn[1] = max_y
+                for a in range [0,4]:
+                    if (spawn[a][1] > max_y):
+                        spawn[a][1] = max_y
                 if (objective[1] > max_y):
                     objective[1] = max_y            
             if (event.key == K_4) and (max_y < limit_y):
@@ -470,8 +474,9 @@ while True:
                 max_z-=1
                 if (player_z > max_z):
                     player_z = max_z
-                if (spawn[2] > max_z):
-                    spawn[2] = max_z
+                for a in range (0,4):
+                    if (spawn[a][2] > max_z):
+                        spawn[a][2] = max_z
                 if (objective[2] > max_z):
                     objective[2] = max_z            
             if (event.key == K_6) and (max_z < limit_z):
@@ -518,22 +523,24 @@ while True:
                     max_x -= 1
                     max_y -= 1
                     max_z -= 1
+
+                    for a in range (0,4):
+                        if (spawn[a][0] > max_x):
+                            spawn[a][0] = max_x
+                        if (spawn[a][1] > max_y):
+                            spawn[a][1] = max_y
+                        if (spawn[a][2] > max_z):
+                            spawn[a][2] = max_z
                     if (player_x > max_x):
-                        player_x = max_x
-                    if (spawn[0] > max_x):
-                        spawn[0] = max_x
+                        player_x = max_x                            
                     if (objective[0] > max_x):
                         objective[0] = max_x
                     if (player_y > max_y):
                         player_y = max_y
-                    if (spawn[1] > max_y):
-                        spawn[1] = max_y
                     if (objective[1] > max_y):
                         objective[1] = max_y
                     if (player_z > max_z):
                         player_z = max_z
-                    if (spawn[2] > max_z):
-                        spawn[2] = max_z
                     if (objective[2] > max_z):
                         objective[2] = max_z                    
             if (event.key == K_x):
@@ -558,9 +565,10 @@ while True:
 
             if (event.key == K_p):
                 print("setting player spawn point")
-                spawn[0] = player_x
-                spawn[1] = player_y
-                spawn[2] = player_z
+                spawn[spawnPoint][0] = player_x
+                spawn[spawnPoint][1] = player_y
+                spawn[spawnPoint][2] = player_z
+                spawnPoint = (spawnPoint + 1) %4
 
             if (event.key == K_o):
                 print("setting player objective point")
