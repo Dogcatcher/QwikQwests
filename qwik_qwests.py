@@ -292,6 +292,13 @@ def canMoveDown(px,py,pz):
 def changeLevel(direction):
     if(direction == "next"):
         return True
+       
+def collision(dx,dy,dz):
+    collide=False
+    for others in (P1,P2,P3,P4):
+        if player.x+dx == others.x and player.y+dy == others.y and player.z+dz == others.z:
+            collide = True
+    return collide
 
 draw_screen()
                 
@@ -308,56 +315,73 @@ while True:
                 sys.exit()
 
             for player in (P1,P2,P3,P4):
+                new_x = player.x
+                new_y = player.y
+                new_z = player.z
                 if (event.key == player.upkey) and (canMoveUp(player.x,player.y,player.z) == True):
                     if (testLevel[player.z-1][player.y][player.x] == RAMP_N): # Going down a North Ramp
-                        player.z-=1
+                        new_z = player.z-1
                     if (testLevel[player.z][player.y-1][player.x] == RAMP_S): # Going up a South Ramp
-                        player.z+=1
-                    player.y-=1
-                    
+                        new_z = player.z+1
+                    new_y = player.y-1
+                    vacant=True
+                    for occupied in (P1,P2,P3,P4):
+                        if (occupied != player):
+                            if (new_x == occupied.x and new_y == occupied.y and new_z == occupied.z):
+                                vacant=False
+                    if (vacant == True):
+                        player.x = new_x
+                        player.y = new_y
+                        player.z = new_z
+                                
                 if (event.key == player.downkey) and (canMoveDown(player.x,player.y,player.z) == True):
                     if (testLevel[player.z][player.y+1][player.x] == RAMP_N): # Going up a North Ramp
-                        player.z+=1
+                        new_z = player.z+1
                     if (testLevel[player.z-1][player.y][player.x] == RAMP_S): # Going down a South Ramp
-                        player.z-=1
-                    player.y+=1
+                        new_z = player.z-1
+                    new_y = player.y+1
+                    vacant=True
+                    for occupied in (P1,P2,P3,P4):
+                        if (occupied != player):
+                            if (new_x == occupied.x and new_y == occupied.y and new_z == occupied.z):
+                                vacant=False
+                    if (vacant == True):
+                        player.x = new_x
+                        player.y = new_y
+                        player.z = new_z
 
                 if (event.key == player.leftkey) and (canMoveLeft(player.x,player.y,player.z) == True):
                     if (testLevel[player.z][player.y][player.x-1] == RAMP_E): # Going up an East Ramp
-                        player.z+=1
+                        new_z = player.z+1
                     if (testLevel[player.z-1][player.y][player.x] == RAMP_W): # Going down a West Ramp
-                        player.z-=1
-                    player.x-=1
-                    
+                        new_z = player.z-1
+                    new_x = player.x-1
+                    vacant=True
+                    for occupied in (P1,P2,P3,P4):
+                        if (occupied != player):
+                            if (new_x == occupied.x and new_y == occupied.y and new_z == occupied.z):
+                                vacant=False
+                    if (vacant == True):
+                        player.x = new_x
+                        player.y = new_y
+                        player.z = new_z
+                        
                 if (event.key == player.rightkey) and (canMoveRight(player.x,player.y,player.z) == True):
                     if (testLevel[player.z-1][player.y][player.x] == RAMP_E): # Going down an East Ramp
-                        player.z-=1
+                        new_z = player.z-1
                     if (testLevel[player.z][player.y][player.x+1] == RAMP_W): # Going up a West Ramp
-                        player.z+=1
-                    player.x+=1
+                        new_z = player.z+1
+                    new_x = player.x+1
+                    vacant=True
+                    for occupied in (P1,P2,P3,P4):
+                        if (occupied != player):
+                            if (new_x == occupied.x and new_y == occupied.y and new_z == occupied.z):
+                                vacant=False
+                    if (vacant == True):
+                        player.x = new_x
+                        player.y = new_y
+                        player.z = new_z
 
-            if (event.key == K_i and object_down(player_x,player_y,player_z)):
-                playerInv[indexInv] = testLevel[player_z][player_y+1][player_x]
-                testLevel[player_z][player_y+1][player_x] = EMPTY
-                indexInv += 1
-                
-
-            if (event.key == K_i and object_up(player_x,player_y,player_z)):
-                playerInv[indexInv] = testLevel[player_z][player_y-1][player_x]
-                testLevel[player_z][player_y-1][player_x] = EMPTY
-                indexInv += 1
-                    
-
-            if (event.key == K_i and object_left(player_x,player_y,player_z)):
-                playerInv[indexInv] = testLevel[player_z][player_y][player_x-1]
-                testLevel[player_z][player_y][player_x-1] = EMPTY
-                indexInv += 1
-                
-
-            if (event.key == K_i and object_right(player_x,player_y,player_z)):
-                playerInv[indexInv] = testLevel[player_z][player_y][player_x+1]
-                testLevel[player_z][player_y][player_x+1] = EMPTY
-                indexInv += 1
                 
             if (event.key == K_EQUALS):
                 level = (level + 1) % len(levelList)
