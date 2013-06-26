@@ -33,6 +33,7 @@ class Character:
         self.rightkey = right
         self.actionkey = action
     def initinv(self):
+        self.invidx=0
         self.inventory=np.zeros(10,dtype=np.int)
 
 P1=Character()
@@ -41,6 +42,7 @@ P1.setname('Inky')
 P1.setimage(BOY)
 P1.setpos(0,0,1)
 P1.setkeys(K_UP,K_DOWN,K_LEFT,K_RIGHT,K_RCTRL)
+P1.initinv()
 
 P2=Character()
 P2.setidx(2)
@@ -48,6 +50,7 @@ P2.setname('Stinky')
 P2.setimage(CATGIRL)
 P2.setpos(10,10,1)
 P2.setkeys(K_w,K_s,K_a,K_d,K_LCTRL)
+P2.initinv()
 
 P3=Character()
 P3.setidx(3)
@@ -55,6 +58,7 @@ P3.setname('Winky')
 P3.setimage(HORNGIRL)
 P3.setpos(10,0,1)
 P3.setkeys(K_i,K_k,K_j,K_l,K_SPACE)
+P3.initinv()
 
 P4=Character()
 P4.setidx(4)
@@ -62,6 +66,7 @@ P4.setname('Pinky')
 P4.setimage(PINKGIRL)
 P4.setpos(0,10,1)
 P4.setkeys(K_KP8,K_KP2,K_KP4,K_KP6,K_KP_ENTER)
+P4.initinv()
    
 def renderPanel():
     SCREEN.blit(levelText,(1050,100))
@@ -132,9 +137,10 @@ indexInv=0
 
 def draw_inventory():
     invOffset=120
-    for i in range (1,11):
-        blockId=playerInv[i-1]
-        SCREEN.blit(blockType[blockId], (1050,((i*(20+blockHeight))+invOffset)))
+    for player in (P1,P2,P3,P4):
+        for i in range (1,11):
+            blockId=player.inventory[i-1]
+            SCREEN.blit(blockType[blockId], (900+(50*player.idx),((i*(20+blockHeight))+invOffset)))
 
 def object_right(x,y,z):
     if ((x < max_x) and (HEART >= testLevel[z][y][x+1] >= GEMBLUE)):
@@ -238,7 +244,7 @@ def draw_screen():
 
 def canMoveRight(px,py,pz):
     if (px < max_x):
-        if (testLevel[pz][py][px + 1] == EMPTY) and (testLevel[pz-1][py][px+1] < WATERBLOCK):
+        if ((testLevel[pz][py][px + 1] == EMPTY) or (HEART >= testLevel[pz][py][px+1] >= GEMBLUE)) and (testLevel[pz-1][py][px+1] < WATERBLOCK):
             if (testLevel[pz-1][py][px+1] == EMPTY):
                 if (testLevel[pz-1][py][px] == RAMP_E):  
                     return True
@@ -251,7 +257,7 @@ def canMoveRight(px,py,pz):
 
 def canMoveLeft(px,py,pz):
     if (px > min_x):
-        if (testLevel[pz][py][px-1] == EMPTY) and (testLevel[pz-1][py][px-1] < WATERBLOCK):
+        if ((testLevel[pz][py][px-1] == EMPTY) or (HEART >= testLevel[pz][py][px-1] >= GEMBLUE)) and (testLevel[pz-1][py][px-1] < WATERBLOCK):
             if (testLevel[pz-1][py][px-1] == EMPTY):
                 if (testLevel[pz-1][py][px] == RAMP_W):  
                     return True
@@ -264,7 +270,7 @@ def canMoveLeft(px,py,pz):
 
 def canMoveUp(px,py,pz):
     if (py > min_y):
-        if (testLevel[pz][py-1][px] == EMPTY) and (testLevel[pz-1][py-1][px] < WATERBLOCK):
+        if ((testLevel[pz][py-1][px] == EMPTY) or (HEART >= testLevel[pz][py-1][px] >= GEMBLUE)) and (testLevel[pz-1][py-1][px] < WATERBLOCK):
             if (testLevel[pz-1][py-1][px] == EMPTY):
                 if (testLevel[pz-1][py][px] == RAMP_N):  
                     return True
@@ -277,7 +283,7 @@ def canMoveUp(px,py,pz):
 
 def canMoveDown(px,py,pz):
     if (py < max_y):
-        if (testLevel[pz][py+1][px] == EMPTY) and (testLevel[pz-1][py+1][px] < WATERBLOCK):
+        if ((testLevel[pz][py+1][px] == EMPTY) or (HEART >= testLevel[pz][py+1][px] >= GEMBLUE)) and (testLevel[pz-1][py+1][px] < WATERBLOCK):
             if (testLevel[pz-1][py+1][px] == EMPTY):
                 if (testLevel[pz-1][py][px] == RAMP_S):  
                     return True
@@ -381,6 +387,11 @@ while True:
                         player.x = new_x
                         player.y = new_y
                         player.z = new_z
+                        
+                if (event.key == player.actionkey) and (HEART >= testLevel[player.z][player.y][player.x] >= GEMBLUE):
+                    player.inventory[player.invidx] = testLevel[player.z][player.y][player.x]
+                    testLevel[player.z][player.y][player.x] = EMPTY
+                    player.invidx += 1
 
                 
             if (event.key == K_EQUALS):
