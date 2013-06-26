@@ -1,4 +1,4 @@
-# Weekend Game - Qwik Qwests
+# Weekend Game - Qwik Qwests   
 
 import pygame, sys, pickle, numpy as np
 import time
