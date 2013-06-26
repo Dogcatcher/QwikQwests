@@ -5,8 +5,6 @@ from pygame.locals import *
 from blocks import *
 from tkinter.filedialog import askopenfilename, asksaveasfilename
 
-
-
 pygame.init()
 
 FPS=30
@@ -29,10 +27,6 @@ BROWN = (150,100,50)
 titleCenter = QwikQwests.get_rect()
 titleCenter.center=(400,50)
 
-#numpy.zeros((8,8,8))
-
-#blockType[0]=Brown_Block
-
 min_x=0
 min_y=0
 min_z=0
@@ -42,14 +36,6 @@ max_z=5
 limit_x=19
 limit_y=11
 limit_z=11
-
-#r_x=max_x+1
-#r_y=max_y+1
-#r_z=max_z+1
-##
-##testLevel=[[[EMPTY for x in range(r_x)]for y in range(r_y)]for z in range(r_z)]
-
-# testLevel=[None]*6;
 
 testLevel=np.zeros(((max_z+1),(max_y+1),(max_x+1)),dtype=np.int)
 
@@ -61,67 +47,6 @@ emptyLayer=[
             [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY],
             [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY]
             ]
-
-##testLevel[0]=[
-##            [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY],
-##            [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY],
-##            [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY],
-##            [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY],
-##            [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY],
-##            [DIRTBLOCK,DIRTBLOCK,DIRTBLOCK,DIRTBLOCK,DIRTBLOCK,DIRTBLOCK,DIRTBLOCK,DIRTBLOCK,DIRTBLOCK,DIRTBLOCK]
-##            ]
-##
-##testLevel[1]=[
-##            [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,DIRTBLOCK,DIRTBLOCK,DIRTBLOCK],
-##            [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,DIRTBLOCK,DIRTBLOCK,DIRTBLOCK],
-##            [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,DIRTBLOCK,DIRTBLOCK,DIRTBLOCK],
-##            [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,BROWNBLOCK,EMPTY,EMPTY],
-##            [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,STONEBLOCK,STONEBLOCK,STONEBLOCK,STONEBLOCK,STONEBLOCK],
-##            [GRASSBLOCK,GRASSBLOCK,GRASSBLOCK,GRASSBLOCK,GRASSBLOCK,STONEBLOCK,STONEBLOCK,STONEBLOCK,STONEBLOCK,STONEBLOCK]
-##            ]
-##
-##testLevel[2]=[
-##            [STONEBLOCK,STONEBLOCK,WATERBLOCK,WATERBLOCK,STONEBLOCK,STONEBLOCK,STONEBLOCK,STONEBLOCK,STONEBLOCK,STONEBLOCK],
-##            [STONEBLOCK,EMPTY,EMPTY,EMPTY,EMPTY,STONEBLOCK,STONEBLOCK,BROWNBLOCK,BROWNBLOCK,BROWNBLOCK],
-##            [STONEBLOCK,STONEBLOCK,WATERBLOCK,WATERBLOCK,STONEBLOCK,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY],
-##            [GRASSBLOCK,GRASSBLOCK,WATERBLOCK,WATERBLOCK,GRASSBLOCK,EMPTY,WOODBLOCK,EMPTY,EMPTY,EMPTY],
-##            [GRASSBLOCK,GRASSBLOCK,WATERBLOCK,WATERBLOCK,GRASSBLOCK,STONEBLOCK,EMPTY,EMPTY,EMPTY,EMPTY],
-##            [GRASSBLOCK,GRASSBLOCK,WATERBLOCK,WATERBLOCK,GRASSBLOCK,STONEBLOCK,EMPTY,EMPTY,EMPTY,EMPTY]
-##            ]
-##
-##testLevel[3]=[
-##            [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,WALLBLOCK,EMPTY,EMPTY,EMPTY,EMPTY],
-##            [EMPTY,RAMP_W,STONEBLOCK,STONEBLOCK,RAMP_E,EMPTY,EMPTY,BROWNBLOCK,EMPTY,EMPTY],
-##            [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY],
-##            [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY],
-##            [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,WOODBLOCK,EMPTY,EMPTY,EMPTY],
-##            [EMPTY,TREESHORT,EMPTY,EMPTY,ROCK,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY]
-##            ]
-##
-##testLevel[4]=[
-##            [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,WALLBLOCK,EMPTY,EMPTY,EMPTY,EMPTY], 
-##            [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,BROWNBLOCK,EMPTY,EMPTY],
-##            [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY],
-##            [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY],
-##            [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,WOODBLOCK,EMPTY,EMPTY,EMPTY],
-##            [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY]
-##            ]
-##
-##testLevel[5]=[
-##            [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,WALLBLOCK,EMPTY,EMPTY,EMPTY,EMPTY], 
-##            [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY],
-##            [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY],
-##            [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY],
-##            [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,WATERBLOCK,EMPTY,EMPTY,EMPTY],
-##            [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY]
-##            ]
-       
-#def render (s,l,x,y):
-    # s=surface l=3d level array, x=x, y=y
-    # pass 3d array into function
-    
-
-    #s.blit
 
 def fill_gradient(surface, color, gradient, rect=None, vertical=True, forward=True):
     return True
@@ -159,10 +84,7 @@ def draw_screen():
                 tallBlockOffset=0
                 if (block == DOORTALLC):
                     tallBlockoffset=2*blockOffset
-
-                # possile bug with high south shadow at back of tall blocks - well tall blocks in general
-                # suspect need shadow shift for all tall blocks - fix another day
-                
+          
                 if (block > 0):
 
                     
@@ -219,14 +141,10 @@ def draw_screen():
                         if (showSIDEW == True) and (z < max_z) and (x > min_x) and (y < max_y) and (RAMP_W < testLevel[z][y+1][x-1] < ROCK) and (testLevel[z][y+1][x] == EMPTY) and (testLevel[z+1][y+1][x] == EMPTY):
                            SCREEN.blit(shadowType[SHADOW_SIDEW], ((x*blockWidth),(y*blockHeight+(offset))))
 
-                        # **BUG** - not totally happy with this processing - particularly on ramps/static objects
-                        # need to detect empty space behind it and not render
                         # South (top)
                         if (showS2 == True)  and (z < y + 3 )and (z < max_z) and (y > min_y) and (testLevel[z+1][y][x] == EMPTY) and (testLevel[z][y-1][x] == EMPTY) and (testLevel[z+1][y-1][x] == EMPTY):
                            SCREEN.blit(shadowType[SHADOW_S], ((x*blockWidth),(y*blockHeight+(offset)-blockOffset-tallBlockOffset)))
                     # South (top ceiling)
-                    #if (x == 6) and (y == 3) and (z == 5):
-                    #    print("DEBUG: block {0}".format(testLevel[z][y-1][x]))
                     if (showS5 == True)  and (z < y + 3) and (z == max_z) and (y > min_y) and (testLevel[z][y-1][x] == EMPTY):
                        SCREEN.blit(shadowType[SHADOW_S], ((x*blockWidth),(y*blockHeight+(offset)-blockOffset-tallBlockOffset)))                   
                 # spawn point
@@ -240,20 +158,12 @@ def draw_screen():
 
                 # Cursor 
                 if (z == player_z) and (x == player_x) and (y == player_y):
-                    #below=testLevel[z-1][y][x]
-                    #if (below == RAMP_N) or (below == RAMP_S) or (below == RAMP_E) or (below == RAMP_W):
-                    #    ramp = 20
                     if (cursorBlock > 0):
                         SCREEN.blit(blockType[cursorBlock], ((x*blockWidth),y*blockHeight+offset))
                     SCREEN.blit(objectType[SELECTOR], ((x*blockWidth),y*blockHeight+offset-blockOffset))
 
-    #screen_x=player_x*blockWidth
-    #screen_y=(player_y*blockHeight)+(screenOffset)-(player_z*blockOffset)
-    #s.blit(objectType[playerObj], (screen_x, screen_y))
-
 
 def canMoveRight(px,py,pz):
-    #print("px:{0} py:{1} pz:{2} max_x:{3} block:{4}".format(px,py,pz,max_x,testLevel[pz][py][px+1]))
     if (px < max_x):
         print("Not at the far right edge")
         if (testLevel[pz][py][px + 1] == EMPTY) and (testLevel[pz-1][py][px+1] != WATERBLOCK):
@@ -275,7 +185,6 @@ def canMoveRight(px,py,pz):
     return False
 
 def canMoveLeft(px,py,pz):
-    #print("px:{0} py:{1} pz:{2} min_x:{3} block:{4}".format(px,py,pz,min_x,testLevel[pz][py][px-1]))
     if (px > min_x):
         print("Not at the far left edge")
         if (testLevel[pz][py][px-1] == EMPTY) and (testLevel[pz-1][py][px-1] != WATERBLOCK):
@@ -319,7 +228,6 @@ def canMoveUp(px,py,pz):
     return False
 
 def canMoveDown(px,py,pz):
-    #print("px:{0} py:{1} pz:{2} max_y:{3} block:{4}".format(px,py,pz,max_y,testLevel[pz][py+1][px]))
     if (py < max_y):
         print("Not at the far bottom edge")
         if (testLevel[pz][py+1][px] == EMPTY) and (testLevel[pz-1][py+1][px] != WATERBLOCK):
@@ -346,17 +254,10 @@ def canMoveDown(px,py,pz):
 
 
 
-#obj = 0
-
-
-#render_object(SCREEN,obj,player_x,player_y,player_z)
-
 draw_screen()                
 while True:
 
     
-    #SCREEN.blit(objectType[obj], (player_x, player_y+screenOffset))
-    #render_object(SCREEN,obj,player_x,player_y,player_z)
       
     for event in pygame.event.get():
         if event.type==QUIT:
@@ -368,42 +269,18 @@ while True:
                 pygame.quit()
                 sys.exit()
             if (event.key == K_UP) and (player_y > min_y):
-                # Going down a North Ramp
-                #if (testLevel[player_z-1][player_y][player_x] == RAMP_N):
-                #    player_z-=1
-                # Going up a South Ramp
-                #if (testLevel[player_z][player_y-1][player_x] == RAMP_S):
-                #    player_z+=1
                 player_y-=1
                 print("moved to x:{0}, y:{1}, z:{2}".format(player_x,player_y,player_z))
                 
             if (event.key == K_DOWN) and (player_y < max_y):
-                # Going up a North Ramp
-                #if (testLevel[player_z][player_y+1][player_x] == RAMP_N):
-                #    player_z+=1
-                # Going down a South Ramp
-                #if (testLevel[player_z-1][player_y][player_x] == RAMP_S):
-                #    player_z-=1
                 player_y+=1
                 print("moved to x:{0}, y:{1}, z:{2}".format(player_x,player_y,player_z))
                 
             if (event.key == K_LEFT) and (player_x > min_x):
-                # Going up an East Ramp
-                #if (testLevel[player_z][player_y][player_x-1] == RAMP_E):
-                #    player_z+=1
-                # Going down a West Ramp
-                #if (testLevel[player_z-1][player_y][player_x] == RAMP_W):
-                #    player_z-=1
                 player_x-=1
                 print("moved to x:{0}, y:{1}, z:{2}".format(player_x,player_y,player_z))
                 
             if (event.key == K_RIGHT) and (player_x < max_x):
-                # Going down an East Ramp
-                #if (testLevel[player_z-1][player_y][player_x] == RAMP_E):
-                #    player_z-=1
-                # Going up a West Ramp
-                #if (testLevel[player_z][player_y][player_x+1] == RAMP_W):
-                #    player_z+=1
                 player_x+=1
                 print("moved to x:{0}, y:{1}, z:{2}".format(player_x,player_y,player_z))
 
@@ -432,12 +309,6 @@ while True:
                 print("setting x:{0} y:{1} z:{2} to block {3}".format(player_x,player_y,player_z,cursorBlock))
                 testLevel[player_z][player_y][player_x] = cursorBlock
             
-            #if (event.key >= K_0) and (event.key <= K_9):
-            #    keyChar = pygame.key.name(event.key)
-            #    testLevel[player_z][player_y][player_x] = int(keyChar)
-            #    print("setting x:{0} y:{1} z{2} to {3}".format(player_x,player_y,player_z,keyChar))
-
-
             if (event.key == K_1) and (max_x > 0):
                 newLevel=np.delete(testLevel,max_x,axis=2)
                 testLevel=newLevel
@@ -485,15 +356,11 @@ while True:
                 max_z+=1
                 
             if (event.key == K_s):
-                #fileName=input('Save file name? ')
                 root=tkinter.Tk()
                 root.withdraw()
                 fileName = asksaveasfilename(parent=root)
-                # bug verify input - cancel causes crash                   
                 root.destroy()
                 if (fileName):
-                    #path='levels\\' + fileName
-                    #saveFile=open(path,'wb')
                     saveFile=open(fileName,'wb')
                     pickle.dump(testLevel,saveFile)
                     pickle.dump(spawn,saveFile)
@@ -502,20 +369,16 @@ while True:
                     print("level saved")
 
             if (event.key == K_w):
-                #fileName=input('Load file name? ')
                 root=tkinter.Tk()
                 root.withdraw()
                 fileName = askopenfilename(parent=root)
                 root.destroy()
                 if (fileName):
-                    #path='levels\\' + fileName
-                    #loadFile=open(path,'rb')
                     loadFile=open(fileName,'rb')
                     testLevel=pickle.load(loadFile)
                     spawn=pickle.load(loadFile)
                     objective=pickle.load(loadFile)
                     loadFile.close()
-                    # BUG after load resize array max_* variables or reset cursor to 0,0,0
                     max_x=len(testLevel[0][0])
                     max_y=len(testLevel[0])
                     max_z=len(testLevel)
@@ -546,10 +409,6 @@ while True:
             if (event.key == K_x):
                 print("clearing block")
                 testLevel[player_z][player_y][player_x] = 0
-
-            #if (event.key == K_c):
-            #    print("clearing layer {0}".format(player_z))
-            #    testLevel[player_z]=emptyLayer
 
             if (event.key == K_q):
                 print("shifting everything up")
