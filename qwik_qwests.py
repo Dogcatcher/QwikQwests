@@ -1,6 +1,7 @@
 # Weekend Game - Qwik Qwests
 
 import pygame, sys, pickle, numpy as np
+import time
 from blocks import *
 from pygame.locals import *
 
@@ -14,6 +15,7 @@ screenWidth=1200
 
 SCREEN=pygame.display.set_mode((screenWidth,screenHeight),0,32)
 pygame.display.set_caption('Qwik Qwests')
+bubble=pygame.image.load(iPath+'Speech Bubble.png')
 
 class Character:
     def setname(self, name):
@@ -35,6 +37,12 @@ class Character:
     def initinv(self):
         self.invidx=0
         self.inventory=np.zeros(10,dtype=np.int)
+    def say(self,say,secs):
+        self.speaking = True
+        self.speech = say
+        self.saysecs = secs
+        self.sayage = time.mktime(time.gmtime())
+        
 
 P1=Character()
 P1.setidx(1)
@@ -43,6 +51,7 @@ P1.setimage(BOY)
 P1.setpos(0,0,1)
 P1.setkeys(K_UP,K_DOWN,K_LEFT,K_RIGHT,K_RCTRL)
 P1.initinv()
+P1.say('hello',5)
 
 P2=Character()
 P2.setidx(2)
@@ -51,6 +60,7 @@ P2.setimage(CATGIRL)
 P2.setpos(10,10,1)
 P2.setkeys(K_w,K_s,K_a,K_d,K_LCTRL)
 P2.initinv()
+P2.say('bonjour',5)
 
 P3=Character()
 P3.setidx(3)
@@ -59,6 +69,7 @@ P3.setimage(HORNGIRL)
 P3.setpos(10,0,1)
 P3.setkeys(K_i,K_k,K_j,K_l,K_SPACE)
 P3.initinv()
+P3.say('hola',5)
 
 P4=Character()
 P4.setidx(4)
@@ -67,7 +78,22 @@ P4.setimage(PINKGIRL)
 P4.setpos(0,10,1)
 P4.setkeys(K_KP8,K_KP2,K_KP4,K_KP6,K_KP_ENTER)
 P4.initinv()
-   
+P4.say('guten tag',5)
+
+
+                 
+
+##P5=Character()
+##P5.setidx(5)
+##P5.setname('Pinky')
+##P5.setimage(PINKGIRL)
+##P5.setpos(2,6,1)
+##P5.setkeys(K_KP8,K_KP2,K_KP4,K_KP6,K_KP_ENTER)
+##P5.initinv()
+
+players=[P1,P2,P3,P4]
+
+
 def renderPanel():
     SCREEN.blit(levelText,(1050,100))
     SCREEN.blit(number[level+1],(1100,150))
@@ -81,6 +107,8 @@ ORANGE = (255,140,0)
 
 titleCenter = QwikQwests.get_rect()
 titleCenter.center=((screenWidth/2),50)
+bubbleFont=pygame.font.Font('fonts/36daysag.ttf',12)
+bubbleText=bubbleFont.render('Hello World!',1,BLACK)
 
 testLevel=[None]*6
 
@@ -114,7 +142,7 @@ def load_level(p):
     
 (testLevel,spawn,objective)=load_level(levelList[level][2])
 
-for player in (P1,P2,P3,P4):
+for player in players:
     (player.x,player.y,player.z) = (spawn[player.idx-1][0],spawn[player.idx-1][1],spawn[player.idx-1][2])
 
 min_x=0
@@ -137,7 +165,7 @@ indexInv=0
 
 def draw_inventory():
     invOffset=120
-    for player in (P1,P2,P3,P4):
+    for player in players:
         for i in range (1,11):
             blockId=player.inventory[i-1]
             SCREEN.blit(blockType[blockId], (900+(50*player.idx),((i*(20+blockHeight))+invOffset)))
@@ -228,13 +256,22 @@ def draw_screen():
                     if (z < y + 3 )and (z < max_z) and (y > min_y) and (testLevel[z+1][y][x] == EMPTY) and (testLevel[z][y-1][x] == EMPTY) and (testLevel[z+1][y-1][x] == EMPTY):
                        SCREEN.blit(shadowType[SHADOW_S], ((x*blockWidth+screenOffsetX),(y*blockHeight+(offset)-blockOffset-tallBlockOffset)))
 
-                for player in (P1,P2,P3,P4):
+                for player in players:
                     if (player.x,player.y,player.z) == (x,y,z):
                         ramp = 0
                         below=testLevel[z-1][y][x]
                         if (below == RAMP_N) or (below == RAMP_S) or (below == RAMP_E) or (below == RAMP_W):
                             ramp = 10
-                        SCREEN.blit(player.image,((x*blockWidth+screenOffsetX),y*blockHeight+offset+ramp))                        
+                        SCREEN.blit(player.image,((x*blockWidth+screenOffsetX),y*blockHeight+offset+ramp))
+                        if (player.speaking == True):
+                            if (time.mktime(time.gmtime()) > (player.sayage + player.saysecs)):
+                                player.say=''
+                                player.sayage=0
+                                player.saysecs=0
+                                player.speaking = False
+                            else:
+                                SCREEN.blit(bubble,((x*blockWidth+screenOffsetX+25),y*blockHeight+offset+ramp-30))
+                                SCREEN.blit(bubbleText,((x*blockWidth+screenOffsetX+25),y*blockHeight+offset+ramp+15))
                     
                 if (z == objective[2] ) and (y == objective[1]) and (x == objective[0]):
                     SCREEN.blit(objectType[STAR], ((x*blockWidth+screenOffsetX),y*blockHeight+offset))
@@ -301,7 +338,7 @@ def changeLevel(direction):
        
 def collision(dx,dy,dz):
     collide=False
-    for others in (P1,P2,P3,P4):
+    for others in players:
         if player.x+dx == others.x and player.y+dy == others.y and player.z+dz == others.z:
             collide = True
     return collide
@@ -320,7 +357,7 @@ while True:
                 pygame.quit()
                 sys.exit()
 
-            for player in (P1,P2,P3,P4):
+            for player in players:
                 new_x = player.x
                 new_y = player.y
                 new_z = player.z
@@ -331,7 +368,7 @@ while True:
                         new_z = player.z+1
                     new_y = player.y-1
                     vacant=True
-                    for occupied in (P1,P2,P3,P4):
+                    for occupied in players:
                         if (occupied != player):
                             if (new_x == occupied.x and new_y == occupied.y and new_z == occupied.z):
                                 vacant=False
@@ -347,7 +384,7 @@ while True:
                         new_z = player.z-1
                     new_y = player.y+1
                     vacant=True
-                    for occupied in (P1,P2,P3,P4):
+                    for occupied in players:
                         if (occupied != player):
                             if (new_x == occupied.x and new_y == occupied.y and new_z == occupied.z):
                                 vacant=False
@@ -363,7 +400,7 @@ while True:
                         new_z = player.z-1
                     new_x = player.x-1
                     vacant=True
-                    for occupied in (P1,P2,P3,P4):
+                    for occupied in players:
                         if (occupied != player):
                             if (new_x == occupied.x and new_y == occupied.y and new_z == occupied.z):
                                 vacant=False
@@ -379,7 +416,7 @@ while True:
                         new_z = player.z+1
                     new_x = player.x+1
                     vacant=True
-                    for occupied in (P1,P2,P3,P4):
+                    for occupied in players:
                         if (occupied != player):
                             if (new_x == occupied.x and new_y == occupied.y and new_z == occupied.z):
                                 vacant=False
