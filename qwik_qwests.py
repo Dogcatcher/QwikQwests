@@ -2,7 +2,7 @@
 
 import pygame, sys, pickle, numpy as np
 import time
-from blocks import *
+#from blocks import *
 from pygame.locals import *
 
 pygame.init()
@@ -13,11 +13,138 @@ fpsClock = pygame.time.Clock()
 screenHeight=800
 screenWidth=1200
 
+iPath='PlanetCuteSmall\\'
+
 SCREEN=pygame.display.set_mode((screenWidth,screenHeight),0,32)
 pygame.display.set_caption('Qwik Qwests')
 bubble=pygame.image.load(iPath+'Speech Bubble.png')
 
-class Character:
+numBlocks=27
+blockType=[None]*numBlocks
+
+
+EMPTY=0
+blockType[EMPTY]=pygame.Surface((50,40))
+blockType[EMPTY].fill((0,0,0))
+blockType[EMPTY].set_alpha(0)
+
+
+# ramps
+RAMP_N=1
+RAMP_S=2
+RAMP_E=3
+RAMP_W=4
+blockType[RAMP_N]=pygame.image.load(iPath+'Ramp North.png') #6
+blockType[RAMP_S]=pygame.image.load(iPath+'Ramp South.png') #7
+blockType[RAMP_E]=pygame.image.load(iPath+'Ramp East.png') #8
+blockType[RAMP_W]=pygame.image.load(iPath+'Ramp West.png') #9
+
+# scenery blocks
+GRASSBLOCK=5
+STONEBLOCK=6
+WOODBLOCK=7
+PLAINBLOCK=8
+DIRTBLOCK=9
+WALLBLOCK=10
+DOORTALLC=11
+BROWNBLOCK=12
+WATERBLOCK=13
+blockType[GRASSBLOCK]=pygame.image.load(iPath+'Grass Block.png')
+blockType[STONEBLOCK]=pygame.image.load(iPath+'Stone Block.png')
+blockType[PLAINBLOCK]=pygame.image.load(iPath+'Plain Block.png')
+blockType[DIRTBLOCK]=pygame.image.load(iPath+'Dirt Block.png')
+blockType[WALLBLOCK]=pygame.image.load(iPath+'Wall Block.png')
+blockType[BROWNBLOCK]=pygame.image.load(iPath+'Brown Block.png')
+blockType[WOODBLOCK]=pygame.image.load(iPath+'Wood Block.png')
+blockType[WATERBLOCK]=pygame.image.load(iPath+'Water Block.png')
+blockType[DOORTALLC]=pygame.image.load(iPath+'Door Tall Closed.png')
+
+# static scenery objects
+ROCK=14
+TREESHORT=15
+TREETALL=16
+TREEUGLY=17
+blockType[ROCK]=pygame.image.load(iPath+'Rock.png')
+blockType[TREESHORT]=pygame.image.load(iPath+'Tree Short.png')
+blockType[TREETALL]=pygame.image.load(iPath+'Tree Tall.png')
+blockType[TREEUGLY]=pygame.image.load(iPath+'Tree Ugly.png')
+
+# items
+BUG=18
+GEMBLUE=19
+GEMGREEN=20
+GEMORANGE=21
+KEY=22
+HEART=23
+CHESTC=24
+CHESTL=25
+CHESTO=26
+blockType[BUG]=pygame.image.load((iPath+'Enemy Bug.png'))
+blockType[GEMBLUE]=pygame.image.load((iPath+'Gem Blue.png'))
+blockType[GEMGREEN]=pygame.image.load((iPath+'Gem Green.png'))
+blockType[GEMORANGE]=pygame.image.load((iPath+'Gem Orange.png'))
+blockType[KEY]=pygame.image.load((iPath+'Key.png'))
+blockType[HEART]=pygame.image.load((iPath+'Heart.png'))
+blockType[CHESTC]=pygame.image.load((iPath+'Chest Closed.png'))
+blockType[CHESTL]=pygame.image.load((iPath+'Chest Lid.png'))
+blockType[CHESTO]=pygame.image.load((iPath+'Chest Open.png'))
+
+shadowType=[None]*9
+SHADOW_SE=0
+SHADOW_S=1
+SHADOW_SW=2
+SHADOW_E=3
+SHADOW_W=4
+SHADOW_NE=5
+SHADOW_N=6
+SHADOW_NW=7
+SHADOW_SIDEW=8
+
+shadowType[SHADOW_SE]=pygame.image.load(iPath+'Shadow Top South East.png')
+shadowType[SHADOW_S]=pygame.image.load(iPath+'Shadow Top South.png')
+shadowType[SHADOW_SW]=pygame.image.load(iPath+'Shadow Top South West.png')
+shadowType[SHADOW_E]=pygame.image.load(iPath+'Shadow Top East.png')
+shadowType[SHADOW_W]=pygame.image.load(iPath+'Shadow Top West.png')
+shadowType[SHADOW_NE]=pygame.image.load(iPath+'Shadow Top North East.png')
+shadowType[SHADOW_N]=pygame.image.load(iPath+'Shadow Top North.png')
+shadowType[SHADOW_NW]=pygame.image.load(iPath+'Shadow Top North West.png')
+shadowType[SHADOW_SIDEW]=pygame.image.load(iPath+'Shadow Side West.png')
+
+numObjects=9
+objectType=[None]*numObjects
+SELECTOR=0
+BOY=1
+CATGIRL=2
+HORNGIRL=3
+PINKGIRL=4
+PRINCESS=5
+KEY=6
+ENEMYBUG=7
+STAR=8
+
+objectType[SELECTOR]=pygame.image.load(iPath+'Selector.png')
+objectType[BOY]=pygame.image.load(iPath+'Character Boy.png').convert_alpha()
+objectType[CATGIRL]=pygame.image.load(iPath+'Character Cat Girl.png')
+objectType[HORNGIRL]=pygame.image.load(iPath+'Character Horn Girl.png')
+objectType[PINKGIRL]=pygame.image.load(iPath+'Character Pink Girl.png')
+objectType[PRINCESS]=pygame.image.load(iPath+'Character Princess Girl.png')
+objectType[KEY]=pygame.image.load(iPath+'Key.png')
+objectType[ENEMYBUG]=pygame.image.load(iPath+'Enemy Bug.png')
+objectType[STAR]=pygame.image.load(iPath+'Star.png')
+
+QwikQwests=pygame.image.load('images/QwikQwests.png')
+
+number=[None]*5
+
+number[0]=pygame.image.load('images/zero.png')
+number[1]=pygame.image.load('images/one.png')
+number[2]=pygame.image.load('images/two.png')
+number[3]=pygame.image.load('images/three.png')
+number[4]=pygame.image.load('images/four.png')
+levelText=pygame.image.load('images/level.png')
+
+class Block:
+    # the base class
     def setname(self, name):
         self.name = name
     def setidx(self,idx):
@@ -28,6 +155,20 @@ class Character:
         self.x = x
         self.y = y
         self.z = z
+        self.position=(self.x,self,y,self.z)
+    def __init__(self):
+        self.static=True
+
+class Object(Block):
+    # Objects inherit from blocks but can be moved
+    def __init__(self):
+        self.static=False
+        self.owner=None
+
+class Character(Object):
+    # characters inherit from objects but can walk, talk, and grab objects
+    def __init__(self):
+        self.speaking=False
     def setkeys(self,up,down,left,right,action):
         self.upkey = up
         self.downkey = down
@@ -37,13 +178,12 @@ class Character:
     def initinv(self):
         self.invidx=0
         self.inventory=np.zeros(10,dtype=np.int)
-    def say(self,say,secs):
+    def speak(self,say,secs):
         self.speaking = True
-        self.speech = say
+        self.say = say
         self.saysecs = secs
         self.sayage = time.mktime(time.gmtime())
         
-
 P1=Character()
 P1.setidx(1)
 P1.setname('Inky')
@@ -51,7 +191,7 @@ P1.setimage(BOY)
 P1.setpos(0,0,1)
 P1.setkeys(K_UP,K_DOWN,K_LEFT,K_RIGHT,K_RCTRL)
 P1.initinv()
-P1.say('hello',5)
+#P1.speak('hello',5)
 
 P2=Character()
 P2.setidx(2)
@@ -60,7 +200,7 @@ P2.setimage(CATGIRL)
 P2.setpos(10,10,1)
 P2.setkeys(K_w,K_s,K_a,K_d,K_LCTRL)
 P2.initinv()
-P2.say('bonjour',5)
+#P2.speak('bonjour',5)
 
 P3=Character()
 P3.setidx(3)
@@ -69,7 +209,7 @@ P3.setimage(HORNGIRL)
 P3.setpos(10,0,1)
 P3.setkeys(K_i,K_k,K_j,K_l,K_SPACE)
 P3.initinv()
-P3.say('hola',5)
+#P3.speak('hola',5)
 
 P4=Character()
 P4.setidx(4)
@@ -78,9 +218,11 @@ P4.setimage(PINKGIRL)
 P4.setpos(0,10,1)
 P4.setkeys(K_KP8,K_KP2,K_KP4,K_KP6,K_KP_ENTER)
 P4.initinv()
-P4.say('guten tag',5)
+#P4.speak('guten tag',5)
 
-
+def nearObject(player,object):
+    # return List of objects/players in the 8 squares
+    return True
                  
 
 ##P5=Character()
@@ -107,7 +249,7 @@ ORANGE = (255,140,0)
 
 titleCenter = QwikQwests.get_rect()
 titleCenter.center=((screenWidth/2),50)
-bubbleFont=pygame.font.Font('fonts/36daysag.ttf',12)
+bubbleFont=pygame.font.Font('fonts/36daysag.ttf',16)
 bubbleText=bubbleFont.render('Hello World!',1,BLACK)
 
 testLevel=[None]*6
@@ -270,8 +412,9 @@ def draw_screen():
                                 player.saysecs=0
                                 player.speaking = False
                             else:
-                                SCREEN.blit(bubble,((x*blockWidth+screenOffsetX+25),y*blockHeight+offset+ramp-30))
-                                SCREEN.blit(bubbleText,((x*blockWidth+screenOffsetX+25),y*blockHeight+offset+ramp+15))
+                                bubbleText=bubbleFont.render(player.say,1,BLACK)
+                                SCREEN.blit(bubble,((x*blockWidth+screenOffsetX+35),y*blockHeight+offset+ramp-30))
+                                SCREEN.blit(bubbleText,((x*blockWidth+screenOffsetX+45),y*blockHeight+offset+ramp+15))
                     
                 if (z == objective[2] ) and (y == objective[1]) and (x == objective[0]):
                     SCREEN.blit(objectType[STAR], ((x*blockWidth+screenOffsetX),y*blockHeight+offset))
