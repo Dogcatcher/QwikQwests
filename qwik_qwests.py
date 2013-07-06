@@ -17,7 +17,7 @@ iPath='PlanetCuteSmall\\'
 
 SCREEN=pygame.display.set_mode((screenWidth,screenHeight),0,32)
 pygame.display.set_caption('Qwik Qwests')
-bubble=pygame.image.load(iPath+'Speech Bubble.png')
+bubble=pygame.image.load(iPath+'Speech Bubble.png').convert_alpha()
 
 numBlocks=27
 blockType=[None]*numBlocks
@@ -34,10 +34,10 @@ RAMP_N=1
 RAMP_S=2
 RAMP_E=3
 RAMP_W=4
-blockType[RAMP_N]=pygame.image.load(iPath+'Ramp North.png') #6
-blockType[RAMP_S]=pygame.image.load(iPath+'Ramp South.png') #7
-blockType[RAMP_E]=pygame.image.load(iPath+'Ramp East.png') #8
-blockType[RAMP_W]=pygame.image.load(iPath+'Ramp West.png') #9
+blockType[RAMP_N]=pygame.image.load(iPath+'Ramp North.png').convert_alpha() #6
+blockType[RAMP_S]=pygame.image.load(iPath+'Ramp South.png').convert_alpha() #7
+blockType[RAMP_E]=pygame.image.load(iPath+'Ramp East.png').convert_alpha() #8
+blockType[RAMP_W]=pygame.image.load(iPath+'Ramp West.png').convert_alpha() #9
 
 # scenery blocks
 GRASSBLOCK=5
@@ -49,25 +49,25 @@ WALLBLOCK=10
 DOORTALLC=11
 BROWNBLOCK=12
 WATERBLOCK=13
-blockType[GRASSBLOCK]=pygame.image.load(iPath+'Grass Block.png')
-blockType[STONEBLOCK]=pygame.image.load(iPath+'Stone Block.png')
-blockType[PLAINBLOCK]=pygame.image.load(iPath+'Plain Block.png')
-blockType[DIRTBLOCK]=pygame.image.load(iPath+'Dirt Block.png')
-blockType[WALLBLOCK]=pygame.image.load(iPath+'Wall Block.png')
-blockType[BROWNBLOCK]=pygame.image.load(iPath+'Brown Block.png')
-blockType[WOODBLOCK]=pygame.image.load(iPath+'Wood Block.png')
-blockType[WATERBLOCK]=pygame.image.load(iPath+'Water Block.png')
-blockType[DOORTALLC]=pygame.image.load(iPath+'Door Tall Closed.png')
+blockType[GRASSBLOCK]=pygame.image.load(iPath+'Grass Block.png').convert_alpha()
+blockType[STONEBLOCK]=pygame.image.load(iPath+'Stone Block.png').convert_alpha()
+blockType[PLAINBLOCK]=pygame.image.load(iPath+'Plain Block.png').convert_alpha()
+blockType[DIRTBLOCK]=pygame.image.load(iPath+'Dirt Block.png').convert_alpha()
+blockType[WALLBLOCK]=pygame.image.load(iPath+'Wall Block.png').convert_alpha()
+blockType[BROWNBLOCK]=pygame.image.load(iPath+'Brown Block.png').convert_alpha()
+blockType[WOODBLOCK]=pygame.image.load(iPath+'Wood Block.png').convert_alpha()
+blockType[WATERBLOCK]=pygame.image.load(iPath+'Water Block.png').convert_alpha()
+blockType[DOORTALLC]=pygame.image.load(iPath+'Door Tall Closed.png').convert_alpha()
 
 # static scenery objects
 ROCK=14
 TREESHORT=15
 TREETALL=16
 TREEUGLY=17
-blockType[ROCK]=pygame.image.load(iPath+'Rock.png')
-blockType[TREESHORT]=pygame.image.load(iPath+'Tree Short.png')
-blockType[TREETALL]=pygame.image.load(iPath+'Tree Tall.png')
-blockType[TREEUGLY]=pygame.image.load(iPath+'Tree Ugly.png')
+blockType[ROCK]=pygame.image.load(iPath+'Rock.png').convert_alpha()
+blockType[TREESHORT]=pygame.image.load(iPath+'Tree Short.png').convert_alpha()
+blockType[TREETALL]=pygame.image.load(iPath+'Tree Tall.png').convert_alpha()
+blockType[TREEUGLY]=pygame.image.load(iPath+'Tree Ugly.png').convert_alpha()
 
 # items
 BUG=18
@@ -79,15 +79,15 @@ HEART=23
 CHESTC=24
 CHESTL=25
 CHESTO=26
-blockType[BUG]=pygame.image.load((iPath+'Enemy Bug.png'))
-blockType[GEMBLUE]=pygame.image.load((iPath+'Gem Blue.png'))
-blockType[GEMGREEN]=pygame.image.load((iPath+'Gem Green.png'))
-blockType[GEMORANGE]=pygame.image.load((iPath+'Gem Orange.png'))
-blockType[KEY]=pygame.image.load((iPath+'Key.png'))
-blockType[HEART]=pygame.image.load((iPath+'Heart.png'))
-blockType[CHESTC]=pygame.image.load((iPath+'Chest Closed.png'))
-blockType[CHESTL]=pygame.image.load((iPath+'Chest Lid.png'))
-blockType[CHESTO]=pygame.image.load((iPath+'Chest Open.png'))
+blockType[BUG]=pygame.image.load((iPath+'Enemy Bug.png')).convert_alpha()
+blockType[GEMBLUE]=pygame.image.load((iPath+'Gem Blue.png')).convert_alpha()
+blockType[GEMGREEN]=pygame.image.load((iPath+'Gem Green.png')).convert_alpha()
+blockType[GEMORANGE]=pygame.image.load((iPath+'Gem Orange.png')).convert_alpha()
+blockType[KEY]=pygame.image.load((iPath+'Key.png')).convert_alpha()
+blockType[HEART]=pygame.image.load((iPath+'Heart.png')).convert_alpha()
+blockType[CHESTC]=pygame.image.load((iPath+'Chest Closed.png')).convert_alpha()
+blockType[CHESTL]=pygame.image.load((iPath+'Chest Lid.png')).convert_alpha()
+blockType[CHESTO]=pygame.image.load((iPath+'Chest Open.png')).convert_alpha()
 
 shadowType=[None]*9
 SHADOW_SE=0
@@ -100,15 +100,15 @@ SHADOW_N=6
 SHADOW_NW=7
 SHADOW_SIDEW=8
 
-shadowType[SHADOW_SE]=pygame.image.load(iPath+'Shadow Top South East.png')
-shadowType[SHADOW_S]=pygame.image.load(iPath+'Shadow Top South.png')
-shadowType[SHADOW_SW]=pygame.image.load(iPath+'Shadow Top South West.png')
-shadowType[SHADOW_E]=pygame.image.load(iPath+'Shadow Top East.png')
-shadowType[SHADOW_W]=pygame.image.load(iPath+'Shadow Top West.png')
-shadowType[SHADOW_NE]=pygame.image.load(iPath+'Shadow Top North East.png')
-shadowType[SHADOW_N]=pygame.image.load(iPath+'Shadow Top North.png')
-shadowType[SHADOW_NW]=pygame.image.load(iPath+'Shadow Top North West.png')
-shadowType[SHADOW_SIDEW]=pygame.image.load(iPath+'Shadow Side West.png')
+shadowType[SHADOW_SE]=pygame.image.load(iPath+'Shadow Top South East.png').convert_alpha()
+shadowType[SHADOW_S]=pygame.image.load(iPath+'Shadow Top South.png').convert_alpha()
+shadowType[SHADOW_SW]=pygame.image.load(iPath+'Shadow Top South West.png').convert_alpha()
+shadowType[SHADOW_E]=pygame.image.load(iPath+'Shadow Top East.png').convert_alpha()
+shadowType[SHADOW_W]=pygame.image.load(iPath+'Shadow Top West.png').convert_alpha()
+shadowType[SHADOW_NE]=pygame.image.load(iPath+'Shadow Top North East.png').convert_alpha()
+shadowType[SHADOW_N]=pygame.image.load(iPath+'Shadow Top North.png').convert_alpha()
+shadowType[SHADOW_NW]=pygame.image.load(iPath+'Shadow Top North West.png').convert_alpha()
+shadowType[SHADOW_SIDEW]=pygame.image.load(iPath+'Shadow Side West.png').convert_alpha()
 
 numObjects=9
 objectType=[None]*numObjects
@@ -124,24 +124,24 @@ STAR=8
 
 objectType[SELECTOR]=pygame.image.load(iPath+'Selector.png')
 objectType[BOY]=pygame.image.load(iPath+'Character Boy.png').convert_alpha()
-objectType[CATGIRL]=pygame.image.load(iPath+'Character Cat Girl.png')
-objectType[HORNGIRL]=pygame.image.load(iPath+'Character Horn Girl.png')
-objectType[PINKGIRL]=pygame.image.load(iPath+'Character Pink Girl.png')
-objectType[PRINCESS]=pygame.image.load(iPath+'Character Princess Girl.png')
-objectType[KEY]=pygame.image.load(iPath+'Key.png')
-objectType[ENEMYBUG]=pygame.image.load(iPath+'Enemy Bug.png')
-objectType[STAR]=pygame.image.load(iPath+'Star.png')
+objectType[CATGIRL]=pygame.image.load(iPath+'Character Cat Girl.png').convert_alpha()
+objectType[HORNGIRL]=pygame.image.load(iPath+'Character Horn Girl.png').convert_alpha()
+objectType[PINKGIRL]=pygame.image.load(iPath+'Character Pink Girl.png').convert_alpha()
+objectType[PRINCESS]=pygame.image.load(iPath+'Character Princess Girl.png').convert_alpha()
+objectType[KEY]=pygame.image.load(iPath+'Key.png').convert_alpha()
+objectType[ENEMYBUG]=pygame.image.load(iPath+'Enemy Bug.png').convert_alpha()
+objectType[STAR]=pygame.image.load(iPath+'Star.png').convert_alpha()
 
-QwikQwests=pygame.image.load('images/QwikQwests.png')
+QwikQwests=pygame.image.load('images/QwikQwests.png').convert_alpha()
 
 number=[None]*5
 
-number[0]=pygame.image.load('images/zero.png')
-number[1]=pygame.image.load('images/one.png')
-number[2]=pygame.image.load('images/two.png')
-number[3]=pygame.image.load('images/three.png')
-number[4]=pygame.image.load('images/four.png')
-levelText=pygame.image.load('images/level.png')
+number[0]=pygame.image.load('images/zero.png').convert_alpha()
+number[1]=pygame.image.load('images/one.png').convert_alpha()
+number[2]=pygame.image.load('images/two.png').convert_alpha()
+number[3]=pygame.image.load('images/three.png').convert_alpha()
+number[4]=pygame.image.load('images/four.png').convert_alpha()
+levelText=pygame.image.load('images/level.png').convert_alpha()
 
 class Block:
     # the base class
@@ -158,6 +158,8 @@ class Block:
         self.position=(self.x,self,y,self.z)
     def __init__(self):
         self.static=True
+
+#class Shadow(Block):
 
 class Object(Block):
     # Objects inherit from blocks but can be moved
@@ -310,7 +312,7 @@ def draw_inventory():
     for player in players:
         for i in range (1,11):
             blockId=player.inventory[i-1]
-            SCREEN.blit(blockType[blockId], (900+(50*player.idx),((i*(20+blockHeight))+invOffset)))
+            SCREEN.blit(blockType[blockId], (950+(50*player.idx),((i*(20+blockHeight))+invOffset)))
 
 def object_right(x,y,z):
     if ((x < max_x) and (HEART >= testLevel[z][y][x+1] >= GEMBLUE)):
