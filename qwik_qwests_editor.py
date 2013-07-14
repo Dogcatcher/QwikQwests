@@ -10,12 +10,6 @@ pygame.init()
 FPS=30
 fpsClock = pygame.time.Clock()
 
-screenWidth=1200
-screenHeight=800
-
-SCREEN=pygame.display.set_mode((screenWidth,screenHeight),0,32)
-pygame.display.set_caption('Qwik Qwests')
-
 cursorBlock=0
 
 
@@ -308,6 +302,13 @@ while True:
             if (event.key == K_SLASH):
                 print("setting x:{0} y:{1} z:{2} to block {3}".format(player_x,player_y,player_z,cursorBlock))
                 testLevel[player_z][player_y][player_x] = cursorBlock
+                newBlock = Block()
+                newBlock.setpos(player_x,player_y,player_z)
+                newBlock.setblock(cursorBlock)
+                print("These are the blocks ")
+                for instance in Block.instances:
+                    print("pos:{0},{1},{2} block:{3}".format(instance.x,instance.y,instance.z,instance.blocknum))
+                
             
             if (event.key == K_1) and (max_x > 0):
                 newLevel=np.delete(testLevel,max_x,axis=2)

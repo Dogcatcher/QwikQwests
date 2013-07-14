@@ -2,7 +2,7 @@
 
 import pygame, sys, pickle, numpy as np
 import time
-#from blocks import *
+from blocks import *
 from pygame.locals import *
 
 pygame.init()
@@ -10,217 +10,48 @@ pygame.init()
 FPS=30
 fpsClock = pygame.time.Clock()
 
-screenHeight=800
-screenWidth=1200
 
-iPath='PlanetCuteSmall\\'
 
-SCREEN=pygame.display.set_mode((screenWidth,screenHeight),0,32)
+
+
+
 pygame.display.set_caption('Qwik Qwests')
-bubble=pygame.image.load(iPath+'Speech Bubble.png').convert_alpha()
-
-numBlocks=27
-blockType=[None]*numBlocks
-
-
-EMPTY=0
-blockType[EMPTY]=pygame.Surface((50,40))
-blockType[EMPTY].fill((0,0,0))
-blockType[EMPTY].set_alpha(0)
-
-
-# ramps
-RAMP_N=1
-RAMP_S=2
-RAMP_E=3
-RAMP_W=4
-blockType[RAMP_N]=pygame.image.load(iPath+'Ramp North.png').convert_alpha() #6
-blockType[RAMP_S]=pygame.image.load(iPath+'Ramp South.png').convert_alpha() #7
-blockType[RAMP_E]=pygame.image.load(iPath+'Ramp East.png').convert_alpha() #8
-blockType[RAMP_W]=pygame.image.load(iPath+'Ramp West.png').convert_alpha() #9
-
-# scenery blocks
-GRASSBLOCK=5
-STONEBLOCK=6
-WOODBLOCK=7
-PLAINBLOCK=8
-DIRTBLOCK=9
-WALLBLOCK=10
-DOORTALLC=11
-BROWNBLOCK=12
-WATERBLOCK=13
-blockType[GRASSBLOCK]=pygame.image.load(iPath+'Grass Block.png').convert_alpha()
-blockType[STONEBLOCK]=pygame.image.load(iPath+'Stone Block.png').convert_alpha()
-blockType[PLAINBLOCK]=pygame.image.load(iPath+'Plain Block.png').convert_alpha()
-blockType[DIRTBLOCK]=pygame.image.load(iPath+'Dirt Block.png').convert_alpha()
-blockType[WALLBLOCK]=pygame.image.load(iPath+'Wall Block.png').convert_alpha()
-blockType[BROWNBLOCK]=pygame.image.load(iPath+'Brown Block.png').convert_alpha()
-blockType[WOODBLOCK]=pygame.image.load(iPath+'Wood Block.png').convert_alpha()
-blockType[WATERBLOCK]=pygame.image.load(iPath+'Water Block.png').convert_alpha()
-blockType[DOORTALLC]=pygame.image.load(iPath+'Door Tall Closed.png').convert_alpha()
-
-# static scenery objects
-ROCK=14
-TREESHORT=15
-TREETALL=16
-TREEUGLY=17
-blockType[ROCK]=pygame.image.load(iPath+'Rock.png').convert_alpha()
-blockType[TREESHORT]=pygame.image.load(iPath+'Tree Short.png').convert_alpha()
-blockType[TREETALL]=pygame.image.load(iPath+'Tree Tall.png').convert_alpha()
-blockType[TREEUGLY]=pygame.image.load(iPath+'Tree Ugly.png').convert_alpha()
-
-# items
-BUG=18
-GEMBLUE=19
-GEMGREEN=20
-GEMORANGE=21
-KEY=22
-HEART=23
-CHESTC=24
-CHESTL=25
-CHESTO=26
-blockType[BUG]=pygame.image.load((iPath+'Enemy Bug.png')).convert_alpha()
-blockType[GEMBLUE]=pygame.image.load((iPath+'Gem Blue.png')).convert_alpha()
-blockType[GEMGREEN]=pygame.image.load((iPath+'Gem Green.png')).convert_alpha()
-blockType[GEMORANGE]=pygame.image.load((iPath+'Gem Orange.png')).convert_alpha()
-blockType[KEY]=pygame.image.load((iPath+'Key.png')).convert_alpha()
-blockType[HEART]=pygame.image.load((iPath+'Heart.png')).convert_alpha()
-blockType[CHESTC]=pygame.image.load((iPath+'Chest Closed.png')).convert_alpha()
-blockType[CHESTL]=pygame.image.load((iPath+'Chest Lid.png')).convert_alpha()
-blockType[CHESTO]=pygame.image.load((iPath+'Chest Open.png')).convert_alpha()
-
-shadowType=[None]*9
-SHADOW_SE=0
-SHADOW_S=1
-SHADOW_SW=2
-SHADOW_E=3
-SHADOW_W=4
-SHADOW_NE=5
-SHADOW_N=6
-SHADOW_NW=7
-SHADOW_SIDEW=8
-
-shadowType[SHADOW_SE]=pygame.image.load(iPath+'Shadow Top South East.png').convert_alpha()
-shadowType[SHADOW_S]=pygame.image.load(iPath+'Shadow Top South.png').convert_alpha()
-shadowType[SHADOW_SW]=pygame.image.load(iPath+'Shadow Top South West.png').convert_alpha()
-shadowType[SHADOW_E]=pygame.image.load(iPath+'Shadow Top East.png').convert_alpha()
-shadowType[SHADOW_W]=pygame.image.load(iPath+'Shadow Top West.png').convert_alpha()
-shadowType[SHADOW_NE]=pygame.image.load(iPath+'Shadow Top North East.png').convert_alpha()
-shadowType[SHADOW_N]=pygame.image.load(iPath+'Shadow Top North.png').convert_alpha()
-shadowType[SHADOW_NW]=pygame.image.load(iPath+'Shadow Top North West.png').convert_alpha()
-shadowType[SHADOW_SIDEW]=pygame.image.load(iPath+'Shadow Side West.png').convert_alpha()
-
-numObjects=9
-objectType=[None]*numObjects
-SELECTOR=0
-BOY=1
-CATGIRL=2
-HORNGIRL=3
-PINKGIRL=4
-PRINCESS=5
-KEY=6
-ENEMYBUG=7
-STAR=8
-
-objectType[SELECTOR]=pygame.image.load(iPath+'Selector.png')
-objectType[BOY]=pygame.image.load(iPath+'Character Boy.png').convert_alpha()
-objectType[CATGIRL]=pygame.image.load(iPath+'Character Cat Girl.png').convert_alpha()
-objectType[HORNGIRL]=pygame.image.load(iPath+'Character Horn Girl.png').convert_alpha()
-objectType[PINKGIRL]=pygame.image.load(iPath+'Character Pink Girl.png').convert_alpha()
-objectType[PRINCESS]=pygame.image.load(iPath+'Character Princess Girl.png').convert_alpha()
-objectType[KEY]=pygame.image.load(iPath+'Key.png').convert_alpha()
-objectType[ENEMYBUG]=pygame.image.load(iPath+'Enemy Bug.png').convert_alpha()
-objectType[STAR]=pygame.image.load(iPath+'Star.png').convert_alpha()
-
-QwikQwests=pygame.image.load('images/QwikQwests.png').convert_alpha()
-
-number=[None]*5
-
-number[0]=pygame.image.load('images/zero.png').convert_alpha()
-number[1]=pygame.image.load('images/one.png').convert_alpha()
-number[2]=pygame.image.load('images/two.png').convert_alpha()
-number[3]=pygame.image.load('images/three.png').convert_alpha()
-number[4]=pygame.image.load('images/four.png').convert_alpha()
-levelText=pygame.image.load('images/level.png').convert_alpha()
-
-class Block:
-    # the base class
-    def setname(self, name):
-        self.name = name
-    def setidx(self,idx):
-        self.idx = idx
-    def setimage(self, image):
-        self.image = objectType[image]
-    def setpos(self,x,y,z):
-        self.x = x
-        self.y = y
-        self.z = z
-        self.position=(self.x,self,y,self.z)
-    def __init__(self):
-        self.static=True
-
-#class Shadow(Block):
-
-class Object(Block):
-    # Objects inherit from blocks but can be moved
-    def __init__(self):
-        self.static=False
-        self.owner=None
-
-class Character(Object):
-    # characters inherit from objects but can walk, talk, and grab objects
-    def __init__(self):
-        self.speaking=False
-    def setkeys(self,up,down,left,right,action):
-        self.upkey = up
-        self.downkey = down
-        self.leftkey = left
-        self.rightkey = right
-        self.actionkey = action
-    def initinv(self):
-        self.invidx=0
-        self.inventory=np.zeros(10,dtype=np.int)
-    def speak(self,say,secs):
-        self.speaking = True
-        self.say = say
-        self.saysecs = secs
-        self.sayage = time.mktime(time.gmtime())
         
-P1=Character()
+P1=Character('Inky')
 P1.setidx(1)
-P1.setname('Inky')
-P1.setimage(BOY)
+P1.setblock(BOY)
 P1.setpos(0,0,1)
 P1.setkeys(K_UP,K_DOWN,K_LEFT,K_RIGHT,K_RCTRL)
 P1.initinv()
 #P1.speak('hello',5)
 
-P2=Character()
+P2=Character('Stinky')
 P2.setidx(2)
-P2.setname('Stinky')
-P2.setimage(CATGIRL)
+P2.setblock(CATGIRL)
 P2.setpos(10,10,1)
 P2.setkeys(K_w,K_s,K_a,K_d,K_LCTRL)
 P2.initinv()
 #P2.speak('bonjour',5)
 
-P3=Character()
+P3=Character('Winky')
 P3.setidx(3)
-P3.setname('Winky')
-P3.setimage(HORNGIRL)
+P3.setblock(HORNGIRL)
 P3.setpos(10,0,1)
 P3.setkeys(K_i,K_k,K_j,K_l,K_SPACE)
 P3.initinv()
 #P3.speak('hola',5)
 
-P4=Character()
+P4=Character('Pinky')
 P4.setidx(4)
-P4.setname('Pinky')
-P4.setimage(PINKGIRL)
+P4.setblock(PINKGIRL)
 P4.setpos(0,10,1)
 P4.setkeys(K_KP8,K_KP2,K_KP4,K_KP6,K_KP_ENTER)
 P4.initinv()
 #P4.speak('guten tag',5)
+
+print("These are the characters ")
+for instance in Character.instances:
+    print(instance.name)
 
 def nearObject(player,object):
     # return List of objects/players in the 8 squares
@@ -406,7 +237,7 @@ def draw_screen():
                         below=testLevel[z-1][y][x]
                         if (below == RAMP_N) or (below == RAMP_S) or (below == RAMP_E) or (below == RAMP_W):
                             ramp = 10
-                        SCREEN.blit(player.image,((x*blockWidth+screenOffsetX),y*blockHeight+offset+ramp))
+                        SCREEN.blit(objectType[player.blocknum],((x*blockWidth+screenOffsetX),y*blockHeight+offset+ramp))
                         if (player.speaking == True):
                             if (time.mktime(time.gmtime()) > (player.sayage + player.saysecs)):
                                 player.say=''
