@@ -138,14 +138,19 @@ class Block:
     def setblock(self, block):
         self.blocknum = block
     def setpos(self,pos):
-        self.pos=(x,y,z)
+        (x,y,z) = pos
+        self.pos = (x,y,z)
         self.x = x
         self.y = y
         self.z = z
-        self.position=(self.x,self,y,self.z)
-    instances = []
-    def __init__(self, name=None):
-        self.__class__.instances.append(weakref.proxy(self))
+    instances = {}
+    def __init__(self, pos, name=None):
+        self.pos = pos
+        (x,y,z) = pos
+        self.x = x
+        self.y = y
+        self.z = z
+        self.__class__.instances.update({self.pos : self})
         self.name = name
     speaking = False
     static=True

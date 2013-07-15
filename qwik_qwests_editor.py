@@ -302,12 +302,17 @@ while True:
             if (event.key == K_SLASH):
                 print("setting x:{0} y:{1} z:{2} to block {3}".format(player_x,player_y,player_z,cursorBlock))
                 testLevel[player_z][player_y][player_x] = cursorBlock
-                newBlock = Block()
-                newBlock.setpos(player_x,player_y,player_z)
+                if (player_x,player_y,player_z) in Block.instances.keys():
+                    print("block already exists in dictionary - removing old block")
+                    del Block.instances[(player_x,player_y,player_z)]
+                
+                print("new block - adding to dictionary")
+                newBlock = Block((player_x,player_y,player_z))
                 newBlock.setblock(cursorBlock)
+                    
                 print("These are the blocks ")
-                for instance in Block.instances:
-                    print("pos:{0},{1},{2} block:{3}".format(instance.x,instance.y,instance.z,instance.blocknum))
+                for instance in Block.instances.values():
+                    print("pos:{0} blocknum:{1}".format(instance.pos,instance.blocknum))
                 
             
             if (event.key == K_1) and (max_x > 0):
