@@ -17,41 +17,41 @@ fpsClock = pygame.time.Clock()
 
 pygame.display.set_caption('Qwik Qwests')
         
-P1=Character('Inky')
+P1=Character((0,0,1),'Inky')
 P1.setidx(1)
 P1.setblock(BOY)
-P1.setpos(0,0,1)
+#P1.setpos(0,0,1)
 P1.setkeys(K_UP,K_DOWN,K_LEFT,K_RIGHT,K_RCTRL)
 P1.initinv()
 #P1.speak('hello',5)
 
-P2=Character('Stinky')
+P2=Character((10,10,1),'Stinky')
 P2.setidx(2)
 P2.setblock(CATGIRL)
-P2.setpos(10,10,1)
+#P2.setpos(10,10,1)
 P2.setkeys(K_w,K_s,K_a,K_d,K_LCTRL)
 P2.initinv()
 #P2.speak('bonjour',5)
 
-P3=Character('Winky')
+P3=Character((10,0,1),'Winky')
 P3.setidx(3)
 P3.setblock(HORNGIRL)
-P3.setpos(10,0,1)
+#P3.setpos(10,0,1)
 P3.setkeys(K_i,K_k,K_j,K_l,K_SPACE)
 P3.initinv()
 #P3.speak('hola',5)
 
-P4=Character('Pinky')
+P4=Character((0,10,1),'Pinky')
 P4.setidx(4)
 P4.setblock(PINKGIRL)
-P4.setpos(0,10,1)
+#P4.setpos(0,10,1)
 P4.setkeys(K_KP8,K_KP2,K_KP4,K_KP6,K_KP_ENTER)
 P4.initinv()
 #P4.speak('guten tag',5)
 
-print("These are the characters ")
-for instance in Character.instances:
-    print(instance.name)
+#print("These are the characters ")
+#for instance in Character.instances:
+#    print(instance.name)
 
 def nearObject(player,object):
     # return List of objects/players in the 8 squares

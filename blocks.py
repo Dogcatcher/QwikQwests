@@ -150,8 +150,10 @@ class Block:
         self.x = x
         self.y = y
         self.z = z
-        self.__class__.instances.update({self.pos : self})
         self.name = name
+        poskey=(z,y,x)
+        self.__class__.instances.update({poskey : self})
+        
     speaking = False
     static=True
 

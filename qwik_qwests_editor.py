@@ -66,6 +66,8 @@ gradientRect=pygame.Rect(0,0,screenWidth,375)
 
 SCREEN.blit(QwikQwests, titleCenter)
 
+
+
 def draw_screen():
     SCREEN.fill(WHITE)
     fill_gradient(SCREEN,LIGHTBLUE,WHITE,gradientRect,True,True)
