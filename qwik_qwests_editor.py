@@ -4,6 +4,7 @@ import pygame, sys, pickle, tkinter, numpy as np
 from pygame.locals import *
 from blocks import *
 from tkinter.filedialog import askopenfilename, asksaveasfilename
+import operator
 
 pygame.init()
 
@@ -71,92 +72,101 @@ SCREEN.blit(QwikQwests, titleCenter)
 def draw_screen():
     SCREEN.fill(WHITE)
     fill_gradient(SCREEN,LIGHTBLUE,WHITE,gradientRect,True,True)
-    for z in range (0,(player_z+1)):
+
+    
+    for i in sorted(iter(Block.instances.keys())):
+        #print("key: {0} block {1}".format(i,Block.instances[i]))
+        b=Block.instances[i]
+        (x,y,z)=b.pos
         offset=(z*-1*blockOffset)+screenOffset
-        for y in range (0,(max_y+1)):
-            for x in range (0,(max_x+1)):
-                block=testLevel[z][y][x]
-                
-                tallBlockOffset=0
-                if (block == DOORTALLC):
-                    tallBlockoffset=2*blockOffset
-          
-                if (block > 0):
-
-                    
-                    paintBlock=0
-                    if (sdebug==1):
-                        paintBlock=PLAINBLOCK
-                    if (sdebug==2):
-                        paintBlock=block
-
-                    if (sdebug > 0):
-                        image=blockType[paintBlock]                   
-                        SCREEN.blit(image, ((x*blockWidth),(y*blockHeight+(offset))))
-
-                    showSE=True
-                    showS=True
-                    showSW=True
-                    showE=True
-                    showW=True
-                    showNE=True
-                    showN=True
-                    showNW=True
-                    showSIDEW=True
-                    showS2=True
-                    showS5=True
-
-                    # shadow processing
-                    if (z < max_z) and (testLevel[z+1][y][x] == 0) and (RAMP_W < block < ROCK):
-                        # South East
-                        if (showSE == True) and (z < max_z) and (y < max_y) and (x < max_x) and (RAMP_W < testLevel[z+1][y+1][x+1] < ROCK) and (testLevel[z+1][y][x+1] == EMPTY) and (testLevel[z+1][y+1][x] == EMPTY):
-                           SCREEN.blit(shadowType[SHADOW_SE], ((x*blockWidth),(y*blockHeight+(offset))))
-                           print("Placing SE shadow at {0},{1},{2}".format(x,y,z))
-                        # South - needs check to see if we're the top block - purely a waste of cycles - nothing cosmetic AFAIK
-                        if (showS == True) and (z < max_z) and (y < max_y) and (RAMP_W < testLevel[z+1][y+1][x] < ROCK):
-                           SCREEN.blit(shadowType[SHADOW_S], ((x*blockWidth),(y*blockHeight+(offset))))
-                        # South West
-                        if (showSW == True) and (z < max_z) and (y < max_y) and (x > min_x) and (RAMP_W < testLevel[z+1][y+1][x-1] < ROCK) and (testLevel[z+1][y][x-1] == EMPTY) and (testLevel[z+1][y+1][x] == EMPTY):
-                           SCREEN.blit(shadowType[SHADOW_SW], ((x*blockWidth),(y*blockHeight+(offset))))
-                        # East
-                        if (showE == True)  and (z < max_z) and (x < max_x) and (RAMP_W < testLevel[z+1][y][x+1] < ROCK):
-                           SCREEN.blit(shadowType[SHADOW_E], ((x*blockWidth),(y*blockHeight+(offset))))
-                        # West
-                        if (showW == True)  and (z < max_z) and (x > min_x) and (RAMP_W < testLevel[z+1][y][x-1] < ROCK):
-                           SCREEN.blit(shadowType[SHADOW_W], ((x*blockWidth),(y*blockHeight+(offset))))
-                        # North East
-                        if (showNE == True)  and (z < max_z) and (y > min_y) and (x < max_x) and (RAMP_W < testLevel[z+1][y-1][x+1] < ROCK) and (testLevel[z+1][y][x+1] == EMPTY) and (testLevel[z+1][y-1][x] == EMPTY):
-                           SCREEN.blit(shadowType[SHADOW_NE], ((x*blockWidth),(y*blockHeight+(offset))))
-                        # North
-                        if (showN == True)  and (z < max_z) and (y > min_y) and (RAMP_W < testLevel[z+1][y-1][x] < ROCK):
-                           SCREEN.blit(shadowType[SHADOW_N], ((x*blockWidth),(y*blockHeight+(offset))))
-                        # North West
-                        if (showNW == True)  and (z < max_z) and (y > min_y) and (x > min_x) and (RAMP_W < testLevel[z+1][y-1][x-1] < ROCK) and (testLevel[z+1][y][x-1] == EMPTY) and (testLevel[z+1][y-1][x] == EMPTY):
-                           SCREEN.blit(shadowType[SHADOW_NW], ((x*blockWidth),(y*blockHeight+(offset))))
-                        # Side West
-                        if (showSIDEW == True) and (z < max_z) and (x > min_x) and (y < max_y) and (RAMP_W < testLevel[z][y+1][x-1] < ROCK) and (testLevel[z][y+1][x] == EMPTY) and (testLevel[z+1][y+1][x] == EMPTY):
-                           SCREEN.blit(shadowType[SHADOW_SIDEW], ((x*blockWidth),(y*blockHeight+(offset))))
-
-                        # South (top)
-                        if (showS2 == True)  and (z < y + 3 )and (z < max_z) and (y > min_y) and (testLevel[z+1][y][x] == EMPTY) and (testLevel[z][y-1][x] == EMPTY) and (testLevel[z+1][y-1][x] == EMPTY):
-                           SCREEN.blit(shadowType[SHADOW_S], ((x*blockWidth),(y*blockHeight+(offset)-blockOffset-tallBlockOffset)))
-                    # South (top ceiling)
-                    if (showS5 == True)  and (z < y + 3) and (z == max_z) and (y > min_y) and (testLevel[z][y-1][x] == EMPTY):
-                       SCREEN.blit(shadowType[SHADOW_S], ((x*blockWidth),(y*blockHeight+(offset)-blockOffset-tallBlockOffset)))                   
-                # spawn point
-                for a in range (0,4):
-                    if (z == spawn[a][2]) and (y == spawn[a][1]) and (x == spawn[a][0]):
-                        SCREEN.blit(objectType[BOY+a], ((x*blockWidth),y*blockHeight+offset))                    
-
-                # objective point
-                if (z == objective[2]) and (y == objective[1]) and (x == objective[0]):
-                    SCREEN.blit(objectType[STAR], ((x*blockWidth),y*blockHeight+offset))                    
-
-                # Cursor 
-                if (z == player_z) and (x == player_x) and (y == player_y):
-                    if (cursorBlock > 0):
-                        SCREEN.blit(blockType[cursorBlock], ((x*blockWidth),y*blockHeight+offset))
-                    SCREEN.blit(objectType[SELECTOR], ((x*blockWidth),y*blockHeight+offset-blockOffset))
+        SCREEN.blit(blockType[b.blocknum], ((x*blockWidth),(y*blockHeight+(offset))))
+        
+##    for z in range (0,(player_z+1)):
+##        offset=(z*-1*blockOffset)+screenOffset
+##        for y in range (0,(max_y+1)):
+##            for x in range (0,(max_x+1)):
+##                block=testLevel[z][y][x]
+##                
+##                tallBlockOffset=0
+##                if (block == DOORTALLC):
+##                    tallBlockoffset=2*blockOffset
+##          
+##                if (block > 0):
+##
+##                    
+##                    paintBlock=0
+##                    if (sdebug==1):
+##                        paintBlock=PLAINBLOCK
+##                    if (sdebug==2):
+##                        paintBlock=block
+##
+##                    if (sdebug > 0):
+##                        image=blockType[paintBlock]                   
+##                        SCREEN.blit(image, ((x*blockWidth),(y*blockHeight+(offset))))
+##
+##                    showSE=True
+##                    showS=True
+##                    showSW=True
+##                    showE=True
+##                    showW=True
+##                    showNE=True
+##                    showN=True
+##                    showNW=True
+##                    showSIDEW=True
+##                    showS2=True
+##                    showS5=True
+##
+##                    # shadow processing
+##                    if (z < max_z) and (testLevel[z+1][y][x] == 0) and (RAMP_W < block < ROCK):
+##                        # South East
+##                        if (showSE == True) and (z < max_z) and (y < max_y) and (x < max_x) and (RAMP_W < testLevel[z+1][y+1][x+1] < ROCK) and (testLevel[z+1][y][x+1] == EMPTY) and (testLevel[z+1][y+1][x] == EMPTY):
+##                           SCREEN.blit(shadowType[SHADOW_SE], ((x*blockWidth),(y*blockHeight+(offset))))
+##                           print("Placing SE shadow at {0},{1},{2}".format(x,y,z))
+##                        # South - needs check to see if we're the top block - purely a waste of cycles - nothing cosmetic AFAIK
+##                        if (showS == True) and (z < max_z) and (y < max_y) and (RAMP_W < testLevel[z+1][y+1][x] < ROCK):
+##                           SCREEN.blit(shadowType[SHADOW_S], ((x*blockWidth),(y*blockHeight+(offset))))
+##                        # South West
+##                        if (showSW == True) and (z < max_z) and (y < max_y) and (x > min_x) and (RAMP_W < testLevel[z+1][y+1][x-1] < ROCK) and (testLevel[z+1][y][x-1] == EMPTY) and (testLevel[z+1][y+1][x] == EMPTY):
+##                           SCREEN.blit(shadowType[SHADOW_SW], ((x*blockWidth),(y*blockHeight+(offset))))
+##                        # East
+##                        if (showE == True)  and (z < max_z) and (x < max_x) and (RAMP_W < testLevel[z+1][y][x+1] < ROCK):
+##                           SCREEN.blit(shadowType[SHADOW_E], ((x*blockWidth),(y*blockHeight+(offset))))
+##                        # West
+##                        if (showW == True)  and (z < max_z) and (x > min_x) and (RAMP_W < testLevel[z+1][y][x-1] < ROCK):
+##                           SCREEN.blit(shadowType[SHADOW_W], ((x*blockWidth),(y*blockHeight+(offset))))
+##                        # North East
+##                        if (showNE == True)  and (z < max_z) and (y > min_y) and (x < max_x) and (RAMP_W < testLevel[z+1][y-1][x+1] < ROCK) and (testLevel[z+1][y][x+1] == EMPTY) and (testLevel[z+1][y-1][x] == EMPTY):
+##                           SCREEN.blit(shadowType[SHADOW_NE], ((x*blockWidth),(y*blockHeight+(offset))))
+##                        # North
+##                        if (showN == True)  and (z < max_z) and (y > min_y) and (RAMP_W < testLevel[z+1][y-1][x] < ROCK):
+##                           SCREEN.blit(shadowType[SHADOW_N], ((x*blockWidth),(y*blockHeight+(offset))))
+##                        # North West
+##                        if (showNW == True)  and (z < max_z) and (y > min_y) and (x > min_x) and (RAMP_W < testLevel[z+1][y-1][x-1] < ROCK) and (testLevel[z+1][y][x-1] == EMPTY) and (testLevel[z+1][y-1][x] == EMPTY):
+##                           SCREEN.blit(shadowType[SHADOW_NW], ((x*blockWidth),(y*blockHeight+(offset))))
+##                        # Side West
+##                        if (showSIDEW == True) and (z < max_z) and (x > min_x) and (y < max_y) and (RAMP_W < testLevel[z][y+1][x-1] < ROCK) and (testLevel[z][y+1][x] == EMPTY) and (testLevel[z+1][y+1][x] == EMPTY):
+##                           SCREEN.blit(shadowType[SHADOW_SIDEW], ((x*blockWidth),(y*blockHeight+(offset))))
+##
+##                        # South (top)
+##                        if (showS2 == True)  and (z < y + 3 )and (z < max_z) and (y > min_y) and (testLevel[z+1][y][x] == EMPTY) and (testLevel[z][y-1][x] == EMPTY) and (testLevel[z+1][y-1][x] == EMPTY):
+##                           SCREEN.blit(shadowType[SHADOW_S], ((x*blockWidth),(y*blockHeight+(offset)-blockOffset-tallBlockOffset)))
+##                    # South (top ceiling)
+##                    if (showS5 == True)  and (z < y + 3) and (z == max_z) and (y > min_y) and (testLevel[z][y-1][x] == EMPTY):
+##                       SCREEN.blit(shadowType[SHADOW_S], ((x*blockWidth),(y*blockHeight+(offset)-blockOffset-tallBlockOffset)))                   
+##                # spawn point
+##                for a in range (0,4):
+##                    if (z == spawn[a][2]) and (y == spawn[a][1]) and (x == spawn[a][0]):
+##                        SCREEN.blit(objectType[BOY+a], ((x*blockWidth),y*blockHeight+offset))                    
+##
+##                # objective point
+##                if (z == objective[2]) and (y == objective[1]) and (x == objective[0]):
+##                    SCREEN.blit(objectType[STAR], ((x*blockWidth),y*blockHeight+offset))                    
+##
+##                # Cursor 
+##                if (z == player_z) and (x == player_x) and (y == player_y):
+##                    if (cursorBlock > 0):
+##                        SCREEN.blit(blockType[cursorBlock], ((x*blockWidth),y*blockHeight+offset))
+##                    SCREEN.blit(objectType[SELECTOR], ((x*blockWidth),y*blockHeight+offset-blockOffset))
 
 
 def canMoveRight(px,py,pz):
@@ -244,10 +254,17 @@ def canMoveDown(px,py,pz):
     print("At the far bottom edge")
     return False
 
-
-
-
-
+def getmax(d):
+    mx=my=mz=0
+    for i in d.values():
+    #    print("x:{0} y:{1} z:{2}".format(i.x,i.y,i.z))
+         if (i.x > mx):
+             mx = i.x
+         if (i.y > my):
+             my = i.y
+         if (i.z > mz):
+             mz = i.z
+    return (mx,my,mz)
 
 
 draw_screen()                
@@ -391,8 +408,22 @@ while True:
                     pickle.dump(spawn,saveFile)
                     pickle.dump(objective,saveFile)
                     saveFile.close()
-                    print("level saved")
-
+                    print("level saved as array")
+                    
+            if (event.key == K_a):
+                root=tkinter.Tk()
+                root.withdraw()
+                fileName = asksaveasfilename(parent=root)
+                root.destroy()
+                if (fileName):
+                    saveFile=open(fileName,'wb')
+                    pickle.dump(Block.instances,saveFile)
+                    #pickle.dump(testLevel,saveFile)
+                    #pickle.dump(spawn,saveFile)
+                    #pickle.dump(objective,saveFile)
+                    saveFile.close()
+                    print("level saved as class instance dictionary")
+                    
             if (event.key == K_w):
                 root=tkinter.Tk()
                 root.withdraw()
@@ -430,18 +461,60 @@ while True:
                     if (player_z > max_z):
                         player_z = max_z
                     if (objective[2] > max_z):
-                        objective[2] = max_z                    
+                        objective[2] = max_z
+                        
+            if (event.key == K_q):
+                root=tkinter.Tk()
+                root.withdraw()
+                fileName = askopenfilename(parent=root)
+                root.destroy()
+                if (fileName):
+                    loadFile=open(fileName,'rb')
+                    #testLevel=pickle.load(loadFile)
+                    #spawn=pickle.load(loadFile)
+                    #objective=pickle.load(loadFile)
+                    Block.instances=pickle.load(loadFile)
+                    loadFile.close()
+                    #max_x=len(testLevel[0][0])
+                    #max_y=len(testLevel[0])
+                    #max_z=len(testLevel)
+                    (max_x,max_y,max_z)=getmax(Block.instances)
+                    print("level is size x:{0} y:{1} z:{2}".format(max_x,max_y,max_z))
+                    max_x -= 1
+                    max_y -= 1
+                    max_z -= 1
+
+                    for a in range (0,4):
+                        if (spawn[a][0] > max_x):
+                            spawn[a][0] = max_x
+                        if (spawn[a][1] > max_y):
+                            spawn[a][1] = max_y
+                        if (spawn[a][2] > max_z):
+                            spawn[a][2] = max_z
+                    if (player_x > max_x):
+                        player_x = max_x                            
+                    if (objective[0] > max_x):
+                        objective[0] = max_x
+                    if (player_y > max_y):
+                        player_y = max_y
+                    if (objective[1] > max_y):
+                        objective[1] = max_y
+                    if (player_z > max_z):
+                        player_z = max_z
+                    if (objective[2] > max_z):
+                        objective[2] = max_z
+                        
             if (event.key == K_x):
                 print("clearing block")
                 testLevel[player_z][player_y][player_x] = 0
 
-            if (event.key == K_q):
+            if (event.key == K_u):
                 print("shifting everything up")
                 for n in range (5,0,-1):
                     testLevel[n] = testLevel[n-1]
                 testLevel[0]=emptyLayer
 
-            if (event.key == K_a):
+            if (event.key == K_d):
                 print("shifting everything down")
                 for n in range (0,5):
                     testLevel[n] = testLevel[n+1]
