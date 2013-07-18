@@ -24,7 +24,7 @@ titleCenter.center=(400,50)
 min_x=0
 min_y=0
 min_z=0
-max_x=9
+max_x=5
 max_y=5
 max_z=5
 limit_x=19
@@ -50,8 +50,8 @@ screenOffset=220
 blockWidth=50
 blockHeight=40
 
-spawn=[[0,0,3],[10,10,3],[0,10,3],[10,0,3]]
-objective=[9,5,5]
+spawn=[[0,0,1],[4,4,1],[0,4,1],[4,0,1]]
+objective=[4,4,1]
 
 spawnPoint=0
 player_x=spawn[1][0]
@@ -304,19 +304,36 @@ while True:
             if (event.key == K_SLASH):
                 print("setting x:{0} y:{1} z:{2} to block {3}".format(player_x,player_y,player_z,cursorBlock))
                 testLevel[player_z][player_y][player_x] = cursorBlock
-                if (player_x,player_y,player_z) in Block.instances.keys():
+                if (player_z,player_y,player_x) in Block.instances.keys():
                     print("block already exists in dictionary - removing old block")
-                    del Block.instances[(player_x,player_y,player_z)]
+                    del Block.instances[(player_z,player_y,player_x)]
                 
-                print("new block - adding to dictionary")
-                newBlock = Block((player_x,player_y,player_z))
-                newBlock.setblock(cursorBlock)
+                
+                if (cursorBlock != 0):
+                    print("new block - adding to dictionary")
+                    newBlock = Block((player_x,player_y,player_z))
+                    newBlock.setblock(cursorBlock)
                     
                 print("These are the blocks ")
                 for instance in Block.instances.values():
                     print("pos:{0} blocknum:{1}".format(instance.pos,instance.blocknum))
-                
-            
+
+            if (event.key == K_c):
+                # convert 3d array to class instances
+                for z in range (0,(max_z+1)):
+                    for y in range (0,(max_y+1)):
+                        for x in range (0,(max_x+1)):
+                            if (z,y,x) in Block.instances.keys():
+                                print("block already exists in dictionary - removing old block")
+                                del Block.instances[(z,y,x)]                                                       
+                            if (testLevel[z][y][x] != 0):
+                                print("new block - adding to dictionary")
+                                newBlock = Block((x,y,z))
+                                newBlock.setblock(testLevel[z][y][x])
+                print("These are the blocks ")
+                for instance in Block.instances.values():
+                    print("pos:{0} blocknum:{1}".format(instance.pos,instance.blocknum))
+                                                        
             if (event.key == K_1) and (max_x > 0):
                 newLevel=np.delete(testLevel,max_x,axis=2)
                 testLevel=newLevel
