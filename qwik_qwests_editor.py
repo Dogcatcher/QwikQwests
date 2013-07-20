@@ -67,19 +67,43 @@ gradientRect=pygame.Rect(0,0,screenWidth,375)
 
 SCREEN.blit(QwikQwests, titleCenter)
 
-
+def cull_blocks():
+    # remove block from dictionary which aren't visible
+    # do at point of save but ensure only static blocks are considered
+    # plan is to have object blocks which can be moved, picked up etc
+    # don't want to leave holes in the world
+    return True
 
 def draw_screen():
     SCREEN.fill(WHITE)
     fill_gradient(SCREEN,LIGHTBLUE,WHITE,gradientRect,True,True)
 
+    # Merge Blocks, Objects, Characters, Cursor into one list/dict
+
+    
+    renderDict=Cursor.instances.copy()
+    renderDict.update(Block.instances)
+    renderDict.update(Object.instances)
+    renderDict.update(Character.instances)
     
     for i in sorted(iter(Block.instances.keys())):
         #print("key: {0} block {1}".format(i,Block.instances[i]))
         b=Block.instances[i]
         (x,y,z)=b.pos
         offset=(z*-1*blockOffset)+screenOffset
-        SCREEN.blit(blockType[b.blocknum], ((x*blockWidth),(y*blockHeight+(offset))))
+        # Cursor 
+        if (z == player_z) and (x == player_x) and (y == player_y):
+            if (cursorBlock > 0):
+                SCREEN.blit(blockType[cursorBlock], ((x*blockWidth),y*blockHeight+offset))
+            SCREEN.blit(blockType[SELECTOR], ((x*blockWidth),y*blockHeight+offset-blockOffset))
+        else:
+
+            # Block
+            SCREEN.blit(blockType[b.blocknum], ((x*blockWidth),(y*blockHeight+(offset))))
+
+
+
+
         
 ##    for z in range (0,(player_z+1)):
 ##        offset=(z*-1*blockOffset)+screenOffset
@@ -276,7 +300,8 @@ while True:
         if event.type==QUIT:
             pygame.quit()
             sys.exit()
-            
+
+        (old_x,old_y,old_z) = (player_x,player_y,player_z)
         if (event.type == KEYDOWN):
             if (event.key == K_ESCAPE):
                 pygame.quit()
@@ -536,7 +561,10 @@ while True:
             if (event.key == K_f):
                 print("filling layer {0} with block {1}".format(player_z,cursorBlock))
                 testLevel[player_z]=[[cursorBlock for x in range(max_x+1)]for y in range(max_y+1)]
-                
+            if ((player_x,player_y,player_z) != (old_x,old_y,old_z)):
+                #del Cursor.instances[(old_z,old_y,old_x)]
+                Cursor((player_x,player_y,player_z))
+                    
             draw_screen()
     fpsClock.tick(FPS)
     pygame.display.set_caption("FPS {0} x:{1} y:{2} z:{3}".format(int(fpsClock.get_fps()),player_x,player_y,player_z))

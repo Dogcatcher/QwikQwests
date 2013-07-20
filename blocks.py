@@ -1,6 +1,6 @@
 import pygame, numpy as np, weakref
 
-numBlocks=27
+numBlocks=36
 blockType=[None]*numBlocks
 
 
@@ -77,6 +77,26 @@ blockType[CHESTC]=pygame.image.load((iPath+'Chest Closed.png')).convert_alpha()
 blockType[CHESTL]=pygame.image.load((iPath+'Chest Lid.png')).convert_alpha()
 blockType[CHESTO]=pygame.image.load((iPath+'Chest Open.png')).convert_alpha()
 
+
+SELECTOR=27
+BOY=28
+CATGIRL=29
+HORNGIRL=30
+PINKGIRL=31
+PRINCESS=32
+KEY=33
+ENEMYBUG=34
+STAR=35
+blockType[SELECTOR]=pygame.image.load(iPath+'Selector.png')
+blockType[BOY]=pygame.image.load(iPath+'Character Boy.png').convert_alpha()
+blockType[CATGIRL]=pygame.image.load(iPath+'Character Cat Girl.png').convert_alpha()
+blockType[HORNGIRL]=pygame.image.load(iPath+'Character Horn Girl.png').convert_alpha()
+blockType[PINKGIRL]=pygame.image.load(iPath+'Character Pink Girl.png').convert_alpha()
+blockType[PRINCESS]=pygame.image.load(iPath+'Character Princess Girl.png').convert_alpha()
+blockType[KEY]=pygame.image.load(iPath+'Key.png').convert_alpha()
+blockType[ENEMYBUG]=pygame.image.load(iPath+'Enemy Bug.png').convert_alpha()
+blockType[STAR]=pygame.image.load(iPath+'Star.png').convert_alpha()
+
 shadowType=[None]*9
 SHADOW_SE=0
 SHADOW_S=1
@@ -98,27 +118,27 @@ shadowType[SHADOW_N]=pygame.image.load(iPath+'Shadow Top North.png').convert_alp
 shadowType[SHADOW_NW]=pygame.image.load(iPath+'Shadow Top North West.png').convert_alpha()
 shadowType[SHADOW_SIDEW]=pygame.image.load(iPath+'Shadow Side West.png').convert_alpha()
 
-numObjects=9
-objectType=[None]*numObjects
-SELECTOR=0
-BOY=1
-CATGIRL=2
-HORNGIRL=3
-PINKGIRL=4
-PRINCESS=5
-KEY=6
-ENEMYBUG=7
-STAR=8
-
-objectType[SELECTOR]=pygame.image.load(iPath+'Selector.png')
-objectType[BOY]=pygame.image.load(iPath+'Character Boy.png').convert_alpha()
-objectType[CATGIRL]=pygame.image.load(iPath+'Character Cat Girl.png').convert_alpha()
-objectType[HORNGIRL]=pygame.image.load(iPath+'Character Horn Girl.png').convert_alpha()
-objectType[PINKGIRL]=pygame.image.load(iPath+'Character Pink Girl.png').convert_alpha()
-objectType[PRINCESS]=pygame.image.load(iPath+'Character Princess Girl.png').convert_alpha()
-objectType[KEY]=pygame.image.load(iPath+'Key.png').convert_alpha()
-objectType[ENEMYBUG]=pygame.image.load(iPath+'Enemy Bug.png').convert_alpha()
-objectType[STAR]=pygame.image.load(iPath+'Star.png').convert_alpha()
+##numObjects=9
+##objectType=[None]*numObjects
+##SELECTOR=0
+##BOY=1
+##CATGIRL=2
+##HORNGIRL=3
+##PINKGIRL=4
+##PRINCESS=5
+##KEY=6
+##ENEMYBUG=7
+##STAR=8
+##
+##objectType[SELECTOR]=pygame.image.load(iPath+'Selector.png')
+##objectType[BOY]=pygame.image.load(iPath+'Character Boy.png').convert_alpha()
+##objectType[CATGIRL]=pygame.image.load(iPath+'Character Cat Girl.png').convert_alpha()
+##objectType[HORNGIRL]=pygame.image.load(iPath+'Character Horn Girl.png').convert_alpha()
+##objectType[PINKGIRL]=pygame.image.load(iPath+'Character Pink Girl.png').convert_alpha()
+##objectType[PRINCESS]=pygame.image.load(iPath+'Character Princess Girl.png').convert_alpha()
+##objectType[KEY]=pygame.image.load(iPath+'Key.png').convert_alpha()
+##objectType[ENEMYBUG]=pygame.image.load(iPath+'Enemy Bug.png').convert_alpha()
+##objectType[STAR]=pygame.image.load(iPath+'Star.png').convert_alpha()
 
 QwikQwests=pygame.image.load('images/QwikQwests.png').convert_alpha()
 
@@ -156,6 +176,10 @@ class Block:
         
     speaking = False
     static=True
+
+class Cursor(Block):
+    name="cursor"
+    #blocknum = SELECTOR
 
 #class Shadow(Block):
 
