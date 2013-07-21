@@ -157,12 +157,12 @@ class Block:
         self.idx = idx
     def setblock(self, block):
         self.blocknum = block
-    def setpos(self,pos):
-        (x,y,z) = pos
-        self.pos = (x,y,z)
-        self.x = x
-        self.y = y
-        self.z = z
+##    def setpos(self,pos):
+##        (x,y,z) = pos
+##        self.pos = (x,y,z)
+##        self.x = x
+##        self.y = y
+##        self.z = z
     instances = {}
     def __init__(self, pos, name=None):
         self.pos = pos
@@ -178,15 +178,36 @@ class Block:
     static=True
 
 class Cursor(Block):
-    name="cursor"
+    instances = {}
+    def __init__(self, pos, name=None):
+        self.pos = pos
+        (x,y,z) = pos
+        self.x = x
+        self.y = y
+        self.z = z
+        self.name = name
+        poskey=(z,y,x)
+        self.__class__.instances.update({poskey : self})
     #blocknum = SELECTOR
 
 #class Shadow(Block):
 
+class SpawnPoint(Block):
+    name="spawnpoint"
+    instances = {}
+    def __init__(self, pos, name=None):
+        self.pos = pos
+        (x,y,z) = pos
+        self.x = x
+        self.y = y
+        self.z = z
+        self.name = name
+        poskey=(z,y,x)
+        self.__class__.instances.update({poskey : self})
+
 class Object(Block):
     # Objects inherit from blocks but can be moved
     something="nothing"
-    static=False
     
 class Character(Object):
     # characters inherit from objects but can walk, talk, and grab objects
@@ -205,3 +226,12 @@ class Character(Object):
         self.saysecs = secs
         self.sayage = time.mktime(time.gmtime())
     static=False
+    def __init__(self, pos, name=None):
+        self.pos = pos
+        (x,y,z) = pos
+        self.x = x
+        self.y = y
+        self.z = z
+        self.name = name
+        poskey=(z,y,x)
+        self.__class__.instances.update({poskey : self})

@@ -13,6 +13,11 @@ fpsClock = pygame.time.Clock()
 
 cursorBlock=0
 
+layerHide=False
+
+(BLOCK,OBJECT,SPAWN)=(0,1,2)
+mode=BLOCK
+modetext={BLOCK:('Block',1,17),OBJECT:('Object',18,26),SPAWN:('Spawn',28,32)}
 
 BLACK = (0,0,0)
 WHITE = (255,255,255)
@@ -31,17 +36,6 @@ max_z=5
 limit_x=19
 limit_y=11
 limit_z=11
-
-testLevel=np.zeros(((max_z+1),(max_y+1),(max_x+1)),dtype=np.int)
-
-emptyLayer=[
-            [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY], 
-            [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY],
-            [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY],
-            [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY],
-            [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY],
-            [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY]
-            ]
 
 def fill_gradient(surface, color, gradient, rect=None, vertical=True, forward=True):
     return True
@@ -85,198 +79,27 @@ def draw_screen():
     renderDict.update(Block.instances)
     renderDict.update(Object.instances)
     renderDict.update(Character.instances)
+    renderDict.update(SpawnPoint.instances)
     
-    for i in sorted(iter(Block.instances.keys())):
-        #print("key: {0} block {1}".format(i,Block.instances[i]))
-        b=Block.instances[i]
+    for i in sorted(iter(renderDict.keys())):
+        b=renderDict[i]
         (x,y,z)=b.pos
         offset=(z*-1*blockOffset)+screenOffset
-        # Cursor 
-        if (z == player_z) and (x == player_x) and (y == player_y):
-            if (cursorBlock > 0):
+        # Cursor
+        if (z <= player_z) or (layerHide == False):
+            if (z == player_z) and (x == player_x) and (y == player_y):
                 SCREEN.blit(blockType[cursorBlock], ((x*blockWidth),y*blockHeight+offset))
-            SCREEN.blit(blockType[SELECTOR], ((x*blockWidth),y*blockHeight+offset-blockOffset))
-        else:
+                SCREEN.blit(blockType[SELECTOR], ((x*blockWidth),y*blockHeight+offset-blockOffset))
+            else:
 
-            # Block
-            SCREEN.blit(blockType[b.blocknum], ((x*blockWidth),(y*blockHeight+(offset))))
-
+                # Block
+                SCREEN.blit(blockType[b.blocknum], ((x*blockWidth),(y*blockHeight+(offset))))
+            
 
 
 
         
-##    for z in range (0,(player_z+1)):
-##        offset=(z*-1*blockOffset)+screenOffset
-##        for y in range (0,(max_y+1)):
-##            for x in range (0,(max_x+1)):
-##                block=testLevel[z][y][x]
-##                
-##                tallBlockOffset=0
-##                if (block == DOORTALLC):
-##                    tallBlockoffset=2*blockOffset
-##          
-##                if (block > 0):
-##
-##                    
-##                    paintBlock=0
-##                    if (sdebug==1):
-##                        paintBlock=PLAINBLOCK
-##                    if (sdebug==2):
-##                        paintBlock=block
-##
-##                    if (sdebug > 0):
-##                        image=blockType[paintBlock]                   
-##                        SCREEN.blit(image, ((x*blockWidth),(y*blockHeight+(offset))))
-##
-##                    showSE=True
-##                    showS=True
-##                    showSW=True
-##                    showE=True
-##                    showW=True
-##                    showNE=True
-##                    showN=True
-##                    showNW=True
-##                    showSIDEW=True
-##                    showS2=True
-##                    showS5=True
-##
-##                    # shadow processing
-##                    if (z < max_z) and (testLevel[z+1][y][x] == 0) and (RAMP_W < block < ROCK):
-##                        # South East
-##                        if (showSE == True) and (z < max_z) and (y < max_y) and (x < max_x) and (RAMP_W < testLevel[z+1][y+1][x+1] < ROCK) and (testLevel[z+1][y][x+1] == EMPTY) and (testLevel[z+1][y+1][x] == EMPTY):
-##                           SCREEN.blit(shadowType[SHADOW_SE], ((x*blockWidth),(y*blockHeight+(offset))))
-##                           print("Placing SE shadow at {0},{1},{2}".format(x,y,z))
-##                        # South - needs check to see if we're the top block - purely a waste of cycles - nothing cosmetic AFAIK
-##                        if (showS == True) and (z < max_z) and (y < max_y) and (RAMP_W < testLevel[z+1][y+1][x] < ROCK):
-##                           SCREEN.blit(shadowType[SHADOW_S], ((x*blockWidth),(y*blockHeight+(offset))))
-##                        # South West
-##                        if (showSW == True) and (z < max_z) and (y < max_y) and (x > min_x) and (RAMP_W < testLevel[z+1][y+1][x-1] < ROCK) and (testLevel[z+1][y][x-1] == EMPTY) and (testLevel[z+1][y+1][x] == EMPTY):
-##                           SCREEN.blit(shadowType[SHADOW_SW], ((x*blockWidth),(y*blockHeight+(offset))))
-##                        # East
-##                        if (showE == True)  and (z < max_z) and (x < max_x) and (RAMP_W < testLevel[z+1][y][x+1] < ROCK):
-##                           SCREEN.blit(shadowType[SHADOW_E], ((x*blockWidth),(y*blockHeight+(offset))))
-##                        # West
-##                        if (showW == True)  and (z < max_z) and (x > min_x) and (RAMP_W < testLevel[z+1][y][x-1] < ROCK):
-##                           SCREEN.blit(shadowType[SHADOW_W], ((x*blockWidth),(y*blockHeight+(offset))))
-##                        # North East
-##                        if (showNE == True)  and (z < max_z) and (y > min_y) and (x < max_x) and (RAMP_W < testLevel[z+1][y-1][x+1] < ROCK) and (testLevel[z+1][y][x+1] == EMPTY) and (testLevel[z+1][y-1][x] == EMPTY):
-##                           SCREEN.blit(shadowType[SHADOW_NE], ((x*blockWidth),(y*blockHeight+(offset))))
-##                        # North
-##                        if (showN == True)  and (z < max_z) and (y > min_y) and (RAMP_W < testLevel[z+1][y-1][x] < ROCK):
-##                           SCREEN.blit(shadowType[SHADOW_N], ((x*blockWidth),(y*blockHeight+(offset))))
-##                        # North West
-##                        if (showNW == True)  and (z < max_z) and (y > min_y) and (x > min_x) and (RAMP_W < testLevel[z+1][y-1][x-1] < ROCK) and (testLevel[z+1][y][x-1] == EMPTY) and (testLevel[z+1][y-1][x] == EMPTY):
-##                           SCREEN.blit(shadowType[SHADOW_NW], ((x*blockWidth),(y*blockHeight+(offset))))
-##                        # Side West
-##                        if (showSIDEW == True) and (z < max_z) and (x > min_x) and (y < max_y) and (RAMP_W < testLevel[z][y+1][x-1] < ROCK) and (testLevel[z][y+1][x] == EMPTY) and (testLevel[z+1][y+1][x] == EMPTY):
-##                           SCREEN.blit(shadowType[SHADOW_SIDEW], ((x*blockWidth),(y*blockHeight+(offset))))
-##
-##                        # South (top)
-##                        if (showS2 == True)  and (z < y + 3 )and (z < max_z) and (y > min_y) and (testLevel[z+1][y][x] == EMPTY) and (testLevel[z][y-1][x] == EMPTY) and (testLevel[z+1][y-1][x] == EMPTY):
-##                           SCREEN.blit(shadowType[SHADOW_S], ((x*blockWidth),(y*blockHeight+(offset)-blockOffset-tallBlockOffset)))
-##                    # South (top ceiling)
-##                    if (showS5 == True)  and (z < y + 3) and (z == max_z) and (y > min_y) and (testLevel[z][y-1][x] == EMPTY):
-##                       SCREEN.blit(shadowType[SHADOW_S], ((x*blockWidth),(y*blockHeight+(offset)-blockOffset-tallBlockOffset)))                   
-##                # spawn point
-##                for a in range (0,4):
-##                    if (z == spawn[a][2]) and (y == spawn[a][1]) and (x == spawn[a][0]):
-##                        SCREEN.blit(objectType[BOY+a], ((x*blockWidth),y*blockHeight+offset))                    
-##
-##                # objective point
-##                if (z == objective[2]) and (y == objective[1]) and (x == objective[0]):
-##                    SCREEN.blit(objectType[STAR], ((x*blockWidth),y*blockHeight+offset))                    
-##
-##                # Cursor 
-##                if (z == player_z) and (x == player_x) and (y == player_y):
-##                    if (cursorBlock > 0):
-##                        SCREEN.blit(blockType[cursorBlock], ((x*blockWidth),y*blockHeight+offset))
-##                    SCREEN.blit(objectType[SELECTOR], ((x*blockWidth),y*blockHeight+offset-blockOffset))
 
-
-def canMoveRight(px,py,pz):
-    if (px < max_x):
-        print("Not at the far right edge")
-        if (testLevel[pz][py][px + 1] == EMPTY) and (testLevel[pz-1][py][px+1] != WATERBLOCK):
-            print("Can move right")
-            if (testLevel[pz-1][py][px+1] == EMPTY):
-                print("But there's a drop")
-                print("We're on a {0}".format(testLevel[pz-1][py][px]))
-                if (testLevel[pz-1][py][px] == RAMP_E):  
-                    print("so that's ok because we're on an East ramp")
-                    return True
-                return False
-            return True
-        if (testLevel[pz][py][px+1] == RAMP_W):
-            print("Up onto the West ramp")
-            return True
-        print("Something in the way")
-        return False
-    print("At the far right edge")
-    return False
-
-def canMoveLeft(px,py,pz):
-    if (px > min_x):
-        print("Not at the far left edge")
-        if (testLevel[pz][py][px-1] == EMPTY) and (testLevel[pz-1][py][px-1] != WATERBLOCK):
-            print("Can move left")
-            if (testLevel[pz-1][py][px-1] == EMPTY):
-                print("But there's a drop")
-                print("We're on a {0}".format(testLevel[pz-1][py][px]))
-                if (testLevel[pz-1][py][px] == RAMP_W):  
-                    print("so that's ok because we're on an West ramp")
-                    return True
-                return False
-            return True
-        if (testLevel[pz][py][px-1] == RAMP_E):
-            print("Up onto the East ramp")
-            return True
-        print("Something in the way")
-        return False
-    print("At the far left edge")
-    return False
-
-def canMoveUp(px,py,pz):
-    #print("px:{0} py:{1} pz:{2} max_y:{3} block:{4}".format(px,py,pz,max_y,testLevel[pz][py-1][px]))
-    if (py > min_y):
-        print("Not at the far top edge")
-        if (testLevel[pz][py-1][px] == EMPTY) and (testLevel[pz-1][py-1][px] != WATERBLOCK):
-            print("Can move up")
-            if (testLevel[pz-1][py-1][px] == EMPTY):
-                print("But there's a drop")
-                print("We're on a {0}".format(testLevel[pz-1][py][px]))
-                if (testLevel[pz-1][py][px] == RAMP_N):  
-                    print("so that's ok because we're on a North ramp")
-                    return True
-                return False
-            return True
-        if (testLevel[pz][py-1][px] == RAMP_S):
-            print("Up onto the South ramp")
-            return True
-        print("Something in the way")
-        return False
-    print("At the far top edge")
-    return False
-
-def canMoveDown(px,py,pz):
-    if (py < max_y):
-        print("Not at the far bottom edge")
-        if (testLevel[pz][py+1][px] == EMPTY) and (testLevel[pz-1][py+1][px] != WATERBLOCK):
-            print("Can move down")
-            if (testLevel[pz-1][py+1][px] == EMPTY):
-                print("But there's a drop")
-                print("We're on a {0}".format(testLevel[pz-1][py][px]))
-                if (testLevel[pz-1][py][px] == RAMP_S):  
-                    print("so that's ok because we're on a South ramp")
-                    return True
-                return False
-            return True
-        if (testLevel[pz][py+1][px] == RAMP_N):
-            print("Up onto the North ramp")
-            return True
-        print("Something in the way")
-        return False
-    print("At the far bottom edge")
-    return False
 
 def getmax(d):
     mx=my=mz=0
@@ -335,30 +158,71 @@ while True:
                 print("x:{0}, y:{1}, z:{2}".format(player_x,player_y,player_z))
                 player_z=player_z - 1
 
-            if (event.key == K_COMMA):
-                cursorBlock=(cursorBlock-1) % numBlocks
+            if (event.key == K_COMMA):                
+                cursorBlock=((cursorBlock-1) % (modetext[mode][2] - modetext[mode][1] + 1)) + modetext[mode][1]
                 print("cursorBlock {0}".format(cursorBlock))
 
             if (event.key == K_PERIOD):
-                cursorBlock=(cursorBlock+1) % numBlocks
+                cursorBlock=((cursorBlock+1) % (modetext[mode][2] - modetext[mode][1] + 1)) + modetext[mode][1]
                 print("cursorBlock {0}".format(cursorBlock))
 
+            if (event.key == K_m):
+                # change mode - block/object/character
+                mode=(mode+1) %3
+                cursorBlock=modetext[mode][1]
+            if (event.key == K_QUOTE):
+                print("deleting")
+                if (mode == BLOCK):
+                    if (player_z,player_y,player_x) in Block.instances.keys():
+                        del Block.instances[(player_z,player_y,player_x)]
+                    else:
+                        print("nothing to delete")
+                elif (mode == OBJECT):
+                    if (player_z,player_y,player_x) in Object.instances.keys():
+                        del Object.instances[(player_z,player_y,player_x)]
+                    else:
+                        print("nothing to delete")
+                elif (mode == SPAWN):
+                    if (player_z,player_y,player_x) in SpawnPoint.instances.keys():
+                        del SpawnPoint.instances[(player_z,player_y,player_x)]
+                        print("These are the blocks ")
+                        for instance in SpawnPoint.instances.values():
+                            print("pos:{0} blocknum:{1}".format(instance.pos,instance.blocknum))
+
+
+                    else:
+                        print("nothing to delete")
             if (event.key == K_SLASH):
-                print("setting x:{0} y:{1} z:{2} to block {3}".format(player_x,player_y,player_z,cursorBlock))
-                testLevel[player_z][player_y][player_x] = cursorBlock
-                if (player_z,player_y,player_x) in Block.instances.keys():
-                    print("block already exists in dictionary - removing old block")
-                    del Block.instances[(player_z,player_y,player_x)]
+
+                if (mode == BLOCK):
+                
+                    print("setting x:{0} y:{1} z:{2} to block {3}".format(player_x,player_y,player_z,cursorBlock))
+                    #testLevel[player_z][player_y][player_x] = cursorBlock
+                    if (player_z,player_y,player_x) in Block.instances.keys():
+                        print("block already exists in dictionary - removing old block")
+                        del Block.instances[(player_z,player_y,player_x)]
+                elif (mode == OBJECT):
+                    print("setting object")
+                elif (mode == SPAWN):
+                    print("setting player spawn point")
+                    if (player_z,player_y,player_x) in SpawnPoint.instances.keys():
+                        del SpawnPoint.instances[(player_z,player_y,player_x)]
+                    else:
+                        newspawn=SpawnPoint((player_x,player_y,player_z))
+                        newspawn.setblock(cursorBlock)
+                    print("These are the spawpoints ")
+                    for instance in SpawnPoint.instances.values():
+                        print("pos:{0} blocknum:{1}".format(instance.pos,instance.blocknum))
                 
                 
                 if (cursorBlock != 0):
-                    print("new block - adding to dictionary")
+##                    print("new block - adding to dictionary")
                     newBlock = Block((player_x,player_y,player_z))
                     newBlock.setblock(cursorBlock)
                     
-                print("These are the blocks ")
-                for instance in Block.instances.values():
-                    print("pos:{0} blocknum:{1}".format(instance.pos,instance.blocknum))
+##                print("These are the blocks ")
+##                for instance in Block.instances.values():
+##                    print("pos:{0} blocknum:{1}".format(instance.pos,instance.blocknum))
 
             if (event.key == K_c):
                 # convert 3d array to class instances
@@ -377,8 +241,8 @@ while True:
                     print("pos:{0} blocknum:{1}".format(instance.pos,instance.blocknum))
                                                         
             if (event.key == K_1) and (max_x > 0):
-                newLevel=np.delete(testLevel,max_x,axis=2)
-                testLevel=newLevel
+##                newLevel=np.delete(testLevel,max_x,axis=2)
+##                testLevel=newLevel
                 max_x-=1
                 if (player_x > max_x):
                     player_x = max_x
@@ -388,12 +252,12 @@ while True:
                 if (objective[0] > max_x):
                     objective[0] = max_x
             if (event.key == K_2) and (max_x < limit_x):
-                newLevel=np.append(testLevel,np.zeros(((max_z+1),(max_y+1),1),dtype=np.int),axis=2)
-                testLevel=newLevel
+##                newLevel=np.append(testLevel,np.zeros(((max_z+1),(max_y+1),1),dtype=np.int),axis=2)
+##                testLevel=newLevel
                 max_x+=1
             if (event.key == K_3) and (max_y > 0):
-                newLevel=np.delete(testLevel,max_y,axis=1)
-                testLevel=newLevel
+##                newLevel=np.delete(testLevel,max_y,axis=1)
+##                testLevel=newLevel
                 max_y-=1
                 if (player_y > max_y):
                     player_y = max_y
@@ -403,12 +267,12 @@ while True:
                 if (objective[1] > max_y):
                     objective[1] = max_y            
             if (event.key == K_4) and (max_y < limit_y):
-                newLevel=np.append(testLevel,np.zeros(((max_z+1),1,(max_x+1)),dtype=np.int),axis=1)
-                testLevel=newLevel
+##                newLevel=np.append(testLevel,np.zeros(((max_z+1),1,(max_x+1)),dtype=np.int),axis=1)
+##                testLevel=newLevel
                 max_y+=1
             if (event.key == K_5) and (max_z > 0):
-                newLevel=np.delete(testLevel,max_z,axis=0)
-                testLevel=newLevel
+##                newLevel=np.delete(testLevel,max_z,axis=0)
+##                testLevel=newLevel
                 max_z-=1
                 if (player_z > max_z):
                     player_z = max_z
@@ -418,8 +282,8 @@ while True:
                 if (objective[2] > max_z):
                     objective[2] = max_z            
             if (event.key == K_6) and (max_z < limit_z):
-                newLevel=np.append(testLevel,np.zeros((1,(max_y+1),(max_x+1)),dtype=np.int),axis=0)
-                testLevel=newLevel
+##                newLevel=np.append(testLevel,np.zeros((1,(max_y+1),(max_x+1)),dtype=np.int),axis=0)
+##                testLevel=newLevel
                 max_z+=1
                 
             if (event.key == K_s):
@@ -505,9 +369,9 @@ while True:
                     #max_z=len(testLevel)
                     (max_x,max_y,max_z)=getmax(Block.instances)
                     print("level is size x:{0} y:{1} z:{2}".format(max_x,max_y,max_z))
-                    max_x -= 1
-                    max_y -= 1
-                    max_z -= 1
+##                    max_x -= 1
+##                    max_y -= 1
+##                    max_z -= 1
 
                     for a in range (0,4):
                         if (spawn[a][0] > max_x):
@@ -529,43 +393,60 @@ while True:
                     if (objective[2] > max_z):
                         objective[2] = max_z
                         
-            if (event.key == K_x):
-                print("clearing block")
-                testLevel[player_z][player_y][player_x] = 0
+##            if (event.key == K_x):
+##                print("clearing block")
+##                testLevel[player_z][player_y][player_x] = 0
+##
+##            if (event.key == K_u):
+##                print("shifting everything up")
+##                for n in range (5,0,-1):
+##                    testLevel[n] = testLevel[n-1]
+##                testLevel[0]=emptyLayer
+##
+##            if (event.key == K_d):
+##                print("shifting everything down")
+##                for n in range (0,5):
+##                    testLevel[n] = testLevel[n+1]
+##                testLevel[5]=emptyLayer
 
-            if (event.key == K_u):
-                print("shifting everything up")
-                for n in range (5,0,-1):
-                    testLevel[n] = testLevel[n-1]
-                testLevel[0]=emptyLayer
+##            if (event.key == K_p):
+##                print("setting player spawn point")
+##                if (player_z,player_y,player_x) is SpawnPoint:
+##                    del SpawnPoint[(player_z,player_y,player_x)]
+##                else:
+##                    newspawn=SpawnPoint((player_x,player_y,player_z))
+##                    newspawn.setblock(BOY)
+                    
+##                spawn[spawnPoint][0] = player_x
+##                spawn[spawnPoint][1] = player_y
+##                spawn[spawnPoint][2] = player_z
+##                spawnPoint = (spawnPoint + 1) %4
 
-            if (event.key == K_d):
-                print("shifting everything down")
-                for n in range (0,5):
-                    testLevel[n] = testLevel[n+1]
-                testLevel[5]=emptyLayer
-
-            if (event.key == K_p):
-                print("setting player spawn point")
-                spawn[spawnPoint][0] = player_x
-                spawn[spawnPoint][1] = player_y
-                spawn[spawnPoint][2] = player_z
-                spawnPoint = (spawnPoint + 1) %4
-
-            if (event.key == K_o):
-                print("setting player objective point")
-                objective[0] = player_x
-                objective[1] = player_y
-                objective[2] = player_z
+##            if (event.key == K_o):
+##                print("setting player objective point")
+##                objective[0] = player_x
+##                objective[1] = player_y
+##                objective[2] = player_z
 
             if (event.key == K_f):
                 print("filling layer {0} with block {1}".format(player_z,cursorBlock))
                 testLevel[player_z]=[[cursorBlock for x in range(max_x+1)]for y in range(max_y+1)]
+
+            if (event.key == K_l):
+                # layerHide toggle
+                if (layerHide == True):
+                    layerHide = False
+                else:
+                    layerHide = True
+                
             if ((player_x,player_y,player_z) != (old_x,old_y,old_z)):
-                #del Cursor.instances[(old_z,old_y,old_x)]
-                Cursor((player_x,player_y,player_z))
-                    
+                if (old_z,old_y,old_x) in Cursor.instances:
+                    del Cursor.instances[(old_z,old_y,old_x)]
+                newCursor = Cursor((player_x,player_y,player_z),"cursor")
+                newCursor.setblock(EMPTY)
+
+                
             draw_screen()
     fpsClock.tick(FPS)
-    pygame.display.set_caption("FPS {0} x:{1} y:{2} z:{3}".format(int(fpsClock.get_fps()),player_x,player_y,player_z))
+    pygame.display.set_caption("FPS {0} x:{1} y:{2} z:{3} Mode:{4} LayerHide:{5}".format(int(fpsClock.get_fps()),player_x,player_y,player_z,modetext[mode][0],layerHide))
     pygame.display.flip()
