@@ -12,13 +12,16 @@ FPS=30
 fpsClock = pygame.time.Clock()
 
 cursorBlock=1
+fileMode=0
 
 layerHide=False
 
-(BLOCK,OBJECT,SPAWN)=(0,1,2)
+(BLOCK,ITEM,SPAWN)=(0,1,2)
 mode=BLOCK
-modetext={BLOCK:('Block',1,17),OBJECT:('Object',18,26),SPAWN:('Spawn',28,32)}
+modetext={BLOCK:('Block',1,17),ITEM:('Item',18,26),SPAWN:('Spawn',28,32)}
 cursorBlock=1
+
+numBlocks=numItems=numSpawns=0
 
 BLACK = (0,0,0)
 WHITE = (255,255,255)
@@ -47,7 +50,7 @@ blockWidth=50
 blockHeight=40
 
 spawn=[[0,0,1],[4,4,1],[0,4,1],[4,0,1]]
-objective=[4,4,1]
+Itemive=[4,4,1]
 
 spawnPoint=0
 player_x=spawn[1][0]
@@ -65,7 +68,7 @@ SCREEN.blit(QwikQwests, titleCenter)
 def cull_blocks():
     # remove block from dictionary which aren't visible
     # do at point of save but ensure only static blocks are considered
-    # plan is to have object blocks which can be moved, picked up etc
+    # plan is to have Item blocks which can be moved, picked up etc
     # don't want to leave holes in the world
     return True
 
@@ -73,12 +76,12 @@ def draw_screen():
     SCREEN.fill(WHITE)
     fill_gradient(SCREEN,LIGHTBLUE,WHITE,gradientRect,True,True)
 
-    # Merge Blocks, Objects, Characters, Cursor into one list/dict
+    # Merge Blocks, Items, Characters, Cursor into one list/dict
 
     
     renderDict=Cursor.instances.copy()
     renderDict.update(SpawnPoint.instances)
-    renderDict.update(Object.instances)
+    renderDict.update(Item.instances)
     renderDict.update(Block.instances)
     
     
@@ -172,7 +175,7 @@ while True:
                 print("cursorBlock {0}".format(cursorBlock))
 
             if (event.key == K_m):
-                # change mode - block/object/character
+                # change mode - block/Item/character
                 mode=(mode+1) %3
                 cursorBlock=modetext[mode][1]
             if (event.key == K_QUOTE):
@@ -180,21 +183,24 @@ while True:
                     print("deleting block")
                     if (player_z,player_y,player_x) in Block.instances.keys():
                         del Block.instances[(player_z,player_y,player_x)]
+                        numBlocks-=1
                     else:
                         print("no block to delete")
-                elif (mode == OBJECT):
-                    print("deleting object")
-                    if (player_z,player_y,player_x) in Object.instances.keys():
-                        del Object.instances[(player_z,player_y,player_x)]
+                elif (mode == ITEM):
+                    print("deleting Item")
+                    if (player_z,player_y,player_x) in Item.instances.keys():
+                        del Item.instances[(player_z,player_y,player_x)]
+                        numItem-=1
                     else:
-                        print("no object to delete")
+                        print("no Item to delete")
                 elif (mode == SPAWN):
                     print("deleting spawn")
                     if (player_z,player_y,player_x) in SpawnPoint.instances.keys():
                         del SpawnPoint.instances[(player_z,player_y,player_x)]
-                        print("These are the blocks ")
-                        for instance in SpawnPoint.instances.values():
-                            print("del spawn pos:{0} blocknum:{1}".format(instance.pos,instance.blocknum))
+                        numSpawns-=1
+##                        print("These are the blocks ")
+##                        for instance in SpawnPoint.instances.values():
+##                            print("del spawn pos:{0} blocknum:{1}".format(instance.pos,instance.blocknum))
                     else:
                         print("no spawn to delete")
                         
@@ -210,17 +216,19 @@ while True:
                     else:
                         print("new block - adding to dictionary")
                         newblock = Block((player_x,player_y,player_z))
+                        numBlocks=len(Block.instances)
                         newblock.setblock(cursorBlock)
                             
-                elif (mode == OBJECT):
-                    print("setting object")
-                    if (player_z,player_y,player_x) in Object.instances.keys():
-                        print("object already exists in dictionary - removing old object")
-                        del Object.instances[(player_z,player_y,player_x)]
+                elif (mode == ITEM):
+                    print("setting Item")
+                    if (player_z,player_y,player_x) in Item.instances.keys():
+                        print("Item already exists in dictionary - removing old Item")
+                        del Item.instances[(player_z,player_y,player_x)]
                     else:
-                        print("new object - adding to dictionary")
-                        newobject = Object((player_x,player_y,player_z))
-                        newobject.setblock(cursorBlock)
+                        print("new Item - adding to dictionary")
+                        newItem = Item((player_x,player_y,player_z))
+                        numItems=len(Item.instances)
+                        newItem.setblock(cursorBlock)
 
                     
                 elif (mode == SPAWN):
@@ -229,6 +237,7 @@ while True:
                         del SpawnPoint.instances[(player_z,player_y,player_x)]
                     else:
                         newspawn=SpawnPoint((player_x,player_y,player_z))
+                        numSpawns=len(SpawnPoint.instances)
                         newspawn.setblock(cursorBlock)
                     print("These are the spawnpoints ")
                     for instance in SpawnPoint.instances.values():
@@ -259,6 +268,9 @@ while True:
                 print("These are the blocks ")
                 for instance in Block.instances.values():
                     print("pos:{0} blocknum:{1}".format(instance.pos,instance.blocknum))
+
+            if (event.key == K_0):
+                fileMode=(fileMode + 1) % 2
                                                         
             if (event.key == K_1) and (max_x > 0):
 ##                newLevel=np.delete(testLevel,max_x,axis=2)
@@ -269,8 +281,8 @@ while True:
                 for a in range (0,4):
                     if (spawn[a][0] > max_x):
                         spawn[a][0] = max_x
-                if (objective[0] > max_x):
-                    objective[0] = max_x
+                if (Itemive[0] > max_x):
+                    Itemive[0] = max_x
             if (event.key == K_2) and (max_x < limit_x):
 ##                newLevel=np.append(testLevel,np.zeros(((max_z+1),(max_y+1),1),dtype=np.int),axis=2)
 ##                testLevel=newLevel
@@ -284,8 +296,8 @@ while True:
                 for a in range [0,4]:
                     if (spawn[a][1] > max_y):
                         spawn[a][1] = max_y
-                if (objective[1] > max_y):
-                    objective[1] = max_y            
+                if (Itemive[1] > max_y):
+                    Itemive[1] = max_y            
             if (event.key == K_4) and (max_y < limit_y):
 ##                newLevel=np.append(testLevel,np.zeros(((max_z+1),1,(max_x+1)),dtype=np.int),axis=1)
 ##                testLevel=newLevel
@@ -299,8 +311,8 @@ while True:
                 for a in range (0,4):
                     if (spawn[a][2] > max_z):
                         spawn[a][2] = max_z
-                if (objective[2] > max_z):
-                    objective[2] = max_z            
+                if (Itemive[2] > max_z):
+                    Itemive[2] = max_z            
             if (event.key == K_6) and (max_z < limit_z):
 ##                newLevel=np.append(testLevel,np.zeros((1,(max_y+1),(max_x+1)),dtype=np.int),axis=0)
 ##                testLevel=newLevel
@@ -315,7 +327,7 @@ while True:
                     saveFile=open(fileName,'wb')
                     pickle.dump(testLevel,saveFile)
                     pickle.dump(spawn,saveFile)
-                    pickle.dump(objective,saveFile)
+                    pickle.dump(Itemive,saveFile)
                     saveFile.close()
                     print("level saved as array")
                     
@@ -327,9 +339,19 @@ while True:
                 if (fileName):
                     saveFile=open(fileName,'wb')
                     pickle.dump(Block.instances,saveFile)
+                    #saveFile.close()
+                    if (fileMode == 1):
+                        #fileName2=fileName+'O'
+                        #saveFile=open(fileName2,'wb')
+                        pickle.dump(Item.instances,saveFile)
+                        #saveFile.close()
+                        #fileName2=fileName+'S'
+                        #saveFile=open(fileName2,'wb')
+                        pickle.dump(SpawnPoint.instances,saveFile)
+                        #saveFile.close()
                     #pickle.dump(testLevel,saveFile)
                     #pickle.dump(spawn,saveFile)
-                    #pickle.dump(objective,saveFile)
+                    #pickle.dump(Itemive,saveFile)
                     saveFile.close()
                     print("level saved as class instance dictionary")
                     
@@ -342,7 +364,7 @@ while True:
                     loadFile=open(fileName,'rb')
                     testLevel=pickle.load(loadFile)
                     spawn=pickle.load(loadFile)
-                    objective=pickle.load(loadFile)
+                    Itemive=pickle.load(loadFile)
                     loadFile.close()
                     max_x=len(testLevel[0][0])
                     max_y=len(testLevel[0])
@@ -361,16 +383,16 @@ while True:
                             spawn[a][2] = max_z
                     if (player_x > max_x):
                         player_x = max_x                            
-                    if (objective[0] > max_x):
-                        objective[0] = max_x
+                    if (Itemive[0] > max_x):
+                        Itemive[0] = max_x
                     if (player_y > max_y):
                         player_y = max_y
-                    if (objective[1] > max_y):
-                        objective[1] = max_y
+                    if (Itemive[1] > max_y):
+                        Itemive[1] = max_y
                     if (player_z > max_z):
                         player_z = max_z
-                    if (objective[2] > max_z):
-                        objective[2] = max_z
+                    if (Itemive[2] > max_z):
+                        Itemive[2] = max_z
                         
             if (event.key == K_q):
                 root=tkinter.Tk()
@@ -381,12 +403,26 @@ while True:
                     loadFile=open(fileName,'rb')
                     #testLevel=pickle.load(loadFile)
                     #spawn=pickle.load(loadFile)
-                    #objective=pickle.load(loadFile)
+                    #Itemive=pickle.load(loadFile)
                     Block.instances=pickle.load(loadFile)
+                    #loadFile.close()
+                    numBlocks=len(Block.instances.keys())
+                    if (fileMode == 1):
+                        #fileName2=fileName+'O'
+                        #loadFile=open(fileName2,'rb')
+                        Item.instances=pickle.load(loadFile)
+                        #loadFile.close()
+                        numItems=len(Item.instances.keys())
+                        #fileName2=fileName+'S'
+                        #loadFile=open(fileName2,'rb')
+                        SpawnPoint.instances=pickle.load(loadFile)
+                        #loadFile.close()
+                        numSpawns=len(SpawnPoint.instances.keys())
                     loadFile.close()
                     #max_x=len(testLevel[0][0])
                     #max_y=len(testLevel[0])
                     #max_z=len(testLevel)
+                        
                     (max_x,max_y,max_z)=getmax(Block.instances)
                     print("level is size x:{0} y:{1} z:{2}".format(max_x,max_y,max_z))
 ##                    max_x -= 1
@@ -402,16 +438,16 @@ while True:
                             spawn[a][2] = max_z
                     if (player_x > max_x):
                         player_x = max_x                            
-                    if (objective[0] > max_x):
-                        objective[0] = max_x
+                    if (Itemive[0] > max_x):
+                        Itemive[0] = max_x
                     if (player_y > max_y):
                         player_y = max_y
-                    if (objective[1] > max_y):
-                        objective[1] = max_y
+                    if (Itemive[1] > max_y):
+                        Itemive[1] = max_y
                     if (player_z > max_z):
                         player_z = max_z
-                    if (objective[2] > max_z):
-                        objective[2] = max_z
+                    if (Itemive[2] > max_z):
+                        Itemive[2] = max_z
                         
 ##            if (event.key == K_x):
 ##                print("clearing block")
@@ -443,14 +479,14 @@ while True:
 ##                spawnPoint = (spawnPoint + 1) %4
 
 ##            if (event.key == K_o):
-##                print("setting player objective point")
-##                objective[0] = player_x
-##                objective[1] = player_y
-##                objective[2] = player_z
+##                print("setting player Itemive point")
+##                Itemive[0] = player_x
+##                Itemive[1] = player_y
+##                Itemive[2] = player_z
 
-            if (event.key == K_f):
-                print("filling layer {0} with block {1}".format(player_z,cursorBlock))
-                testLevel[player_z]=[[cursorBlock for x in range(max_x+1)]for y in range(max_y+1)]
+##            if (event.key == K_f):
+##                print("filling layer {0} with block {1}".format(player_z,cursorBlock))
+##                testLevel[player_z]=[[cursorBlock for x in range(max_x+1)]for y in range(max_y+1)]
 
             if (event.key == K_l):
                 # layerHide toggle
@@ -468,5 +504,5 @@ while True:
                 
             draw_screen()
     fpsClock.tick(FPS)
-    pygame.display.set_caption("FPS {0} x:{1} y:{2} z:{3} Mode:{4} LayerHide:{5} cursorBlock:{6}".format(int(fpsClock.get_fps()),player_x,player_y,player_z,modetext[mode][0],layerHide,cursorBlock))
+    pygame.display.set_caption("FPS {0} x:{1} y:{2} z:{3} Mode:{4} LayerHide:{5} cursorBlock:{6} fileMode:{7} #Blocks:{8} #Items{9} #Spawns{10}".format(int(fpsClock.get_fps()),player_x,player_y,player_z,modetext[mode][0],layerHide,cursorBlock,fileMode,numBlocks,numItems,numSpawns))
     pygame.display.flip()

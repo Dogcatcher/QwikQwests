@@ -47,7 +47,7 @@ blockType[WOODBLOCK]=pygame.image.load(iPath+'Wood Block.png').convert_alpha()
 blockType[WATERBLOCK]=pygame.image.load(iPath+'Water Block.png').convert_alpha()
 blockType[DOORTALLC]=pygame.image.load(iPath+'Door Tall Closed.png').convert_alpha()
 
-# static scenery objects
+# static scenery Items
 ROCK=14
 TREESHORT=15
 TREETALL=16
@@ -118,8 +118,8 @@ shadowType[SHADOW_N]=pygame.image.load(iPath+'Shadow Top North.png').convert_alp
 shadowType[SHADOW_NW]=pygame.image.load(iPath+'Shadow Top North West.png').convert_alpha()
 shadowType[SHADOW_SIDEW]=pygame.image.load(iPath+'Shadow Side West.png').convert_alpha()
 
-##numObjects=9
-##objectType=[None]*numObjects
+##numItems=9
+##ItemType=[None]*numItems
 ##SELECTOR=0
 ##BOY=1
 ##CATGIRL=2
@@ -130,15 +130,15 @@ shadowType[SHADOW_SIDEW]=pygame.image.load(iPath+'Shadow Side West.png').convert
 ##ENEMYBUG=7
 ##STAR=8
 ##
-##objectType[SELECTOR]=pygame.image.load(iPath+'Selector.png')
-##objectType[BOY]=pygame.image.load(iPath+'Character Boy.png').convert_alpha()
-##objectType[CATGIRL]=pygame.image.load(iPath+'Character Cat Girl.png').convert_alpha()
-##objectType[HORNGIRL]=pygame.image.load(iPath+'Character Horn Girl.png').convert_alpha()
-##objectType[PINKGIRL]=pygame.image.load(iPath+'Character Pink Girl.png').convert_alpha()
-##objectType[PRINCESS]=pygame.image.load(iPath+'Character Princess Girl.png').convert_alpha()
-##objectType[KEY]=pygame.image.load(iPath+'Key.png').convert_alpha()
-##objectType[ENEMYBUG]=pygame.image.load(iPath+'Enemy Bug.png').convert_alpha()
-##objectType[STAR]=pygame.image.load(iPath+'Star.png').convert_alpha()
+##ItemType[SELECTOR]=pygame.image.load(iPath+'Selector.png')
+##ItemType[BOY]=pygame.image.load(iPath+'Character Boy.png').convert_alpha()
+##ItemType[CATGIRL]=pygame.image.load(iPath+'Character Cat Girl.png').convert_alpha()
+##ItemType[HORNGIRL]=pygame.image.load(iPath+'Character Horn Girl.png').convert_alpha()
+##ItemType[PINKGIRL]=pygame.image.load(iPath+'Character Pink Girl.png').convert_alpha()
+##ItemType[PRINCESS]=pygame.image.load(iPath+'Character Princess Girl.png').convert_alpha()
+##ItemType[KEY]=pygame.image.load(iPath+'Key.png').convert_alpha()
+##ItemType[ENEMYBUG]=pygame.image.load(iPath+'Enemy Bug.png').convert_alpha()
+##ItemType[STAR]=pygame.image.load(iPath+'Star.png').convert_alpha()
 
 QwikQwests=pygame.image.load('images/QwikQwests.png').convert_alpha()
 
@@ -209,11 +209,12 @@ class SpawnPoint(Block):
         poskey=(z,y,x)
         self.__class__.instances.update({poskey : self})
 
-class Object(Block):
-    # Objects inherit from blocks but can be moved
-    something="nothing"
+class Item(Block):
+    # Items inherit from blocks but can be moved
+    name="Item"
+    instances = {}
     def __init__(self, pos, name=None):
-        print("new Object instance")
+        print("new Item instance")
         self.pos = pos
         (x,y,z) = pos
         self.x = x
@@ -223,8 +224,8 @@ class Object(Block):
         poskey=(z,y,x)
         self.__class__.instances.update({poskey : self})
     
-class Character(Object):
-    # characters inherit from objects but can walk, talk, and grab objects
+class Character(Block):
+    # characters inherit from Items but can walk, talk, and grab Items
     def setkeys(self,up,down,left,right,action):
         self.upkey = up
         self.downkey = down
