@@ -11,13 +11,14 @@ pygame.init()
 FPS=30
 fpsClock = pygame.time.Clock()
 
-cursorBlock=0
+cursorBlock=1
 
 layerHide=False
 
 (BLOCK,OBJECT,SPAWN)=(0,1,2)
 mode=BLOCK
 modetext={BLOCK:('Block',1,17),OBJECT:('Object',18,26),SPAWN:('Spawn',28,32)}
+cursorBlock=1
 
 BLACK = (0,0,0)
 WHITE = (255,255,255)
@@ -76,10 +77,10 @@ def draw_screen():
 
     
     renderDict=Cursor.instances.copy()
-    renderDict.update(Block.instances)
-    renderDict.update(Object.instances)
-    renderDict.update(Character.instances)
     renderDict.update(SpawnPoint.instances)
+    renderDict.update(Object.instances)
+    renderDict.update(Block.instances)
+    
     
     for i in sorted(iter(renderDict.keys())):
         b=renderDict[i]
@@ -159,11 +160,15 @@ while True:
                 player_z=player_z - 1
 
             if (event.key == K_COMMA):                
-                cursorBlock=((cursorBlock-1) % (modetext[mode][2] - modetext[mode][1] + 1)) + modetext[mode][1]
+                cursorBlock=cursorBlock-1
+                if (cursorBlock < modetext[mode][1]):
+                    cursorBlock = modetext[mode][2]
                 print("cursorBlock {0}".format(cursorBlock))
 
             if (event.key == K_PERIOD):
-                cursorBlock=((cursorBlock+1) % (modetext[mode][2] - modetext[mode][1] + 1)) + modetext[mode][1]
+                cursorBlock=cursorBlock+1
+                if (cursorBlock > modetext[mode][2]):
+                    cursorBlock = modetext[mode][1]
                 print("cursorBlock {0}".format(cursorBlock))
 
             if (event.key == K_m):
@@ -171,27 +176,28 @@ while True:
                 mode=(mode+1) %3
                 cursorBlock=modetext[mode][1]
             if (event.key == K_QUOTE):
-                print("deleting")
                 if (mode == BLOCK):
+                    print("deleting block")
                     if (player_z,player_y,player_x) in Block.instances.keys():
                         del Block.instances[(player_z,player_y,player_x)]
                     else:
-                        print("nothing to delete")
+                        print("no block to delete")
                 elif (mode == OBJECT):
+                    print("deleting object")
                     if (player_z,player_y,player_x) in Object.instances.keys():
                         del Object.instances[(player_z,player_y,player_x)]
                     else:
-                        print("nothing to delete")
+                        print("no object to delete")
                 elif (mode == SPAWN):
+                    print("deleting spawn")
                     if (player_z,player_y,player_x) in SpawnPoint.instances.keys():
                         del SpawnPoint.instances[(player_z,player_y,player_x)]
                         print("These are the blocks ")
                         for instance in SpawnPoint.instances.values():
-                            print("pos:{0} blocknum:{1}".format(instance.pos,instance.blocknum))
-
-
+                            print("del spawn pos:{0} blocknum:{1}".format(instance.pos,instance.blocknum))
                     else:
-                        print("nothing to delete")
+                        print("no spawn to delete")
+                        
             if (event.key == K_SLASH):
 
                 if (mode == BLOCK):
@@ -201,8 +207,22 @@ while True:
                     if (player_z,player_y,player_x) in Block.instances.keys():
                         print("block already exists in dictionary - removing old block")
                         del Block.instances[(player_z,player_y,player_x)]
+                    else:
+                        print("new block - adding to dictionary")
+                        newblock = Block((player_x,player_y,player_z))
+                        newblock.setblock(cursorBlock)
+                            
                 elif (mode == OBJECT):
                     print("setting object")
+                    if (player_z,player_y,player_x) in Object.instances.keys():
+                        print("object already exists in dictionary - removing old object")
+                        del Object.instances[(player_z,player_y,player_x)]
+                    else:
+                        print("new object - adding to dictionary")
+                        newobject = Object((player_x,player_y,player_z))
+                        newobject.setblock(cursorBlock)
+
+                    
                 elif (mode == SPAWN):
                     print("setting player spawn point")
                     if (player_z,player_y,player_x) in SpawnPoint.instances.keys():
@@ -210,15 +230,15 @@ while True:
                     else:
                         newspawn=SpawnPoint((player_x,player_y,player_z))
                         newspawn.setblock(cursorBlock)
-                    print("These are the spawpoints ")
+                    print("These are the spawnpoints ")
                     for instance in SpawnPoint.instances.values():
-                        print("pos:{0} blocknum:{1}".format(instance.pos,instance.blocknum))
+                        print("add spawn pos:{0} blocknum:{1}".format(instance.pos,instance.blocknum))
                 
                 
-                if (cursorBlock != 0):
-##                    print("new block - adding to dictionary")
-                    newBlock = Block((player_x,player_y,player_z))
-                    newBlock.setblock(cursorBlock)
+##                if (cursorBlock != 0):
+####                    print("new block - adding to dictionary")
+##                    newBlock = Block((player_x,player_y,player_z))
+##                    newBlock.setblock(cursorBlock)
                     
 ##                print("These are the blocks ")
 ##                for instance in Block.instances.values():
@@ -448,5 +468,5 @@ while True:
                 
             draw_screen()
     fpsClock.tick(FPS)
-    pygame.display.set_caption("FPS {0} x:{1} y:{2} z:{3} Mode:{4} LayerHide:{5}".format(int(fpsClock.get_fps()),player_x,player_y,player_z,modetext[mode][0],layerHide))
+    pygame.display.set_caption("FPS {0} x:{1} y:{2} z:{3} Mode:{4} LayerHide:{5} cursorBlock:{6}".format(int(fpsClock.get_fps()),player_x,player_y,player_z,modetext[mode][0],layerHide,cursorBlock))
     pygame.display.flip()
