@@ -4,6 +4,8 @@ import pygame, sys, pickle, numpy as np
 import time
 from blocks import *
 from pygame.locals import *
+from common import getmax
+from random import shuffle
 
 pygame.init()
 
@@ -16,8 +18,36 @@ fpsClock = pygame.time.Clock()
 
 
 pygame.display.set_caption('Qwik Qwests')
-        
-P1=Character((0,0,1),'Inky')
+
+listFH=open('levellist.pkl','rb')
+levelList=pickle.load(listFH)
+listFH.close()
+
+level=0
+#playerInv=np.zeros(10,dtype=np.int)
+
+def load_level(p):
+    i='levels\\' + p
+    FH=open(i,'rb') # add error if doesn't exist
+    Block.instances=pickle.load(FH)
+    Object.instances=pickle.load(FH)
+    SpawnPoint.instances=pickle.load(FH)
+##    l=pickle.load(FH)
+##    s=pickle.load(FH)
+##    o=pickle.load(FH)
+    FH.close()
+    #playerInv=np.zeros(10,dtype=np.int)
+    #return(l,s,o)
+    
+#(testLevel,spawn,objective)=load_level(levelList[level][2])
+load_level(levelList[level][2])
+
+spawns=[]
+for s in SpawnPoint.instances.values():
+    spawns.append(s.pos)
+shuffle(spawns)
+      
+P1=Character(spawns[0],'Inky')
 P1.setidx(1)
 P1.setblock(BOY)
 #P1.setpos(0,0,1)
@@ -25,7 +55,7 @@ P1.setkeys(K_UP,K_DOWN,K_LEFT,K_RIGHT,K_RCTRL)
 P1.initinv()
 #P1.speak('hello',5)
 
-P2=Character((10,10,1),'Stinky')
+P2=Character(spawns[1],'Stinky')
 P2.setidx(2)
 P2.setblock(CATGIRL)
 #P2.setpos(10,10,1)
@@ -33,7 +63,7 @@ P2.setkeys(K_w,K_s,K_a,K_d,K_LCTRL)
 P2.initinv()
 #P2.speak('bonjour',5)
 
-P3=Character((10,0,1),'Winky')
+P3=Character(spawns[2],'Winky')
 P3.setidx(3)
 P3.setblock(HORNGIRL)
 #P3.setpos(10,0,1)
@@ -41,7 +71,7 @@ P3.setkeys(K_i,K_k,K_j,K_l,K_SPACE)
 P3.initinv()
 #P3.speak('hola',5)
 
-P4=Character((0,10,1),'Pinky')
+P4=Character(spawns[3],'Pinky')
 P4.setidx(4)
 P4.setblock(PINKGIRL)
 #P4.setpos(0,10,1)
@@ -98,39 +128,26 @@ blockOffset=20
 spawn=[0,0,0]
 objective=[9,5,5]
 
-listFH=open('levellist.pkl','rb')
-levelList=pickle.load(listFH)
-listFH.close()
 
-level=0
-playerInv=np.zeros(10,dtype=np.int)
 
-def load_level(p):
-    i='levels\\' + p
-    FH=open(i,'rb') # add error if doesn't exist
-    l=pickle.load(FH)
-    s=pickle.load(FH)
-    o=pickle.load(FH)
-    FH.close()
-    playerInv=np.zeros(10,dtype=np.int)
-    return(l,s,o)
-    
-(testLevel,spawn,objective)=load_level(levelList[level][2])
-
-for player in players:
-    (player.x,player.y,player.z) = (spawn[player.idx-1][0],spawn[player.idx-1][1],spawn[player.idx-1][2])
+##for player in players:
+##    (player.x,player.y,player.z) = (spawn[player.idx-1][0],spawn[player.idx-1][1],spawn[player.idx-1][2])
 
 min_x=0
 min_y=0
 min_z=0
 
-max_x=len(testLevel[0][0])
-max_y=len(testLevel[0])
-max_z=len(testLevel)
-max_x -= 1
-max_y -= 1
-max_z -= 1
+##max_x=len(testLevel[0][0])
+##max_y=len(testLevel[0])
+##max_z=len(testLevel)
+##max_x -= 1
+##max_y -= 1
+##max_z -= 1
 
+(max_x,max_y,max_z)=getmax(Block.instances,(0,0,0))
+(max_x,max_y,max_z)=getmax(Object.instances,(max_x,max_y,max_z))
+(max_x,max_y,max_z)=getmax(Character.instances,(max_x,max_y,max_z))
+                    
 screenOffsetX=0 + ((limit_x - max_x) / 2 * blockWidth)
 screenOffsetY=274 + ((limit_y - max_y) / 2 * blockHeight)
 
@@ -182,75 +199,86 @@ def draw_screen():
 
     SCREEN.blit(QwikQwests, titleCenter)
     renderPanel()
+
+    renderDict=Block.instances.copy()
+    renderDict.update(Object.instances)
+    renderDict.update(Character.instances)
     
-    for z in range (0,(max_z+1)):
+    for j in sorted(iter(renderDict.keys())):
+        b=renderDict[j]
+        (x,y,z)=b.pos
         offset=(z*-1*blockOffset)+screenOffsetY
-        for y in range (0,(max_y+1)):
-            for x in range (0,(max_x+1)):
-                block=testLevel[z][y][x]
-                
-                tallBlockOffset=0
-                if (block == DOORTALLC):
-                    tallBlockoffset=2*blockOffset
-
-                if block > 0:
-                    image=blockType[block]
-                    SCREEN.blit(image, ((x*blockWidth+screenOffsetX),(y*blockHeight+(offset))))
-                
-                # shadow processing
-                if (z < max_z) and (testLevel[z+1][y][x] == EMPTY or (TREEUGLY < testLevel[z+1][y][x] < CHESTC)) and (RAMP_W < block < ROCK):
-                    # South East
-                    if (z < max_z) and (y < max_y) and (x < max_x) and (RAMP_W < testLevel[z+1][y+1][x+1] < ROCK) and (testLevel[z+1][y][x+1] == EMPTY) and (testLevel[z+1][y+1][x] == EMPTY):
-                       SCREEN.blit(shadowType[SHADOW_SE], ((x*blockWidth+screenOffsetX),(y*blockHeight+(offset))))
-                       #print("Placing SE shadow at {0},{1},{2}".format(x,y,z))
-                    # South - needs check to see if we're the top block - purely a waste of cycles - nothing cosmetic AFAIK
-                    if (z < max_z) and (y < max_y) and (RAMP_W < testLevel[z+1][y+1][x] < ROCK):
-                       SCREEN.blit(shadowType[SHADOW_S], ((x*blockWidth+screenOffsetX),(y*blockHeight+(offset))))
-                    # South West
-                    if (z < max_z) and (y < max_y) and (x > min_x) and (RAMP_W < testLevel[z+1][y+1][x-1] < ROCK) and (testLevel[z+1][y][x-1] == EMPTY) and (testLevel[z+1][y+1][x] == EMPTY):
-                       SCREEN.blit(shadowType[SHADOW_SW], ((x*blockWidth+screenOffsetX),(y*blockHeight+(offset))))
-                    # East
-                    if (z < max_z) and (x < max_x) and (RAMP_W < testLevel[z+1][y][x+1] < ROCK):
-                       SCREEN.blit(shadowType[SHADOW_E], ((x*blockWidth+screenOffsetX),(y*blockHeight+(offset))))
-                    # West
-                    if (z < max_z) and (x > min_x) and (RAMP_W < testLevel[z+1][y][x-1] < ROCK):
-                       SCREEN.blit(shadowType[SHADOW_W], ((x*blockWidth+screenOffsetX),(y*blockHeight+(offset))))
-                    # North East
-                    if (z < max_z) and (y > min_y) and (x < max_x) and (RAMP_W < testLevel[z+1][y-1][x+1] < ROCK) and (testLevel[z+1][y][x+1] == EMPTY) and (testLevel[z+1][y-1][x] == EMPTY):
-                       SCREEN.blit(shadowType[SHADOW_NE], ((x*blockWidth+screenOffsetX),(y*blockHeight+(offset))))
-                    # North
-                    if (z < max_z) and (y > min_y) and (RAMP_W < testLevel[z+1][y-1][x] < ROCK):
-                       SCREEN.blit(shadowType[SHADOW_N], ((x*blockWidth+screenOffsetX),(y*blockHeight+(offset))))
-                    # North West
-                    if (z < max_z) and (y > min_y) and (x > min_x) and (RAMP_W < testLevel[z+1][y-1][x-1] < ROCK) and (testLevel[z+1][y][x-1] == EMPTY) and (testLevel[z+1][y-1][x] == EMPTY):
-                       SCREEN.blit(shadowType[SHADOW_NW], ((x*blockWidth+screenOffsetX),(y*blockHeight+(offset))))
-                    # Side West
-                    if (z < max_z) and (x > min_x) and (y < max_y) and (RAMP_W < testLevel[z][y+1][x-1] < ROCK) and (testLevel[z][y+1][x] == EMPTY) and (testLevel[z+1][y+1][x] == EMPTY):
-                       SCREEN.blit(shadowType[SHADOW_SIDEW], ((x*blockWidth+screenOffsetX),(y*blockHeight+(offset))))
-                    # South (top)
-                    if (z < y + 3 )and (z < max_z) and (y > min_y) and (testLevel[z+1][y][x] == EMPTY) and (testLevel[z][y-1][x] == EMPTY) and (testLevel[z+1][y-1][x] == EMPTY):
-                       SCREEN.blit(shadowType[SHADOW_S], ((x*blockWidth+screenOffsetX),(y*blockHeight+(offset)-blockOffset-tallBlockOffset)))
-
-                for player in players:
-                    if (player.x,player.y,player.z) == (x,y,z):
-                        ramp = 0
-                        below=testLevel[z-1][y][x]
-                        if (below == RAMP_N) or (below == RAMP_S) or (below == RAMP_E) or (below == RAMP_W):
-                            ramp = 10
-                        SCREEN.blit(objectType[player.blocknum],((x*blockWidth+screenOffsetX),y*blockHeight+offset+ramp))
-                        if (player.speaking == True):
-                            if (time.mktime(time.gmtime()) > (player.sayage + player.saysecs)):
-                                player.say=''
-                                player.sayage=0
-                                player.saysecs=0
-                                player.speaking = False
-                            else:
-                                bubbleText=bubbleFont.render(player.say,1,BLACK)
-                                SCREEN.blit(bubble,((x*blockWidth+screenOffsetX+35),y*blockHeight+offset+ramp-30))
-                                SCREEN.blit(bubbleText,((x*blockWidth+screenOffsetX+45),y*blockHeight+offset+ramp+15))
-                    
-                if (z == objective[2] ) and (y == objective[1]) and (x == objective[0]):
-                    SCREEN.blit(objectType[STAR], ((x*blockWidth+screenOffsetX),y*blockHeight+offset))
+        # Block
+        SCREEN.blit(blockType[b.blocknum], ((x*blockWidth),(y*blockHeight+(offset))))
+  
+##    for z in range (0,(max_z+1)):
+##        offset=(z*-1*blockOffset)+screenOffsetY
+##        for y in range (0,(max_y+1)):
+##            for x in range (0,(max_x+1)):
+##                block=testLevel[z][y][x]
+##                
+##                tallBlockOffset=0
+##                if (block == DOORTALLC):
+##                    tallBlockoffset=2*blockOffset
+##
+##                if block > 0:
+##                    image=blockType[block]
+##                    SCREEN.blit(image, ((x*blockWidth+screenOffsetX),(y*blockHeight+(offset))))
+##                
+##                # shadow processing
+##                if (z < max_z) and (testLevel[z+1][y][x] == EMPTY or (TREEUGLY < testLevel[z+1][y][x] < CHESTC)) and (RAMP_W < block < ROCK):
+##                    # South East
+##                    if (z < max_z) and (y < max_y) and (x < max_x) and (RAMP_W < testLevel[z+1][y+1][x+1] < ROCK) and (testLevel[z+1][y][x+1] == EMPTY) and (testLevel[z+1][y+1][x] == EMPTY):
+##                       SCREEN.blit(shadowType[SHADOW_SE], ((x*blockWidth+screenOffsetX),(y*blockHeight+(offset))))
+##                       #print("Placing SE shadow at {0},{1},{2}".format(x,y,z))
+##                    # South - needs check to see if we're the top block - purely a waste of cycles - nothing cosmetic AFAIK
+##                    if (z < max_z) and (y < max_y) and (RAMP_W < testLevel[z+1][y+1][x] < ROCK):
+##                       SCREEN.blit(shadowType[SHADOW_S], ((x*blockWidth+screenOffsetX),(y*blockHeight+(offset))))
+##                    # South West
+##                    if (z < max_z) and (y < max_y) and (x > min_x) and (RAMP_W < testLevel[z+1][y+1][x-1] < ROCK) and (testLevel[z+1][y][x-1] == EMPTY) and (testLevel[z+1][y+1][x] == EMPTY):
+##                       SCREEN.blit(shadowType[SHADOW_SW], ((x*blockWidth+screenOffsetX),(y*blockHeight+(offset))))
+##                    # East
+##                    if (z < max_z) and (x < max_x) and (RAMP_W < testLevel[z+1][y][x+1] < ROCK):
+##                       SCREEN.blit(shadowType[SHADOW_E], ((x*blockWidth+screenOffsetX),(y*blockHeight+(offset))))
+##                    # West
+##                    if (z < max_z) and (x > min_x) and (RAMP_W < testLevel[z+1][y][x-1] < ROCK):
+##                       SCREEN.blit(shadowType[SHADOW_W], ((x*blockWidth+screenOffsetX),(y*blockHeight+(offset))))
+##                    # North East
+##                    if (z < max_z) and (y > min_y) and (x < max_x) and (RAMP_W < testLevel[z+1][y-1][x+1] < ROCK) and (testLevel[z+1][y][x+1] == EMPTY) and (testLevel[z+1][y-1][x] == EMPTY):
+##                       SCREEN.blit(shadowType[SHADOW_NE], ((x*blockWidth+screenOffsetX),(y*blockHeight+(offset))))
+##                    # North
+##                    if (z < max_z) and (y > min_y) and (RAMP_W < testLevel[z+1][y-1][x] < ROCK):
+##                       SCREEN.blit(shadowType[SHADOW_N], ((x*blockWidth+screenOffsetX),(y*blockHeight+(offset))))
+##                    # North West
+##                    if (z < max_z) and (y > min_y) and (x > min_x) and (RAMP_W < testLevel[z+1][y-1][x-1] < ROCK) and (testLevel[z+1][y][x-1] == EMPTY) and (testLevel[z+1][y-1][x] == EMPTY):
+##                       SCREEN.blit(shadowType[SHADOW_NW], ((x*blockWidth+screenOffsetX),(y*blockHeight+(offset))))
+##                    # Side West
+##                    if (z < max_z) and (x > min_x) and (y < max_y) and (RAMP_W < testLevel[z][y+1][x-1] < ROCK) and (testLevel[z][y+1][x] == EMPTY) and (testLevel[z+1][y+1][x] == EMPTY):
+##                       SCREEN.blit(shadowType[SHADOW_SIDEW], ((x*blockWidth+screenOffsetX),(y*blockHeight+(offset))))
+##                    # South (top)
+##                    if (z < y + 3 )and (z < max_z) and (y > min_y) and (testLevel[z+1][y][x] == EMPTY) and (testLevel[z][y-1][x] == EMPTY) and (testLevel[z+1][y-1][x] == EMPTY):
+##                       SCREEN.blit(shadowType[SHADOW_S], ((x*blockWidth+screenOffsetX),(y*blockHeight+(offset)-blockOffset-tallBlockOffset)))
+##
+##                for player in players:
+##                    if (player.x,player.y,player.z) == (x,y,z):
+##                        ramp = 0
+##                        below=testLevel[z-1][y][x]
+##                        if (below == RAMP_N) or (below == RAMP_S) or (below == RAMP_E) or (below == RAMP_W):
+##                            ramp = 10
+##                        SCREEN.blit(objectType[player.blocknum],((x*blockWidth+screenOffsetX),y*blockHeight+offset+ramp))
+##                        if (player.speaking == True):
+##                            if (time.mktime(time.gmtime()) > (player.sayage + player.saysecs)):
+##                                player.say=''
+##                                player.sayage=0
+##                                player.saysecs=0
+##                                player.speaking = False
+##                            else:
+##                                bubbleText=bubbleFont.render(player.say,1,BLACK)
+##                                SCREEN.blit(bubble,((x*blockWidth+screenOffsetX+35),y*blockHeight+offset+ramp-30))
+##                                SCREEN.blit(bubbleText,((x*blockWidth+screenOffsetX+45),y*blockHeight+offset+ramp+15))
+##                    
+####                if (z == objective[2] ) and (y == objective[1]) and (x == objective[0]):
+####                    SCREEN.blit(objectType[STAR], ((x*blockWidth+screenOffsetX),y*blockHeight+offset))
 
     draw_inventory()
 

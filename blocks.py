@@ -157,12 +157,12 @@ class Block:
         self.idx = idx
     def setblock(self, block):
         self.blocknum = block
-##    def setpos(self,pos):
-##        (x,y,z) = pos
-##        self.pos = (x,y,z)
-##        self.x = x
-##        self.y = y
-##        self.z = z
+    def setpos(self,pos):
+        (x,y,z) = pos
+        self.pos = (x,y,z)
+        self.x = x
+        self.y = y
+        self.z = z
     instances = {}
     def __init__(self, pos, name=None):
         #print("new Block instance")
@@ -209,12 +209,12 @@ class SpawnPoint(Block):
         poskey=(z,y,x)
         self.__class__.instances.update({poskey : self})
 
-class Item(Block):
+class Object(Block):
     # Items inherit from blocks but can be moved
-    name="Item"
+    name="Object"
     instances = {}
     def __init__(self, pos, name=None):
-        print("new Item instance")
+        print("new Object instance")
         self.pos = pos
         (x,y,z) = pos
         self.x = x
