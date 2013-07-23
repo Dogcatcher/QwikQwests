@@ -347,6 +347,26 @@ def collision(dx,dy,dz):
             collide = True
     return collide
 
+def canmoveto(pos):
+    empty=True
+    # Edges
+    
+    # Players
+    print("checking: {0}".format(pos))
+    if (pos) > (max_z,max_y,max_x):
+        empty=False
+    elif (Character.instances.get(pos) != None):
+        print("found a character")
+        empty = False
+    elif (Object.instances.get(pos) != None):
+        print("found an object")
+        empty = False
+    elif (Block.instances.get(pos) != None):
+        print("found a block")
+        empty = False
+    print("returning {0}".format(empty))
+    return empty
+
 draw_screen()
                 
 while True:
@@ -397,38 +417,52 @@ while True:
                         player.y = new_y
                         player.z = new_z
 
-                if (event.key == player.leftkey) and (canMoveLeft(player.x,player.y,player.z) == True):
-                    if (testLevel[player.z][player.y][player.x-1] == RAMP_E): # Going up an East Ramp
-                        new_z = player.z+1
-                    if (testLevel[player.z-1][player.y][player.x] == RAMP_W): # Going down a West Ramp
-                        new_z = player.z-1
-                    new_x = player.x-1
-                    vacant=True
-                    for occupied in players:
-                        if (occupied != player):
-                            if (new_x == occupied.x and new_y == occupied.y and new_z == occupied.z):
-                                vacant=False
-                    if (vacant == True):
-                        player.x = new_x
-                        player.y = new_y
-                        player.z = new_z
+##                if (event.key == player.leftkey) and (canMoveLeft(player.x,player.y,player.z) == True):
+##                    if (testLevel[player.z][player.y][player.x-1] == RAMP_E): # Going up an East Ramp
+##                        new_z = player.z+1
+##                    if (testLevel[player.z-1][player.y][player.x] == RAMP_W): # Going down a West Ramp
+##                        new_z = player.z-1
+##                    new_x = player.x-1
+##                    vacant=True
+##                    for occupied in players:
+##                        if (occupied != player):
+##                            if (new_x == occupied.x and new_y == occupied.y and new_z == occupied.z):
+##                                vacant=False
+##                    if (vacant == True):
+##                        player.x = new_x
+##                        player.y = new_y
+##                        player.z = new_z
                         
-                if (event.key == player.rightkey) and (canMoveRight(player.x,player.y,player.z) == True):
-                    if (testLevel[player.z-1][player.y][player.x] == RAMP_E): # Going down an East Ramp
-                        new_z = player.z-1
-                    if (testLevel[player.z][player.y][player.x+1] == RAMP_W): # Going up a West Ramp
-                        new_z = player.z+1
-                    new_x = player.x+1
-                    vacant=True
-                    for occupied in players:
-                        if (occupied != player):
-                            if (new_x == occupied.x and new_y == occupied.y and new_z == occupied.z):
-                                vacant=False
-                    if (vacant == True):
-                        player.x = new_x
-                        player.y = new_y
-                        player.z = new_z
+##                if (event.key == player.rightkey) and (canMoveRight(player.x,player.y,player.z) == True):
+##                    if (testLevel[player.z-1][player.y][player.x] == RAMP_E): # Going down an East Ramp
+##                        new_z = player.z-1
+##                    if (testLevel[player.z][player.y][player.x+1] == RAMP_W): # Going up a West Ramp
+##                        new_z = player.z+1
+##                    new_x = player.x+1
+##                    vacant=True
+##                    for occupied in players:
+##                        if (occupied != player):
+##                            if (new_x == occupied.x and new_y == occupied.y and new_z == occupied.z):
+##                                vacant=False
+##                    if (vacant == True):
+##                        player.x = new_x
+##                        player.y = new_y
+##                        player.z = new_z
                         
+                if (event.key == player.leftkey):
+                    if (canmoveto((player.z,player.y,player.x-1)) == True):
+                        print("Moving left from {0}".format(player.pos))
+                        Character.instances[(player.z,player.y,player.x-1)] = Character.instances.pop((player.z,player.y,player.x))
+                        player.setpos((player.x-1,player.y,player.z))
+                        print("Moved left to {0}".format(player.pos))
+                        
+                if (event.key == player.rightkey):
+                    if (canmoveto((player.z,player.y,player.x+1)) == True):
+                        print("Moving right from {0}".format(player.pos))
+                        Character.instances[(player.z,player.y,player.x+1)] = Character.instances.pop((player.z,player.y,player.x))
+                        player.setpos((player.x + 1,player.y,player.z))
+                        print("Moved right to {0}".format(player.pos))
+                    
                 if (event.key == player.actionkey) and (HEART >= testLevel[player.z][player.y][player.x] >= GEMBLUE):
                     player.inventory[player.invidx] = testLevel[player.z][player.y][player.x]
                     testLevel[player.z][player.y][player.x] = EMPTY
