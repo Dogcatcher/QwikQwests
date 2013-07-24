@@ -162,21 +162,21 @@ def draw_inventory():
             blockId=player.inventory[i-1]
             SCREEN.blit(blockType[blockId], (950+(50*player.idx),((i*(20+blockHeight))+invOffset)))
 
-def object_right(x,y,z):
-    if ((x < max_x) and (HEART >= testLevel[z][y][x+1] >= GEMBLUE)):
-        return True
-    
-def object_left(x,y,z):
-    if ((x > min_x) and (HEART >= testLevel[z][y][x-1] >= GEMBLUE)):
-        return True
-
-def object_down(x,y,z):
-    if ((y < max_y) and (HEART >= testLevel[z][y+1][x] >= GEMBLUE)):
-        return True
-    
-def object_up(x,y,z):
-    if ((y > min_y) and (HEART >= testLevel[z][y-1][x] >= GEMBLUE)):
-        return True
+##def object_right(x,y,z):
+##    if ((x < max_x) and (HEART >= testLevel[z][y][x+1] >= GEMBLUE)):
+##        return True
+##    
+##def object_left(x,y,z):
+##    if ((x > min_x) and (HEART >= testLevel[z][y][x-1] >= GEMBLUE)):
+##        return True
+##
+##def object_down(x,y,z):
+##    if ((y < max_y) and (HEART >= testLevel[z][y+1][x] >= GEMBLUE)):
+##        return True
+##    
+##def object_up(x,y,z):
+##    if ((y > min_y) and (HEART >= testLevel[z][y-1][x] >= GEMBLUE)):
+##        return True
 
 def draw_screen():
 
@@ -283,57 +283,57 @@ def draw_screen():
     draw_inventory()
 
 
-def canMoveRight(px,py,pz):
-    if (px < max_x):
-        if ((testLevel[pz][py][px + 1] == EMPTY) or (HEART >= testLevel[pz][py][px+1] >= GEMBLUE)) and (testLevel[pz-1][py][px+1] < WATERBLOCK):
-            if (testLevel[pz-1][py][px+1] == EMPTY):
-                if (testLevel[pz-1][py][px] == RAMP_E):  
-                    return True
-                return False
-            return True
-        if (testLevel[pz][py][px+1] == RAMP_W):
-            return True
-        return False
-    return False
-
-def canMoveLeft(px,py,pz):
-    if (px > min_x):
-        if ((testLevel[pz][py][px-1] == EMPTY) or (HEART >= testLevel[pz][py][px-1] >= GEMBLUE)) and (testLevel[pz-1][py][px-1] < WATERBLOCK):
-            if (testLevel[pz-1][py][px-1] == EMPTY):
-                if (testLevel[pz-1][py][px] == RAMP_W):  
-                    return True
-                return False
-            return True
-        if (testLevel[pz][py][px-1] == RAMP_E):
-            return True
-        return False
-    return False
-
-def canMoveUp(px,py,pz):
-    if (py > min_y):
-        if ((testLevel[pz][py-1][px] == EMPTY) or (HEART >= testLevel[pz][py-1][px] >= GEMBLUE)) and (testLevel[pz-1][py-1][px] < WATERBLOCK):
-            if (testLevel[pz-1][py-1][px] == EMPTY):
-                if (testLevel[pz-1][py][px] == RAMP_N):  
-                    return True
-                return False
-            return True
-        if (testLevel[pz][py-1][px] == RAMP_S):
-            return True
-        return False
-    return False
-
-def canMoveDown(px,py,pz):
-    if (py < max_y):
-        if ((testLevel[pz][py+1][px] == EMPTY) or (HEART >= testLevel[pz][py+1][px] >= GEMBLUE)) and (testLevel[pz-1][py+1][px] < WATERBLOCK):
-            if (testLevel[pz-1][py+1][px] == EMPTY):
-                if (testLevel[pz-1][py][px] == RAMP_S):  
-                    return True
-                return False
-            return True
-        if (testLevel[pz][py+1][px] == RAMP_N):
-            return True
-        return False
-    return False
+##def canMoveRight(px,py,pz):
+##    if (px < max_x):
+##        if ((testLevel[pz][py][px + 1] == EMPTY) or (HEART >= testLevel[pz][py][px+1] >= GEMBLUE)) and (testLevel[pz-1][py][px+1] < WATERBLOCK):
+##            if (testLevel[pz-1][py][px+1] == EMPTY):
+##                if (testLevel[pz-1][py][px] == RAMP_E):  
+##                    return True
+##                return False
+##            return True
+##        if (testLevel[pz][py][px+1] == RAMP_W):
+##            return True
+##        return False
+##    return False
+##
+##def canMoveLeft(px,py,pz):
+##    if (px > min_x):
+##        if ((testLevel[pz][py][px-1] == EMPTY) or (HEART >= testLevel[pz][py][px-1] >= GEMBLUE)) and (testLevel[pz-1][py][px-1] < WATERBLOCK):
+##            if (testLevel[pz-1][py][px-1] == EMPTY):
+##                if (testLevel[pz-1][py][px] == RAMP_W):  
+##                    return True
+##                return False
+##            return True
+##        if (testLevel[pz][py][px-1] == RAMP_E):
+##            return True
+##        return False
+##    return False
+##
+##def canMoveUp(px,py,pz):
+##    if (py > min_y):
+##        if ((testLevel[pz][py-1][px] == EMPTY) or (HEART >= testLevel[pz][py-1][px] >= GEMBLUE)) and (testLevel[pz-1][py-1][px] < WATERBLOCK):
+##            if (testLevel[pz-1][py-1][px] == EMPTY):
+##                if (testLevel[pz-1][py][px] == RAMP_N):  
+##                    return True
+##                return False
+##            return True
+##        if (testLevel[pz][py-1][px] == RAMP_S):
+##            return True
+##        return False
+##    return False
+##
+##def canMoveDown(px,py,pz):
+##    if (py < max_y):
+##        if ((testLevel[pz][py+1][px] == EMPTY) or (HEART >= testLevel[pz][py+1][px] >= GEMBLUE)) and (testLevel[pz-1][py+1][px] < WATERBLOCK):
+##            if (testLevel[pz-1][py+1][px] == EMPTY):
+##                if (testLevel[pz-1][py][px] == RAMP_S):  
+##                    return True
+##                return False
+##            return True
+##        if (testLevel[pz][py+1][px] == RAMP_N):
+##            return True
+##        return False
+##    return False
 
 
 def changeLevel(direction):
@@ -356,35 +356,47 @@ def outofbounds(oob):
     print("out of bounds {0}".format(oob))
     return True
 
-def canmoveto(pos):
-    # Edges
-    
+def isaramp(bn):
+    if (bn == RAMP_N or bn == RAMP_S or bn == RAMP_E or bn == RAMP_W):
+        return True
+    return False
+
+def rampstatus(rpos):
+    (rz,ry,rx)=rpos
+    b=Block.instances.get((rz-1,ry,rx)).blocknum
+    if (isaramp(b) == True):
+        return (True,b)
+    return (False,b)
+
+def canmoveto(topos,frompos):  
     # Players
-    print("checking: {0}".format(pos))
+    print("checking: {0}".format(topos))
     # at the edge
-    if outofbounds(pos):
+    if outofbounds(topos):
         return False
-    elif (Character.instances.get(pos) != None):
+    elif (Character.instances.get(topos) != None):
         # another player
         print("found a character")
         return False
-    elif (Object.instances.get(pos) != None):
+    elif (Object.instances.get(topos) != None):
         # next to an object
         print("found an object")
         return False
-    elif (Block.instances.get(pos) != None):
+    elif (Block.instances.get(topos) != None):
         # next to a block
         print("found a block")
-        return False
+        if (isaramp(Block.instances.get(topos).blocknum) == False):
+            return False
     else:
         # empty space
         # however must be above space or water
-        (bz,by,bx)=pos
+        (bz,by,bx)=topos
         below=(bz-1,by,bx)
         underblock=Block.instances.get(below)
         # we're not The Snowman or Jesus
-        if (underblock == None or underblock.blocknum == WATERBLOCK):
-            print("can't fly or walk on water {0}".format(underblock))
+        (onramp,rtype)=rampstatus(frompos)
+        if (underblock == None or underblock.blocknum == WATERBLOCK) and (onramp == False):
+            print("can't walk in the air or on water {0}".format(underblock))
             return False
             
     return True
@@ -403,22 +415,37 @@ while True:
                 pygame.quit()
                 sys.exit()
 
-            for player in players:
+            for p in players:
 
 
-                if (event.key == player.upkey):
-                    if (canmoveto((player.z,player.y-1,player.x)) == True):
-                        print("Moving up from {0}".format(player.pos))
-                        Character.instances[(player.z,player.y-1,player.x)] = Character.instances.pop((player.z,player.y,player.x))
-                        player.setpos((player.x,player.y-1,player.z))
-                        print("Moved up to {0}".format(player.pos))
+                if (event.key == p.upkey):
+                    if (canmoveto((p.z,p.y-1,p.x),(p.z,p.y,p.x)) == True):
+                        print("Moving up from {0}".format(p.pos))
+                        dz=0
+                        (onramp,rtype)=rampstatus((p.z,p.y,p.x))
+                        if (onramp == True):
+                            if (rtype == RAMP_N):
+                                dz = -1
+                            elif (rtype == RAMP_S):
+                                dz = 1
+                        
+                        Character.instances[(p.z+dz,p.y-1,p.x)] = Character.instances.pop((p.z,p.y,p.x))
+                        p.setpos((p.x,p.y-1,p.z+dz))
+                        print("Moved up to {0}".format(p.pos))
 
-                if (event.key == player.downkey):
-                    if (canmoveto((player.z,player.y+1,player.x)) == True):
-                        print("Moving down from {0}".format(player.pos))
-                        Character.instances[(player.z,player.y+1,player.x)] = Character.instances.pop((player.z,player.y,player.x))
-                        player.setpos((player.x,player.y+1,player.z))
-                        print("Moved down to {0}".format(player.pos))
+                if (event.key == p.downkey):
+                    if (canmoveto((p.z,p.y+1,p.x),(p.z,p.y,p.x)) == True):
+                        print("Moving down from {0}".format(p.pos))
+                        dz=0
+                        (onramp,rtype)=rampstatus((p.z,p.y,p.x))
+                        if (onramp == True):
+                            if (rtype == RAMP_N):
+                                dz = 1
+                            elif (rtype == RAMP_S):
+                                dz = -1                
+                        Character.instances[(p.z+dz,p.y+1,p.x)] = Character.instances.pop((p.z,p.y,p.x))
+                        p.setpos((p.x,p.y+1,p.z+dz))
+                        print("Moved down to {0}".format(p.pos))
                 
 ##                new_x = player.x
 ##                new_y = player.y
@@ -487,24 +514,38 @@ while True:
 ##                        player.y = new_y
 ##                        player.z = new_z
                         
-                if (event.key == player.leftkey):
-                    if (canmoveto((player.z,player.y,player.x-1)) == True):
-                        print("Moving left from {0}".format(player.pos))
-                        Character.instances[(player.z,player.y,player.x-1)] = Character.instances.pop((player.z,player.y,player.x))
-                        player.setpos((player.x-1,player.y,player.z))
-                        print("Moved left to {0}".format(player.pos))
+                if (event.key == p.leftkey):
+                    if (canmoveto((p.z,p.y,p.x-1),(p.z,p.y,p.x)) == True):
+                        print("Moving left from {0}".format(p.pos))
+                        dz=0
+                        (onramp,rtype)=rampstatus((p.z,p.y,p.x))
+                        if (onramp == True):
+                            if (rtype == RAMP_E):
+                                dz = 1
+                            elif (rtype == RAMP_W):
+                                dz = -1
+                        Character.instances[(p.z+dz,p.y,p.x-1)] = Character.instances.pop((p.z,p.y,p.x))
+                        p.setpos((p.x-1,p.y,p.z+dz))
+                        print("Moved left to {0}".format(p.pos))
                         
-                if (event.key == player.rightkey):
-                    if (canmoveto((player.z,player.y,player.x+1)) == True):
-                        print("Moving right from {0}".format(player.pos))
-                        Character.instances[(player.z,player.y,player.x+1)] = Character.instances.pop((player.z,player.y,player.x))
-                        player.setpos((player.x + 1,player.y,player.z))
-                        print("Moved right to {0}".format(player.pos))
+                if (event.key == p.rightkey):
+                    if (canmoveto((p.z,p.y,p.x+1),(p.z,p.y,p.x)) == True):
+                        print("Moving right from {0}".format(p.pos))
+                        dz=0
+                        (onramp,rtype)=rampstatus((p.z,p.y,p.x))
+                        if (onramp == True):
+                            if (rtype == RAMP_E):
+                                dz = -1
+                            elif (rtype == RAMP_W):
+                                dz = 1
+                        Character.instances[(p.z+dz,p.y,p.x+1)] = Character.instances.pop((p.z,p.y,p.x))
+                        p.setpos((p.x+1,p.y,p.z+dz))
+                        print("Moved right to {0}".format(p.pos))
                     
-                if (event.key == player.actionkey) and (HEART >= testLevel[player.z][player.y][player.x] >= GEMBLUE):
-                    player.inventory[player.invidx] = testLevel[player.z][player.y][player.x]
-                    testLevel[player.z][player.y][player.x] = EMPTY
-                    player.invidx += 1
+##                if (event.key == player.actionkey) and (HEART >= testLevel[player.z][player.y][player.x] >= GEMBLUE):
+##                    player.inventory[player.invidx] = testLevel[player.z][player.y][player.x]
+##                    testLevel[player.z][player.y][player.x] = EMPTY
+##                    player.invidx += 1
 
                 
             if (event.key == K_EQUALS):
