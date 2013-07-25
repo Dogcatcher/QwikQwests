@@ -372,6 +372,10 @@ def rampstatus(rpos):
             return (True,b)
     return (False,None)
 
+def pos2x(pos):
+    (z,y,x)=pos
+    return x
+
 def canmoveto(topos,frompos):  
     # Players
     print("checking: {0}".format(topos))
@@ -399,9 +403,18 @@ def canmoveto(topos,frompos):
         underblock=Block.instances.get(below)
         # we're not The Snowman or Jesus
         (onramp,rtype)=rampstatus(frompos)
+        
         if (underblock == None or underblock.blocknum == WATERBLOCK) and (onramp == False):
             print("can't walk in the air or on water {0}".format(underblock))
             return False
+        elif (pos2x(topos) == pos2x(frompos)):
+              # moving N<->S
+              if (rtype == RAMP_E or rtype == RAMP_W):
+                  return False
+        else:
+            # moving E<->W
+            if (rtype == RAMP_N or rtype == RAMP_S):
+                return False
             
     return True
 
