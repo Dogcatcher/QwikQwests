@@ -36,6 +36,7 @@ def load_level(p):
 ##    s=pickle.load(FH)
 ##    o=pickle.load(FH)
     FH.close()
+    print("loaded level of {0} blocks, {1} objects, and {2} spawns".format(len(Block.instances.keys()), len(Object.instances.keys()), len(SpawnPoint.instances.keys())))
     #playerInv=np.zeros(10,dtype=np.int)
     #return(l,s,o)
     
@@ -86,7 +87,8 @@ P4.initinv()
 def nearObject(player,object):
     # return List of objects/players in the 8 squares
     return True
-                 
+
+print("We have {0} characters".format(len(Character.instances.keys())))                 
 
 ##P5=Character()
 ##P5.setidx(5)
@@ -363,10 +365,12 @@ def isaramp(bn):
 
 def rampstatus(rpos):
     (rz,ry,rx)=rpos
-    b=Block.instances.get((rz-1,ry,rx)).blocknum
-    if (isaramp(b) == True):
-        return (True,b)
-    return (False,b)
+    bl=Block.instances.get((rz-1,ry,rx))
+    if (bl != None):
+        b=bl.blocknum
+        if (isaramp(b) == True):
+            return (True,b)
+    return (False,None)
 
 def canmoveto(topos,frompos):  
     # Players
@@ -414,7 +418,7 @@ while True:
             if (event.key == K_ESCAPE):
                 pygame.quit()
                 sys.exit()
-
+            print(Character.instances.keys())
             for p in players:
 
 
@@ -427,8 +431,12 @@ while True:
                             if (rtype == RAMP_N):
                                 dz = -1
                             elif (rtype == RAMP_S):
+                                dz = 0
+                        (ontoramp,rtype2)=rampstatus((p.z+1,p.y-1,p.x))
+                        print("ontoramp: {0} rtype2: {1}".format(ontoramp, rtype2))
+                        if (ontoramp == True):
+                            if (rtype2 == RAMP_S):
                                 dz = 1
-                        
                         Character.instances[(p.z+dz,p.y-1,p.x)] = Character.instances.pop((p.z,p.y,p.x))
                         p.setpos((p.x,p.y-1,p.z+dz))
                         print("Moved up to {0}".format(p.pos))
@@ -440,79 +448,18 @@ while True:
                         (onramp,rtype)=rampstatus((p.z,p.y,p.x))
                         if (onramp == True):
                             if (rtype == RAMP_N):
-                                dz = 1
+                                dz = 0
                             elif (rtype == RAMP_S):
-                                dz = -1                
+                                dz = -1
+                        (ontoramp,rtype2)=rampstatus((p.z+1,p.y+1,p.x))
+                        print("ontoramp: {0} rtype2: {1}".format(ontoramp, rtype2))
+                        if (ontoramp == True):
+                            if (rtype2 == RAMP_N):
+                                dz = 1
                         Character.instances[(p.z+dz,p.y+1,p.x)] = Character.instances.pop((p.z,p.y,p.x))
                         p.setpos((p.x,p.y+1,p.z+dz))
                         print("Moved down to {0}".format(p.pos))
                 
-##                new_x = player.x
-##                new_y = player.y
-##                new_z = player.z
-##                if (event.key == player.upkey) and (canMoveUp(player.x,player.y,player.z) == True):
-##                    if (testLevel[player.z-1][player.y][player.x] == RAMP_N): # Going down a North Ramp
-##                        new_z = player.z-1
-##                    if (testLevel[player.z][player.y-1][player.x] == RAMP_S): # Going up a South Ramp
-##                        new_z = player.z+1
-##                    new_y = player.y-1
-##                    vacant=True
-##                    for occupied in players:
-##                        if (occupied != player):
-##                            if (new_x == occupied.x and new_y == occupied.y and new_z == occupied.z):
-##                                vacant=False
-##                    if (vacant == True):
-##                        player.x = new_x
-##                        player.y = new_y
-##                        player.z = new_z
-##                                
-##                if (event.key == player.downkey) and (canMoveDown(player.x,player.y,player.z) == True):
-##                    if (testLevel[player.z][player.y+1][player.x] == RAMP_N): # Going up a North Ramp
-##                        new_z = player.z+1
-##                    if (testLevel[player.z-1][player.y][player.x] == RAMP_S): # Going down a South Ramp
-##                        new_z = player.z-1
-##                    new_y = player.y+1
-##                    vacant=True
-##                    for occupied in players:
-##                        if (occupied != player):
-##                            if (new_x == occupied.x and new_y == occupied.y and new_z == occupied.z):
-##                                vacant=False
-##                    if (vacant == True):
-##                        player.x = new_x
-##                        player.y = new_y
-##                        player.z = new_z
-
-##                if (event.key == player.leftkey) and (canMoveLeft(player.x,player.y,player.z) == True):
-##                    if (testLevel[player.z][player.y][player.x-1] == RAMP_E): # Going up an East Ramp
-##                        new_z = player.z+1
-##                    if (testLevel[player.z-1][player.y][player.x] == RAMP_W): # Going down a West Ramp
-##                        new_z = player.z-1
-##                    new_x = player.x-1
-##                    vacant=True
-##                    for occupied in players:
-##                        if (occupied != player):
-##                            if (new_x == occupied.x and new_y == occupied.y and new_z == occupied.z):
-##                                vacant=False
-##                    if (vacant == True):
-##                        player.x = new_x
-##                        player.y = new_y
-##                        player.z = new_z
-                        
-##                if (event.key == player.rightkey) and (canMoveRight(player.x,player.y,player.z) == True):
-##                    if (testLevel[player.z-1][player.y][player.x] == RAMP_E): # Going down an East Ramp
-##                        new_z = player.z-1
-##                    if (testLevel[player.z][player.y][player.x+1] == RAMP_W): # Going up a West Ramp
-##                        new_z = player.z+1
-##                    new_x = player.x+1
-##                    vacant=True
-##                    for occupied in players:
-##                        if (occupied != player):
-##                            if (new_x == occupied.x and new_y == occupied.y and new_z == occupied.z):
-##                                vacant=False
-##                    if (vacant == True):
-##                        player.x = new_x
-##                        player.y = new_y
-##                        player.z = new_z
                         
                 if (event.key == p.leftkey):
                     if (canmoveto((p.z,p.y,p.x-1),(p.z,p.y,p.x)) == True):
@@ -521,9 +468,14 @@ while True:
                         (onramp,rtype)=rampstatus((p.z,p.y,p.x))
                         if (onramp == True):
                             if (rtype == RAMP_E):
-                                dz = 1
+                                dz = 0
                             elif (rtype == RAMP_W):
                                 dz = -1
+                        (ontoramp,rtype2)=rampstatus((p.z+1,p.y,p.x-1))
+                        print("ontoramp: {0} rtype2: {1}".format(ontoramp, rtype2))
+                        if (ontoramp == True):
+                            if (rtype2 == RAMP_E):
+                                dz = 1
                         Character.instances[(p.z+dz,p.y,p.x-1)] = Character.instances.pop((p.z,p.y,p.x))
                         p.setpos((p.x-1,p.y,p.z+dz))
                         print("Moved left to {0}".format(p.pos))
@@ -537,6 +489,11 @@ while True:
                             if (rtype == RAMP_E):
                                 dz = -1
                             elif (rtype == RAMP_W):
+                                dz = 0
+                        (ontoramp,rtype2)=rampstatus((p.z+1,p.y,p.x+1))
+                        print("ontoramp: {0} rtype2: {1}".format(ontoramp, rtype2))
+                        if (ontoramp == True):
+                            if (rtype2 == RAMP_W):
                                 dz = 1
                         Character.instances[(p.z+dz,p.y,p.x+1)] = Character.instances.pop((p.z,p.y,p.x))
                         p.setpos((p.x+1,p.y,p.z+dz))
@@ -563,4 +520,6 @@ while True:
                 screenOffsetY=274 + ((limit_y - max_y) / 2 * blockHeight)
                 playerInv=np.zeros(10,dtype=np.int)
             draw_screen()
+    pygame.display.set_caption("#Blocks:{0} #Objects{1} #Spawns{2}".format(len(Block.instances), len(Object.instances), len(Character.instances)))
     pygame.display.flip()
+    

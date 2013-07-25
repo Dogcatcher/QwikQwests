@@ -241,6 +241,7 @@ class Character(Block):
         self.saysecs = secs
         self.sayage = time.mktime(time.gmtime())
     static=False
+    instances={}
     def __init__(self, pos, name=None):
         print("new Character instance")
         self.pos = pos
