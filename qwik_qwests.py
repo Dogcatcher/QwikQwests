@@ -395,6 +395,21 @@ def canmoveto(topos,frompos):
         print("found a block")
         if (isaramp(Block.instances.get(topos).blocknum) == False):
             return False
+        else:
+            (tz,ty,tx)=topos
+            (toramp,rtype2)=rampstatus((tz+1,ty,tx))
+            print("topramp {0} rtype2 {1}".format(toramp,rtype2))
+            print("pos2x(frompos) {0} pos2x(topos) {1}".format(pos2x(frompos), pos2x(topos)))
+            if (pos2x(topos) == pos2x(frompos)):
+                # moving N<->S
+                if (rtype2 == RAMP_E or rtype2 == RAMP_W):
+                    print("moving N/S onto E/W ramp not allowed")
+                    return False
+            else:
+                # moving E<->W
+                if (rtype2 == RAMP_N or rtype2 == RAMP_S):
+                    print("moving E/W onto N/S ramp not allowed")
+                    return False
     else:
         # empty space
         # however must be above space or water
