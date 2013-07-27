@@ -210,8 +210,17 @@ def draw_screen():
         b=renderDict[j]
         (x,y,z)=b.pos
         offset=(z*-1*blockOffset)+screenOffsetY
+        ischar=Character.instances.get((z,y,x))
+
+        #print("b.pos {0} is character? {1} and on a ramp? {2}".format(b.pos,ischar,aboveramp))
+        if (ischar != None):
+            print("b.pos {0} is character? {1}".format(b.pos,ischar))
+            (onramp,rtype)=rampstatus((z,y,x))
+            if (onramp == True):
+                print("character on ramp - adding +10 offset")
+                offset+=10
         # Block
-        SCREEN.blit(blockType[b.blocknum], ((x*blockWidth),(y*blockHeight+(offset))))
+        SCREEN.blit(blockType[b.blocknum], ((x*blockWidth),(y*blockHeight+offset)))
   
 ##    for z in range (0,(max_z+1)):
 ##        offset=(z*-1*blockOffset)+screenOffsetY
@@ -451,78 +460,83 @@ while True:
 
 
                 if (event.key == p.upkey):
-                    if (canmoveto((p.z,p.y-1,p.x),(p.z,p.y,p.x)) == True):
+                    dz=0
+                    (onramp,rtype)=rampstatus((p.z,p.y,p.x))                    
+                    if (onramp == True):
+                        if (rtype == RAMP_N):
+                            dz = -1
+                        elif (rtype == RAMP_S):
+                            dz = 0
+                    (ontoramp,rtype2)=rampstatus((p.z+1,p.y-1,p.x))
+                    print("ontoramp: {0} rtype2: {1}".format(ontoramp, rtype2))
+                    if (ontoramp == True):
+                        if (rtype2 == RAMP_S):
+                            dz = 1
+                    if (canmoveto((p.z+dz,p.y-1,p.x),(p.z,p.y,p.x)) == True):
                         print("Moving up from {0}".format(p.pos))
-                        dz=0
-                        (onramp,rtype)=rampstatus((p.z,p.y,p.x))
-                        if (onramp == True):
-                            if (rtype == RAMP_N):
-                                dz = -1
-                            elif (rtype == RAMP_S):
-                                dz = 0
-                        (ontoramp,rtype2)=rampstatus((p.z+1,p.y-1,p.x))
-                        print("ontoramp: {0} rtype2: {1}".format(ontoramp, rtype2))
-                        if (ontoramp == True):
-                            if (rtype2 == RAMP_S):
-                                dz = 1
+
                         Character.instances[(p.z+dz,p.y-1,p.x)] = Character.instances.pop((p.z,p.y,p.x))
                         p.setpos((p.x,p.y-1,p.z+dz))
                         print("Moved up to {0}".format(p.pos))
 
                 if (event.key == p.downkey):
-                    if (canmoveto((p.z,p.y+1,p.x),(p.z,p.y,p.x)) == True):
+                    dz=0
+                    (onramp,rtype)=rampstatus((p.z,p.y,p.x))
+                    if (onramp == True):
+                        if (rtype == RAMP_N):
+                            dz = 0
+                        elif (rtype == RAMP_S):
+                            dz = -1
+                    (ontoramp,rtype2)=rampstatus((p.z+1,p.y+1,p.x))
+                    print("ontoramp: {0} rtype2: {1}".format(ontoramp, rtype2))
+                    if (ontoramp == True):
+                        if (rtype2 == RAMP_N):
+                            dz = 1
+                            
+                    if (canmoveto((p.z+dz,p.y+1,p.x),(p.z,p.y,p.x)) == True):
                         print("Moving down from {0}".format(p.pos))
-                        dz=0
-                        (onramp,rtype)=rampstatus((p.z,p.y,p.x))
-                        if (onramp == True):
-                            if (rtype == RAMP_N):
-                                dz = 0
-                            elif (rtype == RAMP_S):
-                                dz = -1
-                        (ontoramp,rtype2)=rampstatus((p.z+1,p.y+1,p.x))
-                        print("ontoramp: {0} rtype2: {1}".format(ontoramp, rtype2))
-                        if (ontoramp == True):
-                            if (rtype2 == RAMP_N):
-                                dz = 1
+
                         Character.instances[(p.z+dz,p.y+1,p.x)] = Character.instances.pop((p.z,p.y,p.x))
                         p.setpos((p.x,p.y+1,p.z+dz))
                         print("Moved down to {0}".format(p.pos))
                 
                         
                 if (event.key == p.leftkey):
-                    if (canmoveto((p.z,p.y,p.x-1),(p.z,p.y,p.x)) == True):
+                    dz=0
+                    (onramp,rtype)=rampstatus((p.z,p.y,p.x))
+                    if (onramp == True):
+                        if (rtype == RAMP_E):
+                            dz = 0
+                        elif (rtype == RAMP_W):
+                            dz = -1
+                    (ontoramp,rtype2)=rampstatus((p.z+1,p.y,p.x-1))
+                    print("ontoramp: {0} rtype2: {1}".format(ontoramp, rtype2))
+                    if (ontoramp == True):
+                        if (rtype2 == RAMP_E):
+                            dz = 1
+                    if (canmoveto((p.z+dz,p.y,p.x-1),(p.z,p.y,p.x)) == True):
                         print("Moving left from {0}".format(p.pos))
-                        dz=0
-                        (onramp,rtype)=rampstatus((p.z,p.y,p.x))
-                        if (onramp == True):
-                            if (rtype == RAMP_E):
-                                dz = 0
-                            elif (rtype == RAMP_W):
-                                dz = -1
-                        (ontoramp,rtype2)=rampstatus((p.z+1,p.y,p.x-1))
-                        print("ontoramp: {0} rtype2: {1}".format(ontoramp, rtype2))
-                        if (ontoramp == True):
-                            if (rtype2 == RAMP_E):
-                                dz = 1
+
                         Character.instances[(p.z+dz,p.y,p.x-1)] = Character.instances.pop((p.z,p.y,p.x))
                         p.setpos((p.x-1,p.y,p.z+dz))
                         print("Moved left to {0}".format(p.pos))
                         
                 if (event.key == p.rightkey):
-                    if (canmoveto((p.z,p.y,p.x+1),(p.z,p.y,p.x)) == True):
+                    dz=0
+                    (onramp,rtype)=rampstatus((p.z,p.y,p.x))
+                    if (onramp == True):
+                        if (rtype == RAMP_E):
+                            dz = -1
+                        elif (rtype == RAMP_W):
+                            dz = 0
+                    (ontoramp,rtype2)=rampstatus((p.z+1,p.y,p.x+1))
+                    print("ontoramp: {0} rtype2: {1}".format(ontoramp, rtype2))
+                    if (ontoramp == True):
+                        if (rtype2 == RAMP_W):
+                            dz = 1
+                    if (canmoveto((p.z+dz,p.y,p.x+1),(p.z,p.y,p.x)) == True):
                         print("Moving right from {0}".format(p.pos))
-                        dz=0
-                        (onramp,rtype)=rampstatus((p.z,p.y,p.x))
-                        if (onramp == True):
-                            if (rtype == RAMP_E):
-                                dz = -1
-                            elif (rtype == RAMP_W):
-                                dz = 0
-                        (ontoramp,rtype2)=rampstatus((p.z+1,p.y,p.x+1))
-                        print("ontoramp: {0} rtype2: {1}".format(ontoramp, rtype2))
-                        if (ontoramp == True):
-                            if (rtype2 == RAMP_W):
-                                dz = 1
+
                         Character.instances[(p.z+dz,p.y,p.x+1)] = Character.instances.pop((p.z,p.y,p.x))
                         p.setpos((p.x+1,p.y,p.z+dz))
                         print("Moved right to {0}".format(p.pos))
