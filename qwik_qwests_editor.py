@@ -475,6 +475,24 @@ while True:
 ##                print("filling layer {0} with block {1}".format(player_z,cursorBlock))
 ##                testLevel[player_z]=[[cursorBlock for x in range(max_x+1)]for y in range(max_y+1)]
 
+            if (event.key == K_f):
+                for fillx in range (0,max_x+1):
+                    for filly in range (0,max_y+1):
+                        if (player_z,filly,fillx) in Block.instances.keys():
+                            print("block already exists in dictionary - removing old block")
+                            del Block.instances[(player_z,filly,fillx)]
+                        else:
+                            print("new block - adding to dictionary")
+                            newblock = Block((fillx,filly,player_z))
+                            numBlocks=len(Block.instances)
+                            newblock.setblock(cursorBlock)
+                            
+            if (event.key == K_u):
+                for fillx in range (0,max_x+1):
+                    for filly in range (0,max_y+1):
+                        print("block already exists in dictionary - removing old block")
+                        del Block.instances[(player_z,filly,fillx)]
+
             if (event.key == K_l):
                 # layerHide toggle
                 if (layerHide == True):
