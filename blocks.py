@@ -182,7 +182,7 @@ class Cursor(Block):
     name="cursor"
     instances = {}
     def __init__(self, pos, name=None):
-        print("new Cursor instance")
+        #print("new Cursor instance")
         self.pos = pos
         (x,y,z) = pos
         self.x = x
@@ -199,7 +199,7 @@ class SpawnPoint(Block):
     name="spawnpoint"
     instances = {}
     def __init__(self, pos, name=None):
-        print("new SpawnPoint instance")
+        #print("new SpawnPoint instance")
         self.pos = pos
         (x,y,z) = pos
         self.x = x
@@ -214,7 +214,7 @@ class Object(Block):
     name="Object"
     instances = {}
     def __init__(self, pos, name=None):
-        print("new Object instance")
+        #print("new Object instance")
         self.pos = pos
         (x,y,z) = pos
         self.x = x
@@ -243,7 +243,7 @@ class Character(Block):
     static=False
     instances={}
     def __init__(self, pos, name=None):
-        print("new Character instance")
+        #print("new Character instance")
         self.pos = pos
         (x,y,z) = pos
         self.x = x
