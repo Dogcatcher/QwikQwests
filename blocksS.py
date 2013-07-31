@@ -15,13 +15,20 @@ min_z=0
 max_x=5
 max_y=5
 max_z=5
-limit_x=19
-limit_y=11
-limit_z=11
+limit_x=39
+limit_y=23
+limit_z=23
+
+realWidth=26
+realHeight=44
+realTop=25        # 5/17
+realMiddle=40     # 8/17
+realBotton=20     # 4/17
+
 
 screenOffset=220
-blockWidth=50
-blockHeight=40
+blockWidth=realWidth-1
+blockHeight=(realHeight-1)*8/17
 blockOffset=blockHeight/2
 
 EMPTY=0
@@ -111,6 +118,9 @@ blockType[PRINCESS]=pygame.image.load(iPath+'Character Princess Girl.png').conve
 blockType[KEY]=pygame.image.load(iPath+'Key.png').convert_alpha()
 blockType[ENEMYBUG]=pygame.image.load(iPath+'Enemy Bug.png').convert_alpha()
 blockType[STAR]=pygame.image.load(iPath+'Star.png').convert_alpha()
+
+for s in range(EMPTY, STAR+1):
+    blockType[s]=pygame.transform.smoothscale(blockType[s],(realWidth,realHeight))
 
 shadowType=[None]*9
 SHADOW_SE=0

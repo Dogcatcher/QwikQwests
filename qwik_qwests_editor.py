@@ -2,7 +2,7 @@
 
 import pygame, sys, pickle, tkinter, numpy as np
 from pygame.locals import *
-from blocks import *
+from blocksS import *
 from tkinter.filedialog import askopenfilename, asksaveasfilename
 import operator
 from common import getmax
@@ -35,20 +35,21 @@ titleCenter.center=(400,50)
 min_x=0
 min_y=0
 min_z=0
-max_x=5
-max_y=5
-max_z=5
-limit_x=19
-limit_y=11
-limit_z=11
+##max_x=5
+##max_y=5
+##max_z=5
+##limit_x=19
+##limit_y=11
+##limit_z=11
 
 def fill_gradient(surface, color, gradient, rect=None, vertical=True, forward=True):
     return True
 
-blockOffset=20
-screenOffset=220
-blockWidth=50
-blockHeight=40
+
+##screenOffset=220
+##blockWidth=50
+##blockHeight=40
+##blockOffset=blockHeight/2
 
 spawn=[[0,0,1],[4,4,1],[0,4,1],[4,0,1]]
 Objective=[4,4,1]

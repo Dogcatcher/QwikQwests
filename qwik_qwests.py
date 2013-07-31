@@ -2,7 +2,7 @@
 
 import pygame, sys, pickle, numpy as np
 import time
-from blocks import *
+from blocksS import *
 from pygame.locals import *
 from common import getmax
 from random import shuffle
@@ -77,6 +77,8 @@ WHITE = (255,255,255)
 LIGHTBLUE = (100,150,255)
 BROWN = (150,100,50)
 ORANGE = (255,140,0)
+GREEN = (50,205,50)
+DARKGREEN = (0,100,0)
 
 titleCenter = QwikQwests.get_rect()
 titleCenter.center=((screenWidth/2),50)
@@ -85,20 +87,20 @@ bubbleText=bubbleFont.render('Hello World!',1,BLACK)
 
 testLevel=[None]*6
 
-blockWidth=50
-blockHeight=40      
-
-limit_y=11
-limit_x=19
-
-blockOffset=20
+##blockWidth=50
+##blockHeight=40      
+##
+##limit_y=11
+##limit_x=19
+##
+##blockOffset=blockHeight/2
 
 spawn=[0,0,0]
 objective=[9,5,5]
 
-min_x=0
-min_y=0
-min_z=0
+##min_x=0
+##min_y=0
+##min_z=0
 
 (max_x,max_y,max_z)=getmax(Block.instances,(0,0,0))
 (max_x,max_y,max_z)=getmax(Object.instances,(max_x,max_y,max_z))
@@ -125,10 +127,10 @@ def draw_screen():
     end=start+height
 
     (rStart,gStart,bStart)=LIGHTBLUE
-    (rEnd,gEnd,bEnd)=ORANGE
+    (rEnd,gEnd,bEnd)=WHITE
     (rDelta,gDelta,bDelta)=(float(rStart-rEnd)/height,float(gStart-gEnd)/height,float(bStart-bEnd)/height)
 
-    SCREEN.fill(ORANGE)
+    SCREEN.fill(GREEN)
 
     
     for n in range (start,end):
