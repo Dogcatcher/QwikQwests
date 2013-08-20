@@ -317,6 +317,8 @@ def canmoveto(topos,frompos):
     return True
 
 draw_screen()
+
+pygame.key.set_repeat(100,100)
                 
 while True:
     fpsClock.tick(FPS)
